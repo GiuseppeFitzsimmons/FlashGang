@@ -1,0 +1,23 @@
+{
+  "name": "flashgang",
+  "version": "1.0.0",
+  "description": "\"# FlashGang\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GiuseppeFitzsimmons/FlashGang.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GiuseppeFitzsimmons/FlashGang/issues"
+  },
+  "homepage": "https://github.com/GiuseppeFitzsimmons/FlashGang#readme",
+  "dependencies": {
+    "browser-database": "^1.0.5",
+    "react-bootstrap": "^1.0.0-beta.14"
+  }
+}
