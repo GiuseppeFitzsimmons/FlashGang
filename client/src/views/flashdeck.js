@@ -17,10 +17,8 @@ class FlashDeck extends React.Component {
     }
   }
   render() {
-    console.log('this.props', this.props)
     let renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} />
     if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex')) {
-      console.log("Rendearble is editor")
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} />
     }
     return (
@@ -32,7 +30,6 @@ class FlashDeck extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-  console.log('state', state)
   return { flashDeck: state.flashDeck }
 }
 function mapDispatchToProps(dispatch) {
