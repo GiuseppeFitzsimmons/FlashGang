@@ -1,10 +1,6 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD } from '../action'
-import { BrowserDatabase } from 'browser-database';
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS } from '../action'
 
-const browserDatabase = new BrowserDatabase({
-    storageType: 'localStorage',
-    storageKey: 'databaseName'
-});
+const uuidv4 = require('uuid/v4');
 
 export function flashGangMiddleware({ dispatch }) {
     return function (next) {
@@ -16,20 +12,9 @@ export function flashGangMiddleware({ dispatch }) {
             else if (action.type === SAVE_DECK) {
                 console.log('Middleware SAVE_DECK')
                 if (!action.data.flashDeck.id) {
-                    action.data.flashDeck.id = 'UUID'
-                } else {
-                    action.data.flashDeck.id = 'New UUID'
+                    action.data.flashDeck.id = uuidv4()
                 }
-                if (action.deck.flashCards) {
-                    for (var i in action.data.flashDeck.flashCards) {
-                        let card = action.data.flashDeck.flashCards[i]
-                        if (!card.id) {
-                            card.id = 'UUID'
-                        } else {
-                            card.id = 'New UUID'
-                        }
-                    }
-                }
+                localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
             }
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
@@ -48,6 +33,17 @@ export function flashGangMiddleware({ dispatch }) {
                         }
                     }
                 }
+            } else if (action.type === LOAD_DECKS) {
+                console.log('Middleware LOAD_DECKS')
+                var decks = []
+                var keys = Object.entries(localStorage)
+                for (var i = 0; i < localStorage.length; i++) {
+                    var key = keys[i];
+                    if (key[0].indexOf('flashDeck-') == 0) {
+                        decks.push(JSON.parse(localStorage.getItem(key[0])))
+                    }
+                }
+                action.flashDecks = decks
             }
             return next(action);
         }

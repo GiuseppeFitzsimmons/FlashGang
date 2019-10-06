@@ -17,9 +17,11 @@ class FlashDeck extends React.Component {
     }
   }
   render() {
-    let renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} />
+    let renderable = <></>
     if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex')) {
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} />
+    } else if (this.props.flashDeck) {
+      renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} />
     }
     return (
       <>

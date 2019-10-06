@@ -1,4 +1,4 @@
-import {NEW_DECK, SAVE_DECK, NEXT_CARD} from '../action';
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS } from '../action';
 
 const initialState = {};
 
@@ -10,21 +10,25 @@ function rootReducer(state = initialState, action) {
         //In practice this means that if your state contains the same objects when it's next seen by
         //mapStateToProps, then it will punish you by assuming that you don't want to apply any changes.
         //The (probably not-best-practice) workaround is to make flashDeck a copy of the one in the action.
-        flashDeck=Object.assign({},action.data.flashDeck)
+        flashDeck = Object.assign({}, action.data.flashDeck)
     }
     switch (action.type) {
         case NEW_DECK:
-            state = Object.assign({},state,{flashDeck})
+            state = Object.assign({}, state, { flashDeck })
             return state
         case SAVE_DECK:
-            state = Object.assign({},state,{flashDeck})
+            state = Object.assign({}, state, { flashDeck })
             return state
         case NEXT_CARD:
             console.log(action)
-            state = Object.assign({random: Math.random()},state,{flashDeck})
+            state = Object.assign({}, state, { flashDeck })
             return state
-      default:
-        return state
+        case LOAD_DECKS:
+            let flashDecks = Object.assign({}, action.flashDecks)
+            state = Object.assign({}, state, { flashDecks })
+            return state
+        default:
+            return state
     }
-  };
-  export default rootReducer;
+};
+export default rootReducer;
