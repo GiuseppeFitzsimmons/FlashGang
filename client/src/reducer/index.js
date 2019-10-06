@@ -24,8 +24,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashDeck })
             return state
         case LOAD_DECKS:
-            let flashDecks = Object.assign({}, action.flashDecks)
-            state = Object.assign({}, state, { flashDecks })
+            state = Object.assign({}, state, { flashDecks: action.flashDecks })
             return state
         default:
             return state

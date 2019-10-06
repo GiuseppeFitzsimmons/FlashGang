@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
 import { MdDelete } from 'react-icons/md'
 import { Input } from 'reactstrap'
+import IntegratedInput from '../widgets/IntegratedInput'
 
 class FlashCardEditor extends React.Component {
     constructor(props) {
@@ -61,11 +62,14 @@ class FlashCardEditor extends React.Component {
                 return (
                     <div>
                         {answer}
-                        <Input
+                        <IntegratedInput
+                            label="Correct Answer"
                             defaultValue={answer}
                             placeholder='flash card correct answer'
                             onChange={
-                                (event) => { flashCard.correctAnswers[i] = event.target.value }
+                                (event) => {
+                                    flashCard.correctAnswers[i] = event.target.value
+                                }
                             }
                         />
                         {removeButton}
@@ -102,7 +106,8 @@ class FlashCardEditor extends React.Component {
                 return (
                     <div>
                         {answer}
-                        <Input
+                        <IntegratedInput
+                            label="Incorrect Answer"
                             defaultValue={answer}
                             placeholder='flash card incorrect answer'
                             onChange={
@@ -120,7 +125,8 @@ class FlashCardEditor extends React.Component {
         }
         return (
             <>
-                <Input
+                <IntegratedInput
+                    label="Question"
                     defaultValue={flashCard.question}
                     placeholder='flash card question'
                     onChange={

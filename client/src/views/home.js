@@ -16,18 +16,21 @@ class Home extends React.Component {
 
 
   render() {
+    const flashDecks=this.props.flashDecks;
     const generateFlashDeckList = () => {
-      if (!this.props.flashDecks){
+      if (!flashDecks){
         return (
           <></>
         )
       }
-      console.log('this.props.flashDecks', this.props.flashDecks)
-      var _display = Array.from(this.props.flashDecks).forEach((flashDeck) => {
+      console.log('this.props.flashDecks', Array.isArray(flashDecks))
+      var _display = flashDecks.map((flashDeck, i) => {
+        console.log("flash", flashDeck)
         return (
           <div>
             {flashDeck.name}
-          </div>)
+          </div>
+        )
       })
       return (
         <div>

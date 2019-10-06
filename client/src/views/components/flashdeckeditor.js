@@ -3,13 +3,21 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
+import IntegratedInput from '../widgets/IntegratedInput'
+import {
+  Button,
+  Col,
+  Input
+} from "reactstrap";
 
 class FlashDeckEditor extends React.Component {
     render() {
         const flashDeck = this.props.flashDeck
       return (
         <>
-          <input
+        <Col>
+          <IntegratedInput
+            label="FlashDeck Name"
             defaultValue={flashDeck.name}
             id='flashCardName'
             placeholder='flash card name'
@@ -17,7 +25,10 @@ class FlashDeckEditor extends React.Component {
                 (event) => { flashDeck.name = event.target.value }
             }
           />
-          <input
+        </Col>
+        <Col>
+          <IntegratedInput
+            label="Description"
             defaultValue={flashDeck.decription}
             id='flashCardDescription'
             placeholder='flash card description'
@@ -25,8 +36,10 @@ class FlashDeckEditor extends React.Component {
                 (event) => { flashDeck.description = event.target.value }
             }
           />
-          
-          <input
+          </Col>
+        <Col>
+          <IntegratedInput
+            label="Fuzziness"
             type='number'
             id='flashCardFuzziness'
             placeholder='flash card fuzziness'
@@ -34,11 +47,15 @@ class FlashDeckEditor extends React.Component {
                 (event) => { flashDeck.fuzziness = event.target.value }
             }
           />
+          </Col>
+        <Col>
           <AwesomeButton
             onPress = {() => this.props.nextCard(flashDeck)}
           >
               Edit Cards
           </AwesomeButton>
+          </Col>
+        <Col>
           <AwesomeButton
                     onPress={() => {
                         this.props.saveDeck(this.props.flashDeck)
@@ -48,6 +65,7 @@ class FlashDeckEditor extends React.Component {
                 >
                     Save Deck
             </AwesomeButton>
+          </Col>
         </>
       )
     }

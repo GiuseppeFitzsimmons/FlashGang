@@ -5,6 +5,7 @@ import Home from './views/home';
 import FlashDeck from './views/flashdeck';
 import { Provider } from 'react-redux';
 import store from './store';
+import './App.css';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ export default class App extends React.Component {
     let renderable = <Home setMode={this.setMode} />
     if (this.state.mode == 'flashdeck') {
       renderable = <FlashDeck
-        id={this.state.flashdeckId}
+        flashDeckId={this.state.flashdeckId}
         mode={this.state.mode}
       />
     }
