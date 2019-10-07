@@ -9,6 +9,7 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import {
   Col
 } from "reactstrap";
+import { Button } from '@material-ui/core';
 
 class FlashCardEditor extends React.Component {
     constructor(props) {
@@ -155,34 +156,42 @@ class FlashCardEditor extends React.Component {
                  </Col>
                 {generateCorrectAnswerList()}
                 <Col>
-                <AwesomeButton
-                    onPress={
+                <Button
+                    color='primary'
+                    variant='outlined'
+                    onClick={
                         this.addCorrectAnswer
                     }
                 >
                     Add correct answer
-                </AwesomeButton>
+                </Button>
                 </Col>
                 <Col>
                 {generateIncorrectAnswerList()}
-                <AwesomeButton
-                    onPress={
+                <Button
+                    color='primary'
+                    variant='outlined'
+                    onClick={
                         this.addIncorrectAnswer
                     }
                 >
                     Add incorrect answer
-                </AwesomeButton>
+                </Button>
                 </Col>
                 <Col>
-                <AwesomeButton
-                    onPress={() => this.props.nextCard(this.props.flashDeck)}
+                <Button
+                    color='primary'
+                    variant='outlined'
+                    onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
-                </AwesomeButton>
+                </Button>
                 </Col>
                 <Col>
-                <AwesomeButton
-                    onPress={() => {
+                <Button
+                    color='default'
+                    variant='outlined'
+                    onClick={() => {
                         this.props.saveDeck(this.props.flashDeck)
                         console.log('flashCard', flashCard)
                     }
@@ -190,7 +199,7 @@ class FlashCardEditor extends React.Component {
                     }
                 >
                     Save Deck
-                </AwesomeButton>
+                </Button>
                 </Col>
             </>
         )

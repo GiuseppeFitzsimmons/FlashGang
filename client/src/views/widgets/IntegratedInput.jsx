@@ -18,7 +18,7 @@ class IntegratedInput extends Component {
 
     componentDidUpdate(prevProps) {
         console.log("componentDidUpdate", this.props.value);
-        this.inputField.current.value=this.props.value
+        //this.inputField.current.value=this.props.value
         
         
     }
