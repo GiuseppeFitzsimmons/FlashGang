@@ -52,7 +52,7 @@ class IntegratedInput extends Component {
         }
         return (
             <span>
-                <div style={{marginLeft:'10px', marginRight:'10px'}}>
+                <div style={{marginTop:'10px'}}>
                 {_label}
                 <Input
                     invalid={_invalid}

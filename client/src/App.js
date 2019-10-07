@@ -8,24 +8,26 @@ import store from './store';
 import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
+import { Box } from '@material-ui/core';
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#86af49' }
+    primary: { main: '#86af49' },
+    error: { main: '#eca1a6' }
   },
   overrides: {
     MuiButton: {
       root: {
-        margin: "10px",
-        padding: "10px"
+        marginTop: "10px",
+        borderColor: "black"
       }
     },
-    MuiGrid: {
+    MuiBox: {
       root: {
-        margin: "10px",
+        backgroundColor: "#e3eaa7",
         padding: "10px"
       }
-    },
+    }
   }
 });
 
@@ -51,7 +53,9 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+          <Box>
         {renderable}
+        </Box>
         </ThemeProvider>
       </Provider>
     )
