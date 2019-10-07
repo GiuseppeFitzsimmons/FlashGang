@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Tooltip } from 'reactstrap';
-import { Input } from '@material-ui/core';
+import { Input, Container } from '@material-ui/core';
 import {
   Col, Row
 } from "reactstrap";
@@ -52,7 +52,7 @@ class IntegratedInput extends Component {
         }
         return (
             <span>
-                <Col>
+                <div style={{marginLeft:'10px', marginRight:'10px'}}>
                 {_label}
                 <Input
                     invalid={_invalid}
@@ -70,7 +70,7 @@ class IntegratedInput extends Component {
                     style={{width:'100%'}}
                 />
                 
-                </Col>
+                </div>
                 {_tooltip}
                 
             </span>

@@ -11,6 +11,7 @@ import {
 } from "reactstrap";
 import { Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { spacing } from '@material-ui/system';
 
 
 class FlashCardEditor extends React.Component {
@@ -128,9 +129,9 @@ class FlashCardEditor extends React.Component {
                 return (
                     <Grid container
                         direction="row"
-                        justify="space-between"
+                        justify="space-between" 
                         alignItems="flex-end">
-                        <Grid item xs={_gridWidth} sm={_gridWidth}>
+                        <Grid item xs={_gridWidth} sm={_gridWidth-1}>
                             <IntegratedInput
                                 label={label}
                                 placeholder={'Incorrect answer '+(i+1)}
@@ -170,7 +171,7 @@ class FlashCardEditor extends React.Component {
                 {generateCorrectAnswerList()}
                 <Button
                     color='primary'
-                    variant='outlined'
+                    variant='contained'
                     onClick={
                         this.addCorrectAnswer
                     }
@@ -179,8 +180,8 @@ class FlashCardEditor extends React.Component {
                 </Button>
                 {generateIncorrectAnswerList()}
                 <Button
-                    color='primary'
-                    variant='outlined'
+                    color='secondary'
+                    variant='contained'
                     onClick={
                         this.addIncorrectAnswer
                     }
@@ -188,15 +189,15 @@ class FlashCardEditor extends React.Component {
                     Add incorrect answer
                 </Button>
                 <Button
-                    color='primary'
-                    variant='outlined'
+                    color='default'
+                    variant='contained'
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
                 </Button>
                 <Button
                     color='default'
-                    variant='outlined'
+                    variant='contained'
                     onClick={() => {
                             this.props.saveDeck(this.props.flashDeck)
                             console.log('flashCard', flashCard)
