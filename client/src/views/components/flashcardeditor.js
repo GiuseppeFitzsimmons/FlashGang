@@ -7,9 +7,11 @@ import { MdDelete } from 'react-icons/md'
 import { Input } from 'reactstrap'
 import IntegratedInput from '../widgets/IntegratedInput'
 import {
-  Col
+    Col, Row
 } from "reactstrap";
-import { Button } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 class FlashCardEditor extends React.Component {
     constructor(props) {
@@ -44,15 +46,16 @@ class FlashCardEditor extends React.Component {
             flashCard.correctAnswers = []
             flashCard.correctAnswers.push('')
         }
+
         const generateCorrectAnswerList = () => {
             var _display = flashCard.correctAnswers.map((answer, i) => {
-                let removeButton = <></>
+                let removeButton = ''
+                let _gridWidth = 12;
                 {
-                    if (i>0 && i == flashCard.correctAnswers.length-1) {
+                    if (i>0 && i == flashCard.correctAnswers.length - 1) {
+                        _gridWidth = 11
                         removeButton =
-                            <div
-
-                            >
+                            <Grid >
                                 <MdDelete
                                     onClick={
                                         () => {
@@ -60,30 +63,32 @@ class FlashCardEditor extends React.Component {
                                         }
                                     }
                                 />
-                            </div>
+                            </Grid>
                     }
                 }
-                let label="Correct Answer";
-                if (i>0) {
-                    label='';
+                let label = "Correct Answer";
+                if (i > 0) {
+                    label = '';
                 }
                 return (
-                    <div>
-                    <Col>
-                        {answer}
-                        <IntegratedInput
-                            label={label}
-                            value={answer}
-                            placeholder='flash card correct answer'
-                            onChange={
-                                (event) => {
-                                    flashCard.correctAnswers[i] = event.target.value
+                    <Grid container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="flex-end">
+                        <Grid item xs={_gridWidth} sm={_gridWidth}>
+                            <IntegratedInput
+                                label={label}
+                                placeholder={'Correct answer '+(i+1)}
+                                onChange={
+                                    (event) => { flashCard.correctAnswers[i] = event.target.value }
                                 }
-                            }
-                        />
+                                ref={
+                                    input=>input ? input.reset(answer) : true
+                                }
+                            />
+                        </Grid>
                         {removeButton}
-                        </Col>
-                    </div>)
+                    </Grid>)
             })
             return (
                 <div>
@@ -91,6 +96,7 @@ class FlashCardEditor extends React.Component {
                 </div>
             )
         }
+
         const generateIncorrectAnswerList = () => {
             if (!flashCard.incorrectAnswers) {
                 return (
@@ -98,13 +104,13 @@ class FlashCardEditor extends React.Component {
                 )
             }
             var _display = flashCard.incorrectAnswers.map((answer, i) => {
-                let removeButton = <></>
+                let removeButton = ''
+                let _gridWidth = 12;
                 {
-                    if (i == flashCard.incorrectAnswers.length-1) {
+                    if (i == flashCard.incorrectAnswers.length - 1) {
+                        _gridWidth = 11
                         removeButton =
-                            <div
-
-                            >
+                            <Grid >
                                 <MdDelete
                                     onClick={
                                         () => {
@@ -112,28 +118,32 @@ class FlashCardEditor extends React.Component {
                                         }
                                     }
                                 />
-                            </div>
+                            </Grid>
                     }
                 }
-                let label="Incorrect Answer";
-                if (i>0) {
-                    label='';
+                let label = "Incorrect Answer";
+                if (i > 0) {
+                    label = '';
                 }
                 return (
-                    <div>
-                    <Col>
-                        {answer}
-                        <IntegratedInput
-                            label={label}
-                            defaultValue={answer}
-                            placeholder='flash card incorrect answer'
-                            onChange={
-                                (event) => { flashCard.incorrectAnswers[i] = event.target.value }
-                            }
-                        />
+                    <Grid container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="flex-end">
+                        <Grid item xs={_gridWidth} sm={_gridWidth}>
+                            <IntegratedInput
+                                label={label}
+                                placeholder={'Incorrect answer '+(i+1)}
+                                onChange={
+                                    (event) => { flashCard.incorrectAnswers[i] = event.target.value }
+                                }
+                                ref={
+                                    input=>input ? input.reset(answer) : true
+                                }
+                            />
+                        </Grid>
                         {removeButton}
-                        </Col>
-                    </div>)
+                    </Grid>)
             })
             return (
                 <div>
@@ -142,20 +152,22 @@ class FlashCardEditor extends React.Component {
             )
         }
         return (
-            <>
-                <Col>
+            <Grid container
+                direction="column"
+                justify="space-between"
+                alignItems="stretch"
+                >
                 <IntegratedInput
                     label="Question"
-                    defaultValue={flashCard.question}
                     placeholder='flash card question'
                     onChange={
                         (event) => { flashCard.question = event.target.value }
                     }
-                    
+                    ref={
+                        input=>input ? input.reset(flashCard.question) : true
+                    }
                 />
-                 </Col>
                 {generateCorrectAnswerList()}
-                <Col>
                 <Button
                     color='primary'
                     variant='outlined'
@@ -165,8 +177,6 @@ class FlashCardEditor extends React.Component {
                 >
                     Add correct answer
                 </Button>
-                </Col>
-                <Col>
                 {generateIncorrectAnswerList()}
                 <Button
                     color='primary'
@@ -177,8 +187,6 @@ class FlashCardEditor extends React.Component {
                 >
                     Add incorrect answer
                 </Button>
-                </Col>
-                <Col>
                 <Button
                     color='primary'
                     variant='outlined'
@@ -186,28 +194,24 @@ class FlashCardEditor extends React.Component {
                 >
                     Next Card
                 </Button>
-                </Col>
-                <Col>
                 <Button
                     color='default'
                     variant='outlined'
                     onClick={() => {
-                        this.props.saveDeck(this.props.flashDeck)
-                        console.log('flashCard', flashCard)
-                    }
-
+                            this.props.saveDeck(this.props.flashDeck)
+                            console.log('flashCard', flashCard)
+                        }
                     }
                 >
                     Save Deck
                 </Button>
-                </Col>
-            </>
+            </Grid>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    return {}
+    return {flashCard: state.flashCard}
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

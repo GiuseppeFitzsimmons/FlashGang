@@ -18,22 +18,26 @@ class FlashDeckEditor extends React.Component {
         <Col>
           <IntegratedInput
             label="FlashDeck Name"
-            value={flashDeck.name}
             id='flashCardName'
             placeholder='flash card name'
             onChange={
                 (event) => { flashDeck.name = event.target.value }
+            }
+            ref={
+                input=>input ? input.reset(flashDeck.name) : true
             }
           />
         </Col>
         <Col>
           <IntegratedInput
             label="Description"
-            defaultValue={flashDeck.decription}
             id='flashCardDescription'
             placeholder='flash card description'
             onChange={
                 (event) => { flashDeck.description = event.target.value }
+            }
+            ref={
+                input=>input ? input.reset(flashDeck.description) : true
             }
           />
           </Col>
@@ -46,6 +50,9 @@ class FlashDeckEditor extends React.Component {
             onChange={
                 (event) => { flashDeck.fuzziness = event.target.value }
             }
+            ref={
+                input=>input ? input.reset(flashDeck.fuzziness) : true
+            }
           />
           </Col>
         <Col>
@@ -57,13 +64,12 @@ class FlashDeckEditor extends React.Component {
           </Col>
         <Col>
           <AwesomeButton
-                    onPress={() => {
+                  onPress={() => {
                         this.props.saveDeck(this.props.flashDeck)
                     }
-
-                    }
-                >
-                    Save Deck
+                  }
+              >
+              Save Deck
             </AwesomeButton>
           </Col>
         </>

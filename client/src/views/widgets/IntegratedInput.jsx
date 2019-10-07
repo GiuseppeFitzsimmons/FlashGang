@@ -8,7 +8,6 @@ import {
 class IntegratedInput extends Component {
     constructor(props) {
         super(props);
-        this.inputField = React.createRef();
       }
     state = { isOpen: false };
 
@@ -17,10 +16,20 @@ class IntegratedInput extends Component {
     };
 
     componentDidUpdate(prevProps) {
-        console.log("componentDidUpdate", this.props.value);
-        //this.inputField.current.value=this.props.value
-        
-        
+        console.log("componentDidUpdate", this.props.defaultValue);
+        this.state.value=this.props.value;
+    }
+    handleChange (event) {
+        this.state.value=event.target.value
+      };
+      componentDidMount() {
+        console.log("componentDidMount");
+      }
+    reset(value) {
+        if (!value) {
+            value="";
+        }
+        this.setState({value})
     }
     render() {
         var message = this.props.message
@@ -51,17 +60,16 @@ class IntegratedInput extends Component {
                     id={this.props.id}
                     placeholder={this.props.placeholder}
                     type={this.props.type}
-                    value={this.state.value ? this.state.value : this.props.value}
+                    value={this.state.value}
                     onChange={
                         (e)=> {
-                            this.setState({
-                                value: e.target.value
-                            })
+                            this.setState({value:e.target.value})
                             this.props.onChange(e)
                         }
                     }
-                    ref={this.inputField} 
+                    style={{width:'100%'}}
                 />
+                
                 </Col>
                 {_tooltip}
                 
