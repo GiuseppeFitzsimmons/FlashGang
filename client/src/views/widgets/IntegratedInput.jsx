@@ -1,17 +1,27 @@
 import React, { Component } from 'react';
 import { Tooltip } from 'reactstrap';
 import { Input } from '@material-ui/core';
+import {
+  Col, Row
+} from "reactstrap";
 
 class IntegratedInput extends Component {
+    constructor(props) {
+        super(props);
+        this.inputField = React.createRef();
+      }
     state = { isOpen: false };
 
     toggle = () => {
-        //if ((this.props.message && this.props.message!='') || this.props.errors) {
         this.setState({ isOpen: !this.state.isOpen });
-        //}
-
     };
 
+    componentDidUpdate(prevProps) {
+        console.log("componentDidUpdate", this.props.value);
+        this.inputField.current.value=this.props.value
+        
+        
+    }
     render() {
         var message = this.props.message
         var _invalid = false;
@@ -33,6 +43,7 @@ class IntegratedInput extends Component {
         }
         return (
             <span>
+                <Col>
                 {_label}
                 <Input
                     invalid={_invalid}
@@ -40,10 +51,20 @@ class IntegratedInput extends Component {
                     id={this.props.id}
                     placeholder={this.props.placeholder}
                     type={this.props.type}
-                    value={this.props.value}
-                    onChange={this.props.onChange}
+                    value={this.state.value ? this.state.value : this.props.value}
+                    onChange={
+                        (e)=> {
+                            this.setState({
+                                value: e.target.value
+                            })
+                            this.props.onChange(e)
+                        }
+                    }
+                    ref={this.inputField} 
                 />
+                </Col>
                 {_tooltip}
+                
             </span>
         );
     }

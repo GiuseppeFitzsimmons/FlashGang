@@ -6,6 +6,9 @@ import * as Actions from '../../action'
 import { MdDelete } from 'react-icons/md'
 import { Input } from 'reactstrap'
 import IntegratedInput from '../widgets/IntegratedInput'
+import {
+  Col
+} from "reactstrap";
 
 class FlashCardEditor extends React.Component {
     constructor(props) {
@@ -20,11 +23,11 @@ class FlashCardEditor extends React.Component {
         this.forceUpdate()
     }
     removeCorrectAnswer(index) {
-        this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].correctAnswers.splice(index - 1, 1)
+        this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].correctAnswers.splice(index, 1)
         this.forceUpdate()
     }
     removeIncorrectAnswer(index) {
-        this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].incorrectAnswers.splice(index - 1, 1)
+        this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].incorrectAnswers.splice(index, 1)
         this.forceUpdate()
     }
     addIncorrectAnswer() {
@@ -44,7 +47,7 @@ class FlashCardEditor extends React.Component {
             var _display = flashCard.correctAnswers.map((answer, i) => {
                 let removeButton = <></>
                 {
-                    if (i > 0) {
+                    if (i>0 && i == flashCard.correctAnswers.length-1) {
                         removeButton =
                             <div
 
@@ -59,12 +62,17 @@ class FlashCardEditor extends React.Component {
                             </div>
                     }
                 }
+                let label="Correct Answer";
+                if (i>0) {
+                    label='';
+                }
                 return (
                     <div>
+                    <Col>
                         {answer}
                         <IntegratedInput
-                            label="Correct Answer"
-                            defaultValue={answer}
+                            label={label}
+                            value={answer}
                             placeholder='flash card correct answer'
                             onChange={
                                 (event) => {
@@ -73,6 +81,7 @@ class FlashCardEditor extends React.Component {
                             }
                         />
                         {removeButton}
+                        </Col>
                     </div>)
             })
             return (
@@ -90,24 +99,31 @@ class FlashCardEditor extends React.Component {
             var _display = flashCard.incorrectAnswers.map((answer, i) => {
                 let removeButton = <></>
                 {
-                    removeButton =
-                        <div
+                    if (i == flashCard.incorrectAnswers.length-1) {
+                        removeButton =
+                            <div
 
-                        >
-                            <MdDelete
-                                onClick={
-                                    () => {
-                                        this.removeIncorrectAnswer(i)
+                            >
+                                <MdDelete
+                                    onClick={
+                                        () => {
+                                            this.removeIncorrectAnswer(i)
+                                        }
                                     }
-                                }
-                            />
-                        </div>
+                                />
+                            </div>
+                    }
+                }
+                let label="Incorrect Answer";
+                if (i>0) {
+                    label='';
                 }
                 return (
                     <div>
+                    <Col>
                         {answer}
                         <IntegratedInput
-                            label="Incorrect Answer"
+                            label={label}
                             defaultValue={answer}
                             placeholder='flash card incorrect answer'
                             onChange={
@@ -115,6 +131,7 @@ class FlashCardEditor extends React.Component {
                             }
                         />
                         {removeButton}
+                        </Col>
                     </div>)
             })
             return (
@@ -125,6 +142,7 @@ class FlashCardEditor extends React.Component {
         }
         return (
             <>
+                <Col>
                 <IntegratedInput
                     label="Question"
                     defaultValue={flashCard.question}
@@ -132,9 +150,11 @@ class FlashCardEditor extends React.Component {
                     onChange={
                         (event) => { flashCard.question = event.target.value }
                     }
+                    
                 />
+                 </Col>
                 {generateCorrectAnswerList()}
-
+                <Col>
                 <AwesomeButton
                     onPress={
                         this.addCorrectAnswer
@@ -142,6 +162,8 @@ class FlashCardEditor extends React.Component {
                 >
                     Add correct answer
                 </AwesomeButton>
+                </Col>
+                <Col>
                 {generateIncorrectAnswerList()}
                 <AwesomeButton
                     onPress={
@@ -150,11 +172,15 @@ class FlashCardEditor extends React.Component {
                 >
                     Add incorrect answer
                 </AwesomeButton>
+                </Col>
+                <Col>
                 <AwesomeButton
                     onPress={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
                 </AwesomeButton>
+                </Col>
+                <Col>
                 <AwesomeButton
                     onPress={() => {
                         this.props.saveDeck(this.props.flashDeck)
@@ -165,6 +191,7 @@ class FlashCardEditor extends React.Component {
                 >
                     Save Deck
                 </AwesomeButton>
+                </Col>
             </>
         )
     }

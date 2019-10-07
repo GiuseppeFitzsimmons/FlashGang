@@ -18,7 +18,7 @@ class FlashDeckEditor extends React.Component {
         <Col>
           <IntegratedInput
             label="FlashDeck Name"
-            defaultValue={flashDeck.name}
+            value={flashDeck.name}
             id='flashCardName'
             placeholder='flash card name'
             onChange={
