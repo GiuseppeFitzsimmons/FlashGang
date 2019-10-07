@@ -9,11 +9,12 @@ import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { Box } from '@material-ui/core';
+import { sizing } from '@material-ui/system';
 
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#86af49' },
-    error: { main: '#eca1a6' }
+    default: { main: '#bdcebe' }
   },
   overrides: {
     MuiButton: {
@@ -25,7 +26,8 @@ const theme = createMuiTheme({
     MuiBox: {
       root: {
         backgroundColor: "#e3eaa7",
-        padding: "10px"
+        padding: "10px",
+        height:'100%'
       }
     }
   }
@@ -53,7 +55,7 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <Box>
+          <Box height="100%">
         {renderable}
         </Box>
         </ThemeProvider>

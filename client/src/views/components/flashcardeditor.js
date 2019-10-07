@@ -9,7 +9,7 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import {
     Col, Row
 } from "reactstrap";
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 
@@ -196,7 +196,6 @@ class FlashCardEditor extends React.Component {
                     Next Card
                 </Button>
                 <Button
-                    color='default'
                     variant='contained'
                     onClick={() => {
                             this.props.saveDeck(this.props.flashDeck)
