@@ -30,6 +30,16 @@ const theme = createMuiTheme({
         height:'100%'
       }
     }
+  },
+  systemButton: {
+    backgroundColor: 'green',
+    borderRadius: 0
+  },
+  listItem: {
+    backgroundColor: '#e3eaa7',
+    borderRadius: 0,
+    borderColor: 'green',
+    borderWidth: 1
   }
 });
 
