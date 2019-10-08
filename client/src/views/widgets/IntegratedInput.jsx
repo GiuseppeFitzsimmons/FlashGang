@@ -22,7 +22,6 @@ class IntegratedInput extends Component {
         this.state.value=event.target.value
       };
       componentDidMount() {
-        console.log("componentDidMount");
       }
     reset(value) {
         if (!value) {
@@ -33,7 +32,6 @@ class IntegratedInput extends Component {
     render() {
         var message = this.props.message
         var _invalid = false;
-        console.log(this.props)
         if (this.props.errors && this.props.errors.fields ) {
             this.props.errors.fields.forEach(field => {
                 if (field.fieldId == this.props.id || field.fieldName == this.props.id) {

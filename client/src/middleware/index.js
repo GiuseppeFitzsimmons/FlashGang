@@ -1,6 +1,22 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD } from '../action'
 
 const uuidv4 = require('uuid/v4');
+
+function scoreCard(deck) {
+    console.log('deck', deck)
+    if (!deck.hasOwnProperty('currentIndex')){
+        return
+    }
+    let card = deck.flashCards[deck.currentIndex]
+    card.correct = true
+    if (!card.userAnswer || card.userAnswer == '') {
+        card.correct = false
+    } else {
+        if (card.userAnswer!=card.correctAnswers[0]) {
+            card.correct = false
+        }
+    }
+}
 
 export function flashGangMiddleware({ dispatch }) {
     return function (next) {
@@ -20,18 +36,21 @@ export function flashGangMiddleware({ dispatch }) {
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
                 if (action.data.flashDeck) {
-                    if (action.data.flashDeck.mode == 'EDIT') {
-                        if (!action.data.flashDeck.flashCards) {
-                            action.data.flashDeck.flashCards = []
-                        }
-                        if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
-                            action.data.flashDeck.currentIndex++
-                        } else {
-                            action.data.flashDeck.currentIndex = 0
-                        }
-                        if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex) {
-                            action.data.flashDeck.flashCards.push({})
-                        }
+                    if (!action.data.flashDeck.flashCards) {
+                        action.data.flashDeck.flashCards = []
+                    }
+                    if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
+                        action.data.flashDeck.currentIndex++
+                    } else {
+                        action.data.flashDeck.currentIndex = 0
+                    }
+                    if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex && action.data.flashDeck.mode == 'EDIT') {
+                        action.data.flashDeck.flashCards.push({})
+                    }
+                    if (action.data.flashDeck.currentIndex<action.data.flashDeck.flashCards.length){
+                        delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
+                    } else {
+                        action.data.flashDeck.finished = 'Complete'
                     }
                 }
             } else if (action.type === LOAD_DECKS) {
@@ -47,9 +66,14 @@ export function flashGangMiddleware({ dispatch }) {
                 action.flashDecks = decks
             } else if (action.type === LOAD_FLASHDECK) {
                 console.log('Middleware LOAD_FLASHDECK')
-                var flashDeck = JSON.parse(localStorage.getItem('flashDeck-'+action.data.flashDeckId))
+                var flashDeck = JSON.parse(localStorage.getItem('flashDeck-' + action.data.flashDeckId))
                 action.data.flashDeck = flashDeck
+                delete action.data.flashDeck.currentIndex
                 action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
+            }
+            else if (action.type === SCORE_CARD) {
+                scoreCard(action.data.flashDeck)
+                console.log('Middleware SCORE_CARD')
             }
             return next(action);
         }

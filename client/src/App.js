@@ -9,26 +9,24 @@ import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { Box } from '@material-ui/core';
-import {greenTheme} from './views/widgets/Themes'
+import { greenTheme } from './views/widgets/Themes'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      theme:greenTheme
-    }
-    this.setMode = this.setMode.bind(this)
+    this.state = {}
+    this.createFlashDeck = this.createFlashDeck.bind(this)
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
   }
-  setMode() {
+  createFlashDeck() {
     this.setState({ mode: 'EDIT' })
   }
-  onFlashDeckSelected(flashDeckId, mode){
-    this.setState({flashDeckId: flashDeckId, mode: mode})
+  onFlashDeckSelected(flashDeckId, mode) {
+    this.setState({ flashDeckId: flashDeckId, mode: mode })
   }
   render() {
-    let renderable = <Home setMode={this.setMode} />
-    if (this.state.mode == 'flashdeck') {
+    let renderable = <Home onNewButton={this.createFlashDeck} onFlashDeckSelected={this.onFlashDeckSelected} />
+    if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
         flashDeckId={this.state.flashDeckId}
         mode={this.state.mode}

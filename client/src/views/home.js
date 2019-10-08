@@ -49,7 +49,7 @@ class Home extends React.Component {
           color='primary'
           variant='contained'
           style={{width:'49%'}}
-          onClick={this.props.setMode}
+          onClick={this.props.onNewButton}
       >
            New FlashDeck
       </Button>

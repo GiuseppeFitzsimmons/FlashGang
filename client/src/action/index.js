@@ -3,6 +3,7 @@ export const SAVE_DECK = 'SAVE_DECK';
 export const NEXT_CARD = 'NEXT_CARD';
 export const LOAD_DECKS = 'LOAD_DECKS';
 export const LOAD_FLASHDECK = 'LOAD_FLASHDECK';
+export const SCORE_CARD = 'SCORE_CARD';
 
 
 export function newDeck()    
@@ -29,5 +30,11 @@ export function loadFlashDeck(flashDeckId, mode)
 {
     console.log("Action LOAD_FLASHDECK")
     return {type:LOAD_FLASHDECK, data:{flashDeckId, mode}}
+    
+}
+export function scoreCard(flashDeck)
+{
+    console.log("Action SCORE_CARD")
+    return {type:SCORE_CARD, data:{flashDeck}}
     
 }
