@@ -55,15 +55,16 @@ class FlashDeckEditor extends React.Component {
               input => input ? input.reset(flashDeck.fuzziness) : true
             }
           />
-          <Button
+          <FlashButton
             color='primary'
             variant='contained'
+            buttonType='action'
             onClick={
               () => this.props.nextCard(flashDeck)
             }
           >
             Edit Cards
-          </Button>
+          </FlashButton>
           <FlashButton
             color='primary'
             variant='contained'

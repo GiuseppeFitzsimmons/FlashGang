@@ -8,6 +8,10 @@ class FlashButtonStyled extends Component {
         var additionalStyle={};
         if (this.props.buttonType==='system') {
             additionalStyle=this.props.theme.systemButton
+        } else if (this.props.buttonType==='error') {
+            additionalStyle=this.props.theme.errorButton
+        } else if (this.props.buttonType==='action') {
+            additionalStyle=this.props.theme.actionButton
         }
         return (
             <OriginalButton {...this.props} style={additionalStyle}></OriginalButton>

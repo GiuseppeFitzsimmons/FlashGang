@@ -9,44 +9,14 @@ import './App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { Box } from '@material-ui/core';
-import { sizing } from '@material-ui/system';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: { main: '#86af49' },
-    default: { main: '#bdcebe' }
-  },
-  overrides: {
-    MuiButton: {
-      root: {
-        marginTop: "10px",
-        borderColor: "black"
-      }
-    },
-    MuiBox: {
-      root: {
-        backgroundColor: "#e3eaa7",
-        padding: "10px",
-        height:'100%'
-      }
-    }
-  },
-  systemButton: {
-    backgroundColor: 'green',
-    borderRadius: 0
-  },
-  listItem: {
-    backgroundColor: '#e3eaa7',
-    borderRadius: 0,
-    borderColor: 'green',
-    borderWidth: 1
-  }
-});
+import {greenTheme} from './views/widgets/Themes'
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      theme:greenTheme
+    }
     this.setMode = this.setMode.bind(this)
   }
   setMode() {
@@ -54,7 +24,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log(theme);
     let renderable = <Home setMode={this.setMode} />
     if (this.state.mode == 'flashdeck') {
       renderable = <FlashDeck
@@ -64,7 +33,7 @@ export default class App extends React.Component {
     }
     return (
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={this.state.theme ? this.state.theme : greenTheme}>
           <Box height="100%">
         {renderable}
         </Box>
