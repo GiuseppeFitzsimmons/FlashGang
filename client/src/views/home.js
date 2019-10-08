@@ -45,13 +45,14 @@ class Home extends React.Component {
     }
     return (
       <div>
-        <AwesomeButton type="primary"
-          style={{ width: '80%' }}
-          onPress={
-            this.props.setMode
-          }>
-          New FlashDeck
-	      </AwesomeButton>
+      <Button
+          color='primary'
+          variant='contained'
+          style={{width:'49%'}}
+          onClick={this.props.setMode}
+      >
+           New FlashDeck
+      </Button>
         <div>
           {generateFlashDeckList()}
         </div>

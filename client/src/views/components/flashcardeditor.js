@@ -188,14 +188,31 @@ class FlashCardEditor extends React.Component {
                 >
                     Add incorrect answer
                 </Button>
+                <Grid container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="flex-start"
+                    >
+
                 <Button
-                    color='default'
+                    color='primary'
                     variant='contained'
+                    style={{width:'49%'}}
+                    onClick={() => this.props.nextCard(this.props.flashDeck)}
+                >
+                    Previous Card
+                </Button>
+                <Button
+                    color='primary'
+                    variant='contained'
+                    style={{width:'49%'}}
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
                 </Button>
+                </Grid>
                 <Button
+                    color='primary'
                     variant='contained'
                     onClick={() => {
                             this.props.saveDeck(this.props.flashDeck)

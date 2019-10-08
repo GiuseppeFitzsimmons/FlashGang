@@ -6,10 +6,15 @@ import * as Actions from '../../action'
 import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import {FlashButton, FlashListItem} from '../widgets/FlashBits';
 
 class FlashDeckEditor extends React.Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     const flashDeck = this.props.flashDeck
+    const theme=this.theme;
     return (
       <Grid container
           direction="column"
@@ -50,24 +55,26 @@ class FlashDeckEditor extends React.Component {
               input => input ? input.reset(flashDeck.fuzziness) : true
             }
           />
-          <Button
+          <FlashButton
             color='primary'
             variant='contained'
+            buttonType='action'
             onClick={
               () => this.props.nextCard(flashDeck)
             }
           >
             Edit Cards
-          </Button>
-          <Button
+          </FlashButton>
+          <FlashButton
             color='primary'
             variant='contained'
+            buttonType='system'
             onClick={() => {
               this.props.saveDeck(this.props.flashDeck)
             }}
           >
             Save Deck
-          </Button>
+          </FlashButton>
       </Grid>
     )
   }

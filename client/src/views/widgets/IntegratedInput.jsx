@@ -16,7 +16,6 @@ class IntegratedInput extends Component {
     };
 
     componentDidUpdate(prevProps) {
-        console.log("componentDidUpdate", this.props.defaultValue);
         this.state.value=this.props.value;
     }
     handleChange (event) {
@@ -34,6 +33,7 @@ class IntegratedInput extends Component {
     render() {
         var message = this.props.message
         var _invalid = false;
+        console.log(this.props)
         if (this.props.errors && this.props.errors.fields ) {
             this.props.errors.fields.forEach(field => {
                 if (field.fieldId == this.props.id || field.fieldName == this.props.id) {
