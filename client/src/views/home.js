@@ -5,6 +5,7 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../action'
+import { Button, Grid, GridList } from '@material-ui/core';
 
 class Home extends React.Component {
   constructor(props) {
@@ -13,8 +14,6 @@ class Home extends React.Component {
   componentDidMount() {
     this.props.loadDecks()
   }
-
-
   render() {
     const flashDecks=this.props.flashDecks;
     const generateFlashDeckList = () => {
@@ -23,12 +22,18 @@ class Home extends React.Component {
           <></>
         )
       }
-      console.log('this.props.flashDecks', Array.isArray(flashDecks))
       var _display = flashDecks.map((flashDeck, i) => {
-        console.log("flash", flashDeck)
         return (
           <div>
+            <Button
+            color='primary'
+            variant='contained'
+            onClick={()=>
+              this.props.onFlashDeckSelected(flashDeck.id, 'TEST')
+            }
+          >
             {flashDeck.name}
+          </Button>
           </div>
         )
       })

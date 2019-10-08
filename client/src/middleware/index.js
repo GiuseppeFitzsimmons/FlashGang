@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK } from '../action'
 
 const uuidv4 = require('uuid/v4');
 
@@ -14,6 +14,7 @@ export function flashGangMiddleware({ dispatch }) {
                 if (!action.data.flashDeck.id) {
                     action.data.flashDeck.id = uuidv4()
                 }
+                delete action.data.flashDeck.mode
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
             }
             else if (action.type === NEXT_CARD) {
@@ -44,6 +45,11 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                 }
                 action.flashDecks = decks
+            } else if (action.type === LOAD_FLASHDECK) {
+                console.log('Middleware LOAD_FLASHDECK')
+                var flashDeck = JSON.parse(localStorage.getItem('flashDeck-'+action.data.flashDeckId))
+                action.data.flashDeck = flashDeck
+                action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
             }
             return next(action);
         }

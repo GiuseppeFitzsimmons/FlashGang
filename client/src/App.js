@@ -38,17 +38,20 @@ export default class App extends React.Component {
     super(props)
     this.state = {}
     this.setMode = this.setMode.bind(this)
+    this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
   }
   setMode() {
-    this.setState({ mode: 'flashdeck' })
+    this.setState({ mode: 'EDIT' })
   }
-
+  onFlashDeckSelected(flashDeckId, mode){
+    this.setState({flashDeckId: flashDeckId, mode: mode})
+  }
   render() {
-    console.log(theme);
-    let renderable = <Home setMode={this.setMode} />
-    if (this.state.mode == 'flashdeck') {
+    console.log('APP.JS RENDER this.state', this.state);
+    let renderable = <Home setMode={this.setMode} onFlashDeckSelected={this.onFlashDeckSelected} />
+    if (this.state.mode == 'EDIT' || this.state.mode == 'TEST' ) {
       renderable = <FlashDeck
-        flashDeckId={this.state.flashdeckId}
+        flashDeckId={this.state.flashDeckId}
         mode={this.state.mode}
       />
     }
@@ -56,8 +59,8 @@ export default class App extends React.Component {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <Box height="100%">
-        {renderable}
-        </Box>
+            {renderable}
+          </Box>
         </ThemeProvider>
       </Provider>
     )
