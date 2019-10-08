@@ -5,6 +5,7 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../action'
+import { Button, Grid, GridList } from '@material-ui/core';
 
 class Home extends React.Component {
   constructor(props) {
@@ -40,13 +41,14 @@ class Home extends React.Component {
     }
     return (
       <div>
-        <AwesomeButton type="primary"
-          style={{ width: '80%' }}
-          onPress={
-            this.props.setMode
-          }>
-          New FlashDeck
-	      </AwesomeButton>
+      <Button
+          color='primary'
+          variant='contained'
+          style={{width:'49%'}}
+          onClick={this.props.setMode}
+      >
+           New FlashDeck
+      </Button>
         <div>
           {generateFlashDeckList()}
         </div>

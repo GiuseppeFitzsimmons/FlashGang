@@ -14,13 +14,14 @@ import { sizing } from '@material-ui/system';
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#86af49' },
-    default: { main: '#bdcebe' }
+    secondary: { main: '#eca1a6' }
   },
   overrides: {
     MuiButton: {
       root: {
         marginTop: "10px",
-        borderColor: "black"
+        borderColor: "black",
+        borderRadius: "0"
       }
     },
     MuiBox: {
@@ -30,6 +31,7 @@ const theme = createMuiTheme({
         height:'100%'
       }
     }
+
   }
 });
 
