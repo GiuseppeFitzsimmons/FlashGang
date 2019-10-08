@@ -1,6 +1,6 @@
 
 import lightGreen from '@material-ui/core/colors/lightGreen';
-import deepOrange from '@material-ui/core/colors/deepOrange';
+import red from '@material-ui/core/colors/red';
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const greenTheme = createMuiTheme({
@@ -30,11 +30,11 @@ const greenTheme = createMuiTheme({
       color: 'white'
     },
     actionButton: {
-      backgroundColor: lightGreen[400],
+      backgroundColor: lightGreen[300],
       color: 'white'
     },
     errorButton: {
-      backgroundColor: deepOrange[300],
+      backgroundColor: red[400],
       color: 'white'
   
     },
