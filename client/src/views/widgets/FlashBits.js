@@ -15,6 +15,10 @@ class FlashButtonStyled extends Component {
         } else if (this.props.buttonType==='action') {
             additionalStyle=this.props.theme.actionButton
         }
+        if (additionalStyle && this.props.square && this.props.width) {
+            additionalStyle=Object.assign({}, additionalStyle, {borderRadius:0})
+        }
+        console.log(this.props.square +" "+ JSON.stringify(additionalStyle));
         return (
             <OriginalButton {...this.props} style={additionalStyle}></OriginalButton>
         )

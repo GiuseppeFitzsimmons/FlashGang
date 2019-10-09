@@ -39,6 +39,7 @@ class Home extends React.Component {
         return (
           <>
           <ListItem alignItems="flex-start"
+            button
             onClick={()=>
               this.props.onFlashDeckSelected(flashDeck.id, 'TEST')
             }>
@@ -68,6 +69,7 @@ class Home extends React.Component {
         <FlashListItem alignItems="flex-start"
             onClick={this.props.onNewButton}
             buttonType='action'
+            button
             >
             <ListItemAvatar>
               <Icon style={{fontSize:30}}>add_circle</Icon>
