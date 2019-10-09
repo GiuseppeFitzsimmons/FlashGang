@@ -39,18 +39,22 @@ export function flashGangMiddleware({ dispatch }) {
                     if (!action.data.flashDeck.flashCards) {
                         action.data.flashDeck.flashCards = []
                     }
-                    if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
-                        action.data.flashDeck.currentIndex++
+                    if (action.data.flashDeck.mode=='TEST' && 
+                        action.data.flashDeck.currentIndex && 
+                        action.data.flashDeck.currentIndex+1>=action.data.flashDeck.flashCards.length) {
+                            action.data.flashDeck.mode='COMPLETE'
                     } else {
-                        action.data.flashDeck.currentIndex = 0
-                    }
-                    if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex && action.data.flashDeck.mode == 'EDIT') {
-                        action.data.flashDeck.flashCards.push({})
-                    }
-                    if (action.data.flashDeck.currentIndex<action.data.flashDeck.flashCards.length){
-                        delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
-                    } else {
-                        action.data.flashDeck.finished = 'Complete'
+                        if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
+                            action.data.flashDeck.currentIndex++
+                        } else {
+                            action.data.flashDeck.currentIndex = 0
+                        }
+                        if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex && action.data.flashDeck.mode == 'EDIT') {
+                            action.data.flashDeck.flashCards.push({})
+                        }
+                        if (action.data.flashDeck.currentIndex<action.data.flashDeck.flashCards.length){
+                            delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
+                        }
                     }
                 }
             } else if (action.type === LOAD_DECKS) {
