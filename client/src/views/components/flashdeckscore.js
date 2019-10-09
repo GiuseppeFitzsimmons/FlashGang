@@ -8,31 +8,44 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashButton} from '../widgets/FlashBits'
+import { FlashButton } from '../widgets/FlashBits'
 
 export default class FlashDeckScore extends React.Component {
     render() {
-        const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
-        console.log('this.props.flashDeck', this.props.flashDeck)
-        let correctAnswers = '30 correct answers'
-        let incorrectAnswers = 'No incorrect answers'
-        let percentage = '100%'
+        let correctAnswers = 0
+        let incorrectAnswers = 0
+        let percentage = 0
+        for (var i in this.props.flashDeck.flashCards) {
+            let card = this.props.flashDeck.flashCards[i]
+            if (card.correct) {
+                correctAnswers++
+            } else {
+                incorrectAnswers++
+            }
+        }
+        if (correctAnswers>0){
+            percentage = (this.props.flashDeck.flashCards.length / correctAnswers) * 100
+        }
         return (
             <Grid container
                 direction="column"
                 justify="space-between"
                 alignItems="flex-start">
-                <Grid>
-                    {correctAnswers}
-                    {incorrectAnswers}
-                    {percentage}
-                    <FlashButton
-                    onClick={()=>{this.props.onNextCard(this.props.flashDeck)}}
+                <div>
+                    Correct answers: {correctAnswers}
+                </div>
+                <div>
+                    Incorrect answers: {incorrectAnswers}
+                </div>
+                <div>
+                    {percentage}% correct answers
+                    </div>
+                <FlashButton
+                    onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
                     buttonType='action'
-                    >
-                        Next Card
+                >
+                    Next Card
                     </FlashButton>
-                </Grid>
             </Grid>
         )
     }

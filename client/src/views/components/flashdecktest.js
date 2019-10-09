@@ -5,78 +5,89 @@ import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
 import IntegratedInput from '../widgets/IntegratedInput'
 import {
-    Button,
     Col,
     Input
 } from "reactstrap";
 import { makeStyles } from '@material-ui/core/styles';
+import { Button, Grid, GridList } from '@material-ui/core';
+import { FlashButton, FlashListItem } from '../widgets/FlashBits';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+
+
 
 class FlashDeckTest extends React.Component {
+    constructor(props){
+        super(props)
+        this.setTestType=this.setTestType.bind(this)
+        this.setAnswerType=this.setAnswerType.bind(this)
+        this.state={valid:false}
+    }
+    setTestType(event){
+        this.props.flashDeck.testType = event.target.value
+        if (this.props.flashDeck.testType && this.props.flashDeck.testType){
+            this.setState({valid:true})
+        }
+    }
+    setAnswerType(event){
+        this.props.flashDeck.answerType = event.target.value
+        if (this.props.flashDeck.testType && this.props.flashDeck.testType){
+            this.setState({valid:true})
+        }
+    }
     render() {
         const flashDeck = this.props.flashDeck
         return (
             <>
-                <div>
-                    Test mode
-        </div>
-                <Input
-                    name='testType'
-                    type='radio'
-                    onClick={() => {
-                        this.props.flashDeck.testType = 'REVISION'
-                    }}
+                <Grid container
+                    direction="column"
+                    justify="space-between"
+                    alignItems="stretch"
                 >
-                    Revision
-        </Input>
-                <Input
-                    name='testType'
-                    type='radio'
-                    onClick={() => {
-                        this.props.flashDeck.testType = 'CRAM'
-                    }}
-                >
-                    Cram
-        </Input>
-                <Input
-                    name = 'testType'
-                    type='radio'
-                    onPress={() => {
-                        this.props.flashDeck.testType = 'EXAM'
-                    }}
-                >
-                    Exam
-        </Input>
-                <div>
-                    Answer type
-        </div>
-                <Input
-                    name='answertype'
-                    type='radio'
-                    onPress={() => {
-                        this.props.flashDeck.answerType = 'SINGLE'
-                    }}
-                >
-                    Single answer
-        </Input>
-                <Input
-                    name='answertype'
-                    type='radio'
-                    onPress={() => {
-                        this.props.flashDeck.answerType = 'MULTIPLE'
-                    }}
-                >
-                    Multiple choice
-        </Input>
-                <Button
-                    onClick={() => { this.props.nextCard(this.props.flashDeck) }}
-                >
-                    Begin test
-        </Button>
-                <Button
-                    onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
-                >
-                    Edit test
-        </Button>
+                    <div>
+                        Test mode
+                    </div>
+                    <RadioGroup aria-label="testtype" name="testtype" onChange={this.setTestType}>
+                        <FormControlLabel value="REVISION" control={<Radio />} label="Revision" name="FormControlLabelButton"/>
+                        <FormControlLabel value="CRAM" control={<Radio />} label="Cram" name="FormControlLabelButton" />
+                        <FormControlLabel value="EXAM" control={<Radio />} label="Exam" name="FormControlLabelButton" />
+                    </RadioGroup>
+                    <div>
+                        Answer type
+                    </div>
+                    <RadioGroup aria-label="answertype" name="answertype" onChange={this.setAnswerType}>
+                        <FormControlLabel value="SINGLE" control={<Radio />} label="Single answer" name="FormControlLabelButton"/>
+                        <FormControlLabel value="MULTIPLE" control={<Radio />} label="Multiple choice" name="FormControlLabelButton" />
+                    </RadioGroup>
+                    <Grid container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="flex-start"
+                    >
+                    <FlashButton
+                        name='beginTest'
+                        color='primary'
+                        variant='contained'
+                        style={{width:'51%'}}
+                        disabled={!this.state.valid}
+                        onClick={() => { this.props.nextCard(this.props.flashDeck) }}
+                    >
+                        Begin test
+                    </FlashButton>
+                    <FlashButton
+                        name='editTest'
+                        color='primary'
+                        variant='contained'
+                        style={{width:'51%'}}
+                        onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
+                    >
+                        Edit test
+                    </FlashButton>
+                    </Grid>
+                </Grid>
             </>
         )
     }
