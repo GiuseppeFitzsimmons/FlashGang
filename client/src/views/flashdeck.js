@@ -29,14 +29,13 @@ class FlashDeck extends React.Component {
   render() {
     let renderable = <></>
     console.log('this.props.flashDeck', this.props.flashDeck)
-    if (this.props.flashDeck && this.props.flashDeck.finished === 'Complete'){
+    if (this.props.flashDeck && this.props.flashDeck.done) {
       renderable = <FlashDeckScore flashDeck={this.props.flashDeck}/>
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
       renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} />
     } else if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex') && this.props.flashDeck.mode == 'TEST') {
-      console.log('this.props.flashDeck SINGLEANSWER', this.props.flashDeck)
       renderable = <FlashTestSingleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
         if (this.props.flashDeck.testType === 'REVISION') {

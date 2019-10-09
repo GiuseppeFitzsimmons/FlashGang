@@ -50,7 +50,7 @@ export function flashGangMiddleware({ dispatch }) {
                     if (action.data.flashDeck.currentIndex<action.data.flashDeck.flashCards.length){
                         delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
                     } else {
-                        action.data.flashDeck.finished = 'Complete'
+                        action.data.flashDeck.done = true
                     }
                 }
             } else if (action.type === LOAD_DECKS) {
