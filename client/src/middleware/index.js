@@ -9,7 +9,13 @@ function scoreCard(deck) {
     }
     let card = deck.flashCards[deck.currentIndex]
     card.correct = true
-    if (!card.userAnswer || card.userAnswer == '') {
+    if (card.userAnswer && Array.isArray(card.userAnswer)) {
+        const userAnswersSorted = card.userAnswer.sort()
+        const correctAnswersSorted = card.correctAnswers.sort()
+        if (JSON.stringify(userAnswersSorted) != JSON.stringify(correctAnswersSorted)) {
+            card.correct = false
+        }
+    } else if (!card.userAnswer || card.userAnswer == '') {
         card.correct = false
     } else {
         if (card.userAnswer != card.correctAnswers[0]) {
@@ -79,12 +85,12 @@ function selectNextCard(deck) {
                 answers.splice(answerIndex, 1)
                 card.multipleChoices.push(anAnswer)
                 console.log('card.multipleChoices', card.multipleChoices)
-                if (answers.length==0){
+                if (answers.length == 0) {
                     break
                 }
             }
-            card.multipleChoices = card.multipleChoices.sort((a,b)=>{
-                return Math.floor(Math.random() * Math.floor(3))-1
+            card.multipleChoices = card.multipleChoices.sort((a, b) => {
+                return Math.floor(Math.random() * Math.floor(3)) - 1
             })
         }
     }

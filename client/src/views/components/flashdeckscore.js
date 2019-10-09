@@ -24,7 +24,7 @@ export default class FlashDeckScore extends React.Component {
             }
         }
         if (correctAnswers>0){
-            percentage = (this.props.flashDeck.flashCards.length / correctAnswers) * 100
+            percentage = (correctAnswers / this.props.flashDeck.flashCards.length) * 100
         }
         return (
             <Grid container

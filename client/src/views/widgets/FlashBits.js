@@ -18,7 +18,6 @@ class FlashButtonStyled extends Component {
         if (additionalStyle && this.props.square && this.props.width) {
             additionalStyle=Object.assign({}, additionalStyle, {borderRadius:0})
         }
-        console.log(this.props.square +" "+ JSON.stringify(additionalStyle));
         return (
             <OriginalButton {...this.props} style={additionalStyle}></OriginalButton>
         )
