@@ -22,7 +22,7 @@ export default class FlashCardScore extends React.Component {
                 Correct answer!
             </div>
             <div>
-            {card.correctAnswers[0]}
+            {card.correctAnswers.join(', ')}
             </div>
             </>
         } else {
@@ -32,12 +32,12 @@ export default class FlashCardScore extends React.Component {
                 Incorrect Answer!
             </div>
             <div>
-                The correct answer was:
-            {card.correctAnswers[0]}
+                The correct answer was: 
+            {card.correctAnswers.join(', ')}
             </div>
             <div>
-                Your answer was:
-            {card.userAnswer}
+                Your answer was: 
+            {Array.isArray(card.userAnswer)?card.userAnswer.join(', '): card.userAnswer}
             </div>
             </>
         }
