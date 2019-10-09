@@ -119,17 +119,6 @@ export function flashGangMiddleware({ dispatch }) {
                     if (action.data.flashDeck.mode == 'TEST') {
                         selectNextCard(action.data.flashDeck)
                     } else {
-<<<<<<< HEAD
-                        action.data.flashDeck.currentIndex = 0
-                    }
-                    if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex && action.data.flashDeck.mode == 'EDIT') {
-                        action.data.flashDeck.flashCards.push({})
-                    }
-                    if (action.data.flashDeck.currentIndex<action.data.flashDeck.flashCards.length){
-                        delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
-                    } else {
-                        action.data.flashDeck.done = true
-=======
                         if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
                             action.data.flashDeck.currentIndex++
                         } else {
@@ -141,7 +130,6 @@ export function flashGangMiddleware({ dispatch }) {
                         if (action.data.flashDeck.currentIndex < action.data.flashDeck.flashCards.length) {
                             delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
                         }
->>>>>>> 5eba32c3f5de1a5f1933d58f3da061613c868879
                     }
                 }
             } else if (action.type === LOAD_DECKS) {
