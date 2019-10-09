@@ -23,6 +23,29 @@ const greenTheme = createMuiTheme({
           borderColor: lightGreen[500],
           borderWidth: '5px'
         }
+      },
+      MuiListItemAvatar: {
+        root: {
+          color: lightGreen[500]
+        }
+      },
+      MuiDialogTitle: {
+        root: {
+          backgroundColor: lightGreen[300],
+          color: 'white'
+        }
+      },
+      MuiDialogContent: {
+        root: {
+          backgroundColor: lightGreen[100],
+          color: lightGreen[500]
+        }
+      },
+      MuiDialogActions: {
+        root: {
+          backgroundColor: lightGreen[300],
+          color: lightGreen[500]
+        }
       }
     },
     systemButton: {
@@ -43,6 +66,9 @@ const greenTheme = createMuiTheme({
       borderRadius: 0,
       borderColor: lightGreen[500],
       borderWidth: 1
+    },
+    actionListItem: {
+      backgroundColor: lightGreen[200]
     }
   });
 

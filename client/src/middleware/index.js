@@ -39,8 +39,10 @@ export function flashGangMiddleware({ dispatch }) {
                     if (!action.data.flashDeck.flashCards) {
                         action.data.flashDeck.flashCards = []
                     }
-                    if (action.data.flashDeck.hasOwnProperty('currentIndex')) {
-                        action.data.flashDeck.currentIndex++
+                    if (action.data.flashDeck.mode=='TEST' && 
+                        action.data.flashDeck.currentIndex && 
+                        action.data.flashDeck.currentIndex+1>=action.data.flashDeck.flashCards.length) {
+                            action.data.flashDeck.mode='COMPLETE'
                     } else {
                         action.data.flashDeck.currentIndex = 0
                     }

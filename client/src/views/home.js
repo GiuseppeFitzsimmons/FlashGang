@@ -6,6 +6,16 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../action'
 import { Button, Grid, GridList } from '@material-ui/core';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Icon from '@material-ui/core/Icon';
+import Typography from '@material-ui/core/Typography';
+import {FlashListItem} from './widgets/FlashBits'
+const someIcons=['language','timeline','toc','palette','all_inclusive','public','poll','share','emoji_symbols']
 
 class Home extends React.Component {
   constructor(props) {
@@ -23,40 +33,54 @@ class Home extends React.Component {
         )
       }
       var _display = flashDecks.map((flashDeck, i) => {
+        if (!flashDeck.icon) {
+          flashDeck.icon=someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
+        }
         return (
-          <div>
-            <Button
-            color='primary'
-            variant='contained'
+          <>
+          <ListItem alignItems="flex-start"
+            button
             onClick={()=>
               this.props.onFlashDeckSelected(flashDeck.id, 'TEST')
-            }
-          >
-            {flashDeck.name}
-          </Button>
-          </div>
+            }>
+            <ListItemAvatar>
+              <Icon style={{fontSize:30}}>{flashDeck.icon}</Icon>
+            </ListItemAvatar>
+            <ListItemText
+              primary={flashDeck.name}
+              secondary={flashDeck.description}
+              />
+          </ListItem>
+          { i<flashDecks.length-1 &&
+            <Divider variant="inset" component="li" />
+          }
+          </>
         )
       })
       return (
-        <div>
+        <>
           {_display}
-        </div>
+          </>
       )
     }
     return (
-      <div>
-      <Button
-          color='primary'
-          variant='contained'
-          style={{width:'49%'}}
-          onClick={this.props.onNewButton}
-      >
-           New FlashDeck
-      </Button>
-        <div>
+        <List>
+
+        <FlashListItem alignItems="flex-start"
+            onClick={this.props.onNewButton}
+            buttonType='action'
+            button
+            >
+            <ListItemAvatar>
+              <Icon style={{fontSize:30}}>add_circle</Icon>
+            </ListItemAvatar>
+            <ListItemText
+              primary="New"
+              secondary="Click here to create a new FlashDeck"
+              />
+          </FlashListItem>
           {generateFlashDeckList()}
-        </div>
-      </div>
+        </List>
     )
   }
 }
