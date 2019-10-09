@@ -23,6 +23,11 @@ const greenTheme = createMuiTheme({
           borderColor: lightGreen[500],
           borderWidth: '5px'
         }
+      },
+      MuiListItemAvatar: {
+        root: {
+          color: lightGreen[500]
+        }
       }
     },
     systemButton: {
