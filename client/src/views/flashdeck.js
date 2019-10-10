@@ -42,12 +42,12 @@ class FlashDeck extends React.Component {
       } else {
         renderable = <FlashTestMultipleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       }
-      
+      console.log("NEXTCARD-BUG RENDERING...", this.props.flashDeck.currentIndex)
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
         if (this.props.flashDeck.testType === 'REVISION') {
           renderable = <FlashCardScore flashDeck={this.props.flashDeck} onNextCard={this.props.nextCard} />
         } else {
-          this.props.nextCard(this.props.flashDeck)
+         // this.props.nextCard(this.props.flashDeck)
         }
       }
     } else if (this.props.flashDeck && this.props.flashDeck.mode == 'TEST') {

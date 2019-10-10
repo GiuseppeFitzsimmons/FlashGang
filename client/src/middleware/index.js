@@ -27,12 +27,12 @@ function selectNextCard(deck) {
     const answerType = deck.answerType
     const testType = deck.testType
     if (testType == 'EXAM') {
+        if (!deck.hasOwnProperty('currentIndex')) {
+            deck.currentIndex=-1;
+        }
         if (deck.currentIndex && deck.currentIndex + 1 >= deck.flashCards.length) {
             deck.mode = 'COMPLETE'
         } else {
-            if (!deck.hasOwnProperty('currentIndex')) {
-                deck.currentIndex=0;
-            }
             deck.currentIndex++
         }
     } else if (testType == 'REVISION') {
@@ -96,6 +96,8 @@ function selectNextCard(deck) {
             })
         }
     }
+
+    console.log("NEXTCARD-BUG middleware...", deck.currentIndex)
 }
 export function flashGangMiddleware({ dispatch }) {
     return function (next) {
@@ -153,7 +155,10 @@ export function flashGangMiddleware({ dispatch }) {
                 action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
             }
             else if (action.type === SCORE_CARD) {
-                scoreCard(action.data.flashDeck)
+                scoreCard(action.data.flashDeck);
+                if (action.data.flashDeck.testType!='REVISION') {
+                    selectNextCard(action.data.flashDeck)
+                }
                 console.log('Middleware SCORE_CARD')
             }
             return next(action);
