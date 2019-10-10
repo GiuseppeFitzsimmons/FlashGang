@@ -26,10 +26,11 @@ export function loadDecks()
     console.log("Action LOAD_DECKS")
     return {type:LOAD_DECKS}
 }
-export function loadFlashDeck(flashDeckId, mode)
+export function loadFlashDeck(flashDeckId, mode, answerType, testType)
 {
     console.log("Action LOAD_FLASHDECK")
-    return {type:LOAD_FLASHDECK, data:{flashDeckId, mode}}
+    console.log('mode', mode, 'answerType', answerType, 'testType', testType)
+    return {type:LOAD_FLASHDECK, data:{flashDeckId, mode, answerType, testType}}
     
 }
 export function scoreCard(flashDeck)

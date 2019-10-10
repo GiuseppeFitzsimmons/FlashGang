@@ -112,8 +112,10 @@ export function flashGangMiddleware({ dispatch }) {
                 if (!action.data.flashDeck.id) {
                     action.data.flashDeck.id = uuidv4()
                 }
+                var mode = action.data.flashDeck.mode
                 delete action.data.flashDeck.mode
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
+                action.data.flashDeck.mode = mode
             }
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
@@ -152,8 +154,13 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware LOAD_FLASHDECK')
                 var flashDeck = JSON.parse(localStorage.getItem('flashDeck-' + action.data.flashDeckId))
                 action.data.flashDeck = flashDeck
-                delete action.data.flashDeck.currentIndex
+                delete flashDeck.currentIndex
                 action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
+                if (action.data.answerType && action.data.testType){
+                    flashDeck.answerType = action.data.answerType
+                    flashDeck.testType = action.data.testType
+                    selectNextCard(flashDeck)
+                }
             }
             else if (action.type === SCORE_CARD) {
                 scoreCard(action.data.flashDeck);

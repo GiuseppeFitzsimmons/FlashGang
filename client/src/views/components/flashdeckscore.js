@@ -1,9 +1,4 @@
 import React from 'react';
-import { AwesomeButton } from "react-awesome-button";
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import * as Actions from '../../action'
-import { MdDelete } from 'react-icons/md'
 import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,9 +37,16 @@ export default class FlashDeckScore extends React.Component {
                     </div>
                 <FlashButton
                     buttonType='action'
+                    onClick={this.props.onStartOver}
                 >
-                    Next Card
-                    </FlashButton>
+                    Retry
+                </FlashButton>
+                <FlashButton
+                    buttonType='action'
+                    onClick={this.props.goHome}
+                >
+                    Home
+                </FlashButton>
             </Grid>
         )
     }

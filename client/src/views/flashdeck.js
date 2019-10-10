@@ -11,7 +11,7 @@ import FlashTestSingleAnswer from './components/flashtestsingleanswer';
 import FlashTestMultipleAnswer from './components/flashtestmultipleanswer';
 import FlashCardScore from './components/flashcardscore';
 import FlashDeckScore from './components/flashdeckscore';
-
+import FlashAppBar from './widgets/flashappbar'
 
 class FlashDeck extends React.Component {
   constructor(props) {
@@ -32,11 +32,15 @@ class FlashDeck extends React.Component {
     let renderable = <></>
     console.log('this.props.flashDeck', this.props.flashDeck)
     if (this.props.flashDeck && this.props.flashDeck.mode === 'COMPLETE') {
-      renderable = <FlashDeckScore flashDeck={this.props.flashDeck}/>
+      renderable = <FlashDeckScore 
+        flashDeck={this.props.flashDeck} 
+        onStartOver={()=>{this.props.loadFlashDeck(this.props.flashDeck.id, 'TEST', this.props.flashDeck.answerType, this.props.flashDeck.testType)}}
+        goHome = {this.props.goHome}
+        />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
-      renderable = <FlashCardEditor flashDeck={this.props.flashDeck} />
+      renderable = <FlashCardEditor flashDeck={this.props.flashDeck} goHome = {this.props.goHome} />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
-      renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} />
+      renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} goHome = {this.props.goHome} />
     } else if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex') && this.props.flashDeck.mode == 'TEST') {
       if (this.props.flashDeck.answerType == 'SINGLE'){
         renderable = <FlashTestSingleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
@@ -53,6 +57,7 @@ class FlashDeck extends React.Component {
     }
     return (
       <>
+        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name: null} station='DECK' goHome = {this.props.goHome}/>
         {renderable}
       </>
     )

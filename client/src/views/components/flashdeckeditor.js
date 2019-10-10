@@ -88,6 +88,14 @@ class FlashDeckEditor extends React.Component {
         >
           Save Deck
           </FlashButton>
+          <FlashButton
+          color='primary'
+          variant='contained'
+          buttonType='system'
+          onClick={this.props.goHome}
+        >
+          Home
+          </FlashButton>
       </Grid>
     )
   }

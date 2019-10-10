@@ -76,6 +76,14 @@ const greenTheme = createMuiTheme({
         secondary: {
           color: lightGreen[500]
         }
+      },
+      MuiPaper: {
+        root: {
+          backgroundColor: lightGreen[100]
+        },
+        secondary: {
+          color: lightGreen[500]
+        }
       }
     },
     systemButton: {

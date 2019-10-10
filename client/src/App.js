@@ -17,6 +17,7 @@ export default class App extends React.Component {
     this.state = {}
     this.createFlashDeck = this.createFlashDeck.bind(this)
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
+    this.goHome = this.goHome.bind(this)
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT' })
@@ -24,10 +25,14 @@ export default class App extends React.Component {
   onFlashDeckSelected(flashDeckId, mode) {
     this.setState({ flashDeckId: flashDeckId, mode: mode })
   }
+  goHome(){
+    this.setState({mode:''})
+  }
   render() {
     let renderable = <Home onNewButton={this.createFlashDeck} onFlashDeckSelected={this.onFlashDeckSelected} />
     if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
+        goHome = {this.goHome}
         flashDeckId={this.state.flashDeckId}
         mode={this.state.mode}
       />

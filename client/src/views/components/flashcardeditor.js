@@ -12,7 +12,7 @@ import {
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashTypography} from '../widgets/FlashBits';
+import {FlashTypography, FlashButton, FlashListItem} from '../widgets/FlashBits';
 
 
 class FlashCardEditor extends React.Component {
@@ -170,7 +170,7 @@ class FlashCardEditor extends React.Component {
                     }
                 />
                 {generateCorrectAnswerList()}
-                <Button
+                <FlashButton
                     color='primary'
                     variant='contained'
                     onClick={
@@ -178,9 +178,9 @@ class FlashCardEditor extends React.Component {
                     }
                 >
                     Add correct answer
-                </Button>
+                </FlashButton>
                 {generateIncorrectAnswerList()}
-                <Button
+                <FlashButton
                     color='secondary'
                     variant='contained'
                     onClick={
@@ -188,31 +188,31 @@ class FlashCardEditor extends React.Component {
                     }
                 >
                     Add incorrect answer
-                </Button>
+                </FlashButton>
                 <Grid container
                     direction="row"
                     justify="space-between"
                     alignItems="flex-start"
                     >
 
-                <Button
+                <FlashButton
                     color='primary'
                     variant='contained'
                     style={{width:'49%'}}
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Previous Card
-                </Button>
-                <Button
+                </FlashButton>
+                <FlashButton
                     color='primary'
                     variant='contained'
                     style={{width:'49%'}}
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
-                </Button>
+                </FlashButton>
                 </Grid>
-                <Button
+                <FlashButton
                     color='primary'
                     variant='contained'
                     onClick={() => {
@@ -222,7 +222,15 @@ class FlashCardEditor extends React.Component {
                     }
                 >
                     Save Deck
-                </Button>
+                </FlashButton>
+                <FlashButton
+                    color='primary'
+                    variant='contained'
+                    buttonType='system'
+                    onClick={this.props.goHome}
+                >
+                Home
+                </FlashButton>
             </Grid>
         )
     }

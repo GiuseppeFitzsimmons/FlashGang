@@ -15,6 +15,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 import {FlashListItem} from './widgets/FlashBits'
+import FlashAppBar from './widgets/flashappbar'
 const someIcons=['language','timeline','toc','palette','all_inclusive','public','poll','share','emoji_symbols']
 
 class Home extends React.Component {
@@ -64,8 +65,9 @@ class Home extends React.Component {
       )
     }
     return (
+      <>
+      <FlashAppBar title='FlashGang!' station='HOME'/>
         <List>
-
         <FlashListItem alignItems="flex-start"
             onClick={this.props.onNewButton}
             buttonType='action'
@@ -81,6 +83,7 @@ class Home extends React.Component {
           </FlashListItem>
           {generateFlashDeckList()}
         </List>
+      </>
     )
   }
 }
