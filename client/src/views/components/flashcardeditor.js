@@ -12,6 +12,7 @@ import {
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
+import {FlashTypography} from '../widgets/FlashBits';
 
 
 class FlashCardEditor extends React.Component {
@@ -159,7 +160,7 @@ class FlashCardEditor extends React.Component {
                 alignItems="stretch"
                 >
                 <IntegratedInput
-                    label="Question"
+                    label='Description'
                     placeholder='flash card question'
                     onChange={
                         (event) => { flashCard.question = event.target.value }

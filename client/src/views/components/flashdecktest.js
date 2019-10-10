@@ -16,6 +16,8 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import {FlashTypography} from '../widgets/FlashBits';
+import Divider from '@material-ui/core/Divider';
 
 
 
@@ -47,31 +49,34 @@ class FlashDeckTest extends React.Component {
                     justify="space-between"
                     alignItems="stretch"
                 >
-                    <div>
-                        Test mode
-                    </div>
+                    <FlashTypography variant="h6" gutterBottom>
+                    Test mode
+                    </FlashTypography>
                     <RadioGroup aria-label="testtype" name="testtype" onChange={this.setTestType}>
                         <FormControlLabel value="REVISION" control={<Radio />} label="Revision" name="FormControlLabelButton"/>
                         <FormControlLabel value="CRAM" control={<Radio />} label="Cram" name="FormControlLabelButton" />
                         <FormControlLabel value="EXAM" control={<Radio />} label="Exam" name="FormControlLabelButton" />
                     </RadioGroup>
-                    <div>
+                    <Divider/>
+                    <FlashTypography variant="h6" gutterBottom>
                         Answer type
-                    </div>
+                    </FlashTypography>
                     <RadioGroup aria-label="answertype" name="answertype" onChange={this.setAnswerType}>
                         <FormControlLabel value="SINGLE" control={<Radio />} label="Single answer" name="FormControlLabelButton"/>
                         <FormControlLabel value="MULTIPLE" control={<Radio />} label="Multiple choice" name="FormControlLabelButton" />
                     </RadioGroup>
+                    <Divider/>
                     <Grid container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="flex-start"
+                        direction="row"
+                        justify="space-between"
+                        alignItems="stretch"
                     >
                     <FlashButton
                         name='beginTest'
                         color='primary'
                         variant='contained'
-                        style={{width:'51%'}}
+                        buttonType='system'
+                        style={{width:'49%'}}
                         disabled={!this.state.valid}
                         onClick={() => { this.props.nextCard(this.props.flashDeck) }}
                     >
@@ -81,7 +86,8 @@ class FlashDeckTest extends React.Component {
                         name='editTest'
                         color='primary'
                         variant='contained'
-                        style={{width:'51%'}}
+                        buttonType='system'
+                        style={{width:'49%'}}
                         onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
                     >
                         Edit test
