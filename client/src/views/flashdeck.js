@@ -43,7 +43,8 @@ class FlashDeck extends React.Component {
         renderable = <FlashTestMultipleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       }
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
-        if (this.props.flashDeck.testType === 'REVISION') {
+        console.log("------------");
+        if (this.props.flashDeck.testType === 'REVISION' || this.props.flashDeck.testType === 'CRAM') {
           renderable = <FlashCardScore flashDeck={this.props.flashDeck} onNextCard={this.props.nextCard} />
         } 
       }

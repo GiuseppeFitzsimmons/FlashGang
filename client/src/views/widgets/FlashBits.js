@@ -46,7 +46,6 @@ class FlashListItemStyled extends Component {
 class FlashTypographyStyled extends Component {
     render() {
         var additionalStyle={};
-        console.log("FlashTypographyStyled", this.props)
         if (this.props.incorrect) {
             additionalStyle=this.props.theme.incorrect
         } else if (this.props.correct) {

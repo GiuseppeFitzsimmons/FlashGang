@@ -54,6 +54,7 @@ function selectNextCard(deck) {
             let card = deck.flashCards[i]
             if (!card.correct) {
                 unansweredCards.push(i)
+                delete card.correct;
             }
         }
         if (unansweredCards.length == 0) {
@@ -156,7 +157,7 @@ export function flashGangMiddleware({ dispatch }) {
             }
             else if (action.type === SCORE_CARD) {
                 scoreCard(action.data.flashDeck);
-                if (action.data.flashDeck.testType!='REVISION') {
+                if (action.data.flashDeck.testType!='REVISION' && action.data.flashDeck.testType!='CRAM') {
                     selectNextCard(action.data.flashDeck)
                 }
                 console.log('Middleware SCORE_CARD')

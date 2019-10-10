@@ -32,13 +32,17 @@ export default class FlashCardScore extends React.Component {
             <FlashTypography variant="h4" gutterBottom incorrect>
                 Incorrect Answer!
             </FlashTypography>
-            <FlashTypography variant="h6" gutterBottom>
-            The correct answer was: 
-            </FlashTypography>
-            <FlashTypography variant="h5" gutterBottom correct>
-                
-                {card.correctAnswers.join(', ')}
-            </FlashTypography>
+            {
+                this.props.flashDeck.testType!='CRAM' &&
+                <>
+                    <FlashTypography variant="h6" gutterBottom>
+                    The correct answer was: 
+                    </FlashTypography>
+                    <FlashTypography variant="h5" gutterBottom correct>
+                        {card.correctAnswers.join(', ')}
+                    </FlashTypography>
+                </>
+            }
             <FlashTypography variant="h6" gutterBottom>
             Your answer was: 
             </FlashTypography>
