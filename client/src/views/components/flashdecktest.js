@@ -28,13 +28,13 @@ class FlashDeckTest extends React.Component {
     }
     setTestType(event){
         this.props.flashDeck.testType = event.target.value
-        if (this.props.flashDeck.testType && this.props.flashDeck.testType){
+        if (this.props.flashDeck.testType && this.props.flashDeck.answerType){
             this.setState({valid:true})
         }
     }
     setAnswerType(event){
         this.props.flashDeck.answerType = event.target.value
-        if (this.props.flashDeck.testType && this.props.flashDeck.testType){
+        if (this.props.flashDeck.testType && this.props.flashDeck.answerType){
             this.setState({valid:true})
         }
     }

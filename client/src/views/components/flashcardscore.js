@@ -33,6 +33,7 @@ export default class FlashCardScore extends React.Component {
                 Incorrect Answer!
             </FlashTypography>
             {
+                //How about this? When in cram mode, you don't get to see the correct answer
                 this.props.flashDeck.testType!='CRAM' &&
                 <>
                     <FlashTypography variant="h6" gutterBottom>

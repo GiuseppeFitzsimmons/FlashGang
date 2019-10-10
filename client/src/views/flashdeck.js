@@ -12,6 +12,7 @@ import FlashTestMultipleAnswer from './components/flashtestmultipleanswer';
 import FlashCardScore from './components/flashcardscore';
 import FlashDeckScore from './components/flashdeckscore';
 
+
 class FlashDeck extends React.Component {
   constructor(props) {
     super(props)
@@ -43,7 +44,6 @@ class FlashDeck extends React.Component {
         renderable = <FlashTestMultipleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       }
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
-        console.log("------------");
         if (this.props.flashDeck.testType === 'REVISION' || this.props.flashDeck.testType === 'CRAM') {
           renderable = <FlashCardScore flashDeck={this.props.flashDeck} onNextCard={this.props.nextCard} />
         } 
