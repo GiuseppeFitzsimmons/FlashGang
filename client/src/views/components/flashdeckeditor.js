@@ -8,6 +8,7 @@ import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import { IconSelector } from '../widgets/iconselector';
+import {FlashTypography} from '../widgets/FlashBits';
 
 class FlashDeckEditor extends React.Component {
   constructor(props) {
