@@ -31,7 +31,7 @@ class FlashDeck extends React.Component {
     let renderable = <></>
     console.log('this.props.flashDeck', this.props.flashDeck)
     if (this.props.flashDeck && this.props.flashDeck.mode === 'COMPLETE') {
-      renderable = <FlashDeckScore flashDeck={this.props.flashDeck} />
+      renderable = <FlashDeckScore flashDeck={this.props.flashDeck}/>
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
@@ -42,16 +42,13 @@ class FlashDeck extends React.Component {
       } else {
         renderable = <FlashTestMultipleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       }
-      console.log("NEXTCARD-BUG RENDERING...", this.props.flashDeck.currentIndex)
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
         if (this.props.flashDeck.testType === 'REVISION') {
           renderable = <FlashCardScore flashDeck={this.props.flashDeck} onNextCard={this.props.nextCard} />
-        } else {
-         // this.props.nextCard(this.props.flashDeck)
-        }
+        } 
       }
     } else if (this.props.flashDeck && this.props.flashDeck.mode == 'TEST') {
-      renderable = <FlashDeckTest flashDeck={this.props.flashDeck} onEditButtonPress={this.editFlashDeck} />
+      renderable = <FlashDeckTest flashDeck={this.props.flashDeck} onEditButtonPress={this.editFlashDeck}/>
     }
     return (
       <>

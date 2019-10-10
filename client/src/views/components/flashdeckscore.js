@@ -41,7 +41,6 @@ export default class FlashDeckScore extends React.Component {
                     {percentage}% correct answers
                     </div>
                 <FlashButton
-                    onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
                     buttonType='action'
                 >
                     Next Card
