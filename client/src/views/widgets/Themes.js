@@ -6,7 +6,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 const greenTheme = createMuiTheme({
     palette: {
       primary: { main: lightGreen[500], color: 'white' },
-      default: { main: lightGreen[500] }
+      default: { main: lightGreen[500] },
+      secondary: { main: lightGreen[500] }
     },
     overrides: {
       MuiButton: {
@@ -49,6 +50,30 @@ const greenTheme = createMuiTheme({
       },
       PrivateRadioButtonIcon: {
         root: {
+          color: lightGreen[500]
+        }
+      },
+      PrivateSwitchBase: {
+        root: {
+          color: lightGreen[500]
+        },
+        secondary: {
+          color: lightGreen[500]
+        }
+      },
+      MuiCheckbox: {
+        root: {
+          color: lightGreen[500]
+        },
+        secondary: {
+          color: lightGreen[500]
+        }
+      },
+      MuiIconButton: {
+        root: {
+          color: lightGreen[500]
+        },
+        secondary: {
           color: lightGreen[500]
         }
       }
