@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 
 import ListItem from '@material-ui/core/ListItem';
 
+import Typography from '@material-ui/core/Typography';
+
 class FlashButtonStyled extends Component {
     render() {
         var additionalStyle={};
@@ -40,10 +42,27 @@ class FlashListItemStyled extends Component {
         )
     }
 }
+
+class FlashTypographyStyled extends Component {
+    render() {
+        var additionalStyle={};
+        console.log("FlashTypographyStyled", this.props)
+        if (this.props.incorrect) {
+            additionalStyle=this.props.theme.incorrect
+        } else if (this.props.correct) {
+            additionalStyle=this.props.theme.correct
+        }
+        return (
+            <Typography {...this.props} style={additionalStyle}/>
+        )
+    }
+}
 const FlashButton= withTheme(FlashButtonStyled);
 const FlashListItem= withTheme(FlashListItemStyled);
+const FlashTypography= withTheme(FlashTypographyStyled);
 
 export {
     FlashButton,
-    FlashListItem
+    FlashListItem,
+    FlashTypography
 }

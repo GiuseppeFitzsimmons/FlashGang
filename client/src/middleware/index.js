@@ -87,7 +87,6 @@ function selectNextCard(deck) {
                 let anAnswer = answers[answerIndex]
                 answers.splice(answerIndex, 1)
                 card.multipleChoices.push(anAnswer)
-                console.log('card.multipleChoices', card.multipleChoices)
                 if (answers.length == 0) {
                     break
                 }

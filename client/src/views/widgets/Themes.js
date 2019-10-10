@@ -74,6 +74,12 @@ const greenTheme = createMuiTheme({
     },
     actionListItem: {
       backgroundColor: lightGreen[200]
+    },
+    correct: {
+      color: lightGreen[400]
+    },
+    incorrect: {
+      color: red[400]
     }
   });
 

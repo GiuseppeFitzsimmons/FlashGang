@@ -9,6 +9,7 @@ import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import {FlashButton} from '../widgets/FlashBits'
+import {FlashTypography} from '../widgets/FlashBits';
 
 export default class FlashCardScore extends React.Component {
     render() {
@@ -18,27 +19,32 @@ export default class FlashCardScore extends React.Component {
         if (card.correct){
             renderable = 
             <>
-            <div>
+            <FlashTypography variant="h4" gutterBottom>
                 Correct answer!
-            </div>
-            <div>
-            {card.correctAnswers.join(', ')}
-            </div>
+            </FlashTypography>
+            <FlashTypography variant="h4" gutterBottom correct>
+                {card.correctAnswers.join(', ')}
+            </FlashTypography>
             </>
         } else {
             renderable = 
             <>
-            <div>
+            <FlashTypography variant="h4" gutterBottom incorrect>
                 Incorrect Answer!
-            </div>
-            <div>
-                The correct answer was: 
-            {card.correctAnswers.join(', ')}
-            </div>
-            <div>
-                Your answer was: 
+            </FlashTypography>
+            <FlashTypography variant="h6" gutterBottom>
+            The correct answer was: 
+            </FlashTypography>
+            <FlashTypography variant="h5" gutterBottom correct>
+                
+                {card.correctAnswers.join(', ')}
+            </FlashTypography>
+            <FlashTypography variant="h6" gutterBottom>
+            Your answer was: 
+            </FlashTypography>
+            <FlashTypography variant="h5" gutterBottom incorrect>
             {Array.isArray(card.userAnswer)?card.userAnswer.join(', '): card.userAnswer}
-            </div>
+            </FlashTypography>
             </>
         }
         return (
@@ -47,7 +53,10 @@ export default class FlashCardScore extends React.Component {
                 justify="space-between"
                 alignItems="flex-start">
                 <Grid>
-                    {card.question}
+            <FlashTypography variant="h4" gutterBottom>
+            {card.question}
+            </FlashTypography>
+                    
                     {renderable}
                     <FlashButton
                     onClick={()=>{this.props.onNextCard(this.props.flashDeck)}}
