@@ -46,6 +46,11 @@ const greenTheme = createMuiTheme({
           backgroundColor: lightGreen[300],
           color: lightGreen[500]
         }
+      },
+      PrivateRadioButtonIcon: {
+        root: {
+          color: lightGreen[500]
+        }
       }
     },
     systemButton: {

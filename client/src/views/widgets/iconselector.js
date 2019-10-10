@@ -19,7 +19,7 @@ class IconSelectorStyled extends React.Component {
     }
     handleEntering() {
         if (this.props.flashDeck && this.props.flashDeck.icon) {
-            all_icons.splice(1, 0, this.props.flashDeck.icon);
+            all_icons.splice(0, 0, this.props.flashDeck.icon);
         }
     }
     handleCancel() {

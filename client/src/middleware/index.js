@@ -30,6 +30,9 @@ function selectNextCard(deck) {
         if (deck.currentIndex && deck.currentIndex + 1 >= deck.flashCards.length) {
             deck.mode = 'COMPLETE'
         } else {
+            if (!deck.hasOwnProperty('currentIndex')) {
+                deck.currentIndex=0;
+            }
             deck.currentIndex++
         }
     } else if (testType == 'REVISION') {
