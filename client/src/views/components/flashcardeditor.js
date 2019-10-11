@@ -217,7 +217,6 @@ class FlashCardEditor extends React.Component {
                     variant='contained'
                     onClick={() => {
                             this.props.saveDeck(this.props.flashDeck)
-                            console.log('flashCard', flashCard)
                         }
                     }
                 >

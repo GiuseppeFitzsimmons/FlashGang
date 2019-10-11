@@ -29,7 +29,6 @@ export default class FlashTestMultipleAnswer extends React.Component {
         } else {
             card.userAnswer = card.userAnswer.filter(value=>value!=event.target.value)
         }
-        console.log('card.userAnswer', card.userAnswer)
     }
     render() {
         const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
@@ -43,7 +42,7 @@ export default class FlashTestMultipleAnswer extends React.Component {
                     />:<Radio />
                 } 
                 label={answer} 
-                name="FormControlLabelButton"
+                name={"FormControlLabelButton"+this.props.flashDeck.currentIndex}
                 />
             )
         })

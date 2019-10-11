@@ -14,10 +14,8 @@ class SimpleTooltip extends Component {
   render() {
     var message = this.props.message
     if (message || message==''){
-      console.log('These are errors',this.props.errors)
       if (this.props.errors){
         this.props.errors.fields.forEach(field=>{
-          console.log('This is the field',field)
           if (field.fieldId==this.props.targetId || field.fieldName==this.props.targetId){
             message = field.message
           }

@@ -30,7 +30,6 @@ class FlashDeck extends React.Component {
   }
   render() {
     let renderable = <></>
-    console.log('this.props.flashDeck', this.props.flashDeck)
     if (this.props.flashDeck && this.props.flashDeck.mode === 'COMPLETE') {
       renderable = <FlashDeckScore 
         flashDeck={this.props.flashDeck} 

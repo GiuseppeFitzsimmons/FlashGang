@@ -97,8 +97,6 @@ function selectNextCard(deck) {
             })
         }
     }
-
-    console.log("NEXTCARD-BUG middleware...", deck.currentIndex)
 }
 export function flashGangMiddleware({ dispatch }) {
     return function (next) {

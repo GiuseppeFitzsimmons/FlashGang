@@ -14,7 +14,6 @@ import {FlashTypography} from '../widgets/FlashBits';
 export default class FlashCardScore extends React.Component {
     render() {
         const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
-        console.log('this.props.flashDeck', this.props.flashDeck)
         let renderable = {}
         if (card.correct){
             renderable = 
