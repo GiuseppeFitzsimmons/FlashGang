@@ -46,7 +46,7 @@ class IntegratedInput extends Component {
         }
         let _label=<></>
         if (this.props.label && this.props.label!='') {
-            _label=<><label>{this.props.label}</label><br/></>
+            _label=<><label style={{color:'rgba(0,0,0,0.6)'}}>{this.props.label}</label><br/></>
         }
         return (
             <span>

@@ -74,6 +74,7 @@ class FlashDeckTest extends React.Component {
                     <FlashButton
                         name='beginTest'
                         color='primary'
+                        icon='flight_takeoff'
                         variant='contained'
                         buttonType='system'
                         style={{width:'49%'}}
@@ -84,6 +85,7 @@ class FlashDeckTest extends React.Component {
                     </FlashButton>
                     <FlashButton
                         name='editTest'
+                        icon='edit'
                         color='primary'
                         variant='contained'
                         buttonType='system'

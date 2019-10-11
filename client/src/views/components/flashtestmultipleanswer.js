@@ -13,6 +13,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Checkbox from '@material-ui/core/Checkbox';
+import Icon from '@material-ui/core/Icon';
 
 export default class FlashTestMultipleAnswer extends React.Component {
     constructor(props){
@@ -32,17 +33,22 @@ export default class FlashTestMultipleAnswer extends React.Component {
     }
     render() {
         const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
-        let renderable = card.multipleChoices.map(answer=>{
+        let renderable = card.multipleChoices.map( (answer,index)=>{
             return (
             <FormControlLabel 
                 value={answer} 
-                control={card.correctAnswers.length>1?
-                    <Checkbox 
-                        onChange={(event) => {this.setUserAnswers(event)}}
-                    />:<Radio />
+                ref={formControl=>{if (formControl) console.log(formControl.props)}}
+                key={"FormControlLabelButton"+index}
+                control={
+                    card.correctAnswers.length>1?
+                        <Checkbox 
+                            onChange={(event) => {this.setUserAnswers(event)}}
+                        />
+                        :
+                        <Radio />
                 } 
                 label={answer} 
-                name={"FormControlLabelButton"+this.props.flashDeck.currentIndex}
+                name={"FormControlLabelButton"+index}
                 />
             )
         })
@@ -53,12 +59,16 @@ export default class FlashTestMultipleAnswer extends React.Component {
                 alignItems="flex-start">
                 <Grid>
                     {card.question}
-                    <RadioGroup aria-label="testtype" name="testtype" onChange={(event) => { card.userAnswer = event.target.value }}>
+                    <RadioGroup aria-label="testtype" name="testtype"
+                        onChange={(event) => { card.userAnswer = event.target.value }}>
                         {renderable}
                     </RadioGroup>
                     <FlashButton
                     onClick={()=>{this.props.onNextCard(this.props.flashDeck)}}
                     buttonType='action'
+                    iconRight='navigate_next'
+                    style={{width:'100%'}}
+                    buttonType='system'
                     >
                         Next Card
                     </FlashButton>

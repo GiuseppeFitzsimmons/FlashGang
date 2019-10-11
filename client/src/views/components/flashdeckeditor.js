@@ -72,6 +72,7 @@ class FlashDeckEditor extends React.Component {
           color='primary'
           variant='contained'
           buttonType='action'
+          icon='filter'
           onClick={
             () => this.props.nextCard(flashDeck)
           }
@@ -82,6 +83,7 @@ class FlashDeckEditor extends React.Component {
           color='primary'
           variant='contained'
           buttonType='system'
+          icon='work'
           onClick={() => {
             this.props.saveDeck(this.props.flashDeck)
           }}
@@ -92,6 +94,7 @@ class FlashDeckEditor extends React.Component {
           color='primary'
           variant='contained'
           buttonType='system'
+          icon='home'
           onClick={this.props.goHome}
         >
           Home

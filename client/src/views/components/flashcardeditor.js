@@ -13,6 +13,7 @@ import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import {FlashTypography, FlashButton, FlashListItem} from '../widgets/FlashBits';
+import Icon from '@material-ui/core/Icon';
 
 
 class FlashCardEditor extends React.Component {
@@ -173,6 +174,8 @@ class FlashCardEditor extends React.Component {
                 <FlashButton
                     color='primary'
                     variant='contained'
+                    buttonType='system'
+                    startIcon={<Icon style={{ fontSize: 20, color:'green' }}>check_box</Icon>}
                     onClick={
                         this.addCorrectAnswer
                     }
@@ -183,6 +186,8 @@ class FlashCardEditor extends React.Component {
                 <FlashButton
                     color='secondary'
                     variant='contained'
+                    buttonType='system'
+                    startIcon={<Icon style={{ fontSize: 20, color:'red' }}>check_box</Icon>}
                     onClick={
                         this.addIncorrectAnswer
                     }
@@ -199,6 +204,8 @@ class FlashCardEditor extends React.Component {
                     color='primary'
                     variant='contained'
                     style={{width:'49%'}}
+                    icon='navigate_before'
+                    buttonType='system'
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Previous Card
@@ -207,6 +214,8 @@ class FlashCardEditor extends React.Component {
                     color='primary'
                     variant='contained'
                     style={{width:'49%'}}
+                    iconRight='navigate_next'
+                    buttonType='system'
                     onClick={() => this.props.nextCard(this.props.flashDeck)}
                 >
                     Next Card
@@ -215,6 +224,8 @@ class FlashCardEditor extends React.Component {
                 <FlashButton
                     color='primary'
                     variant='contained'
+                    icon='work'
+                    buttonType='system'
                     onClick={() => {
                             this.props.saveDeck(this.props.flashDeck)
                         }
@@ -226,6 +237,7 @@ class FlashCardEditor extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
+                    icon='home'
                     onClick={this.props.goHome}
                 >
                 Home

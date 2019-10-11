@@ -7,6 +7,8 @@ import ListItem from '@material-ui/core/ListItem';
 
 import Typography from '@material-ui/core/Typography';
 
+import Icon from '@material-ui/core/Icon';
+
 class FlashButtonStyled extends Component {
     render() {
         var additionalStyle={};
@@ -23,8 +25,16 @@ class FlashButtonStyled extends Component {
         if (this.props.style) {
             additionalStyle=Object.assign({}, this.props.style, additionalStyle)
         }
+        var additionalProps={}
+        if (this.props.icon) {
+            additionalProps.startIcon=<Icon style={{ fontSize: 20 }}>{this.props.icon}</Icon>
+        }
+        if (this.props.iconRight) {
+            additionalProps.endIcon=<Icon style={{ fontSize: 20 }}>{this.props.iconRight}</Icon>
+        }
+        var thisProps=Object.assign({}, this.props, additionalProps);
         return (
-            <OriginalButton {...this.props} style={additionalStyle}></OriginalButton>
+            <OriginalButton {...thisProps} style={additionalStyle}></OriginalButton>
         )
     }
 }

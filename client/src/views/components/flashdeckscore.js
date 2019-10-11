@@ -4,6 +4,7 @@ import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashButton } from '../widgets/FlashBits'
+import {FlashTypography} from '../widgets/FlashBits';
 
 export default class FlashDeckScore extends React.Component {
     render() {
@@ -18,7 +19,7 @@ export default class FlashDeckScore extends React.Component {
                 incorrectAnswers++
             }
         }
-        if (correctAnswers>0){
+        if (correctAnswers > 0) {
             percentage = (correctAnswers / this.props.flashDeck.flashCards.length) * 100
         }
         return (
@@ -26,27 +27,35 @@ export default class FlashDeckScore extends React.Component {
                 direction="column"
                 justify="space-between"
                 alignItems="flex-start">
-                <div>
+                <FlashTypography variant="h5" gutterBottom correct>
                     Correct answers: {correctAnswers}
-                </div>
-                <div>
+                </FlashTypography>
+                <FlashTypography variant="h5" gutterBottom incorrect>
                     Incorrect answers: {incorrectAnswers}
-                </div>
-                <div>
-                    {percentage}% correct answers
-                    </div>
-                <FlashButton
-                    buttonType='action'
-                    onClick={this.props.onStartOver}
+                </FlashTypography>
+                <Grid container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="flex-start"
                 >
-                    Retry
+
+                    <FlashButton
+                        buttonType='system'
+                        icon='repeat'
+                        style={{ width: '49%' }}
+                        onClick={this.props.onStartOver}
+                    >
+                        Retry
                 </FlashButton>
-                <FlashButton
-                    buttonType='action'
-                    onClick={this.props.goHome}
-                >
-                    Home
+                    <FlashButton
+                        buttonType='system'
+                        icon='home'
+                        style={{ width: '49%' }}
+                        onClick={this.props.goHome}
+                    >
+                        Home
                 </FlashButton>
+                </Grid>
             </Grid>
         )
     }
