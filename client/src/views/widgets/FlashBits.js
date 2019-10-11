@@ -8,6 +8,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 
 import Icon from '@material-ui/core/Icon';
+import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
 
 class FlashButtonStyled extends Component {
     render() {
@@ -69,12 +71,47 @@ class FlashTypographyStyled extends Component {
         )
     }
 }
+class FlashCheckBoxStyled extends Component {
+    state={on:false}
+    reset() {
+        this.setState({on:false});
+    }
+    render() {
+        return (
+            <Checkbox {...this.props} checked={this.state.on}
+                onChange={
+                    (e)=> {
+                        this.setState({on:e.target.checked})
+                        if (this.props.onChange) this.props.onChange(e)
+                    }
+                }
+            />
+        )
+    }
+}
+class RadioStyled extends Component {
+    state={on:false}
+    radioRef=React.createRef();
+    reset() {
+        this.setState({on:false});
+    }
+    render() {
+        return (
+            <Radio {...this.props} checked={this.state.on}
+            />
+        )
+    }
+}
 const FlashButton= withTheme(FlashButtonStyled);
 const FlashListItem= withTheme(FlashListItemStyled);
-const FlashTypography= withTheme(FlashTypographyStyled);
+const FlashTypography=withTheme(FlashTypographyStyled);
+const FlashCheckBox=withTheme(FlashCheckBoxStyled);
+const FlashRadio=withTheme(RadioStyled);
 
 export {
     FlashButton,
     FlashListItem,
-    FlashTypography
+    FlashTypography,
+    FlashCheckBox,
+    FlashRadio
 }

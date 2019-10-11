@@ -30,8 +30,11 @@ export default class FlashDeckScore extends React.Component {
                 <FlashTypography variant="h5" gutterBottom correct>
                     Correct answers: {correctAnswers}
                 </FlashTypography>
-                <FlashTypography variant="h5" gutterBottom incorrect>
+                <FlashTypography variant="h6" gutterBottom incorrect>
                     Incorrect answers: {incorrectAnswers}
+                </FlashTypography>
+                <FlashTypography variant="h5" gutterBottom incorrect={percentage<50} correct={percentage>50}>
+                    {percentage}% Correct
                 </FlashTypography>
                 <Grid container
                     direction="row"

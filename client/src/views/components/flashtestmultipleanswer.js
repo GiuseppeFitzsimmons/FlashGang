@@ -8,7 +8,7 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashButton} from '../widgets/FlashBits'
+import {FlashButton, FlashCheckBox, FlashRadio} from '../widgets/FlashBits'
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
@@ -37,18 +37,24 @@ export default class FlashTestMultipleAnswer extends React.Component {
             return (
             <FormControlLabel 
                 value={answer} 
-                ref={formControl=>{if (formControl) console.log(formControl.props)}}
                 key={"FormControlLabelButton"+index}
                 control={
                     card.correctAnswers.length>1?
-                        <Checkbox 
+                        <FlashCheckBox 
                             onChange={(event) => {this.setUserAnswers(event)}}
+                            ref={flashCheckBox=>{
+                                if (flashCheckBox) {
+                                    flashCheckBox.reset();
+                                }
+                            }}
                         />
                         :
-                        <Radio />
+                        <Radio
+                         onChange={(event) => { card.userAnswer = event.target.value }}
+                        />
                 } 
                 label={answer} 
-                name={"FormControlLabelButton"+index}
+                name={"FormControlLabelButton"}
                 />
             )
         })
@@ -60,7 +66,9 @@ export default class FlashTestMultipleAnswer extends React.Component {
                 <Grid>
                     {card.question}
                     <RadioGroup aria-label="testtype" name="testtype"
-                        onChange={(event) => { card.userAnswer = event.target.value }}>
+                        //value=""
+                        //onChange={(event) => { card.userAnswer = event.target.value }}
+                        >
                         {renderable}
                     </RadioGroup>
                     <FlashButton
