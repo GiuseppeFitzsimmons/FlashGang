@@ -90,14 +90,22 @@ class FlashCheckBoxStyled extends Component {
     }
 }
 class RadioStyled extends Component {
-    state={on:false}
+    state={checked:false}
     radioRef=React.createRef();
     reset() {
-        this.setState({on:false});
+        this.setState({checked:false});
     }
     render() {
+        const props=Object.assign({}, this.props, {checked: this.state.checked});
         return (
-            <Radio {...this.props} checked={this.state.on}
+            <Radio {...props}
+                onChange={
+                    (e)=> {
+                        console.log("radio props",this.props);
+                        this.setState({checked:e.target.checked})
+                        if (this.props.onChange) this.props.onChange(e)
+                    }
+                }
             />
         )
     }
