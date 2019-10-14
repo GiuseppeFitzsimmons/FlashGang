@@ -12,7 +12,7 @@ import {
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashTypography, FlashButton, FlashListItem} from '../widgets/FlashBits';
+import { FlashTypography, FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Icon from '@material-ui/core/Icon';
 
 
@@ -55,7 +55,7 @@ class FlashCardEditor extends React.Component {
                 let removeButton = ''
                 let _gridWidth = 12;
                 {
-                    if (i>0 && i == flashCard.correctAnswers.length - 1) {
+                    if (i > 0 && i == flashCard.correctAnswers.length - 1) {
                         _gridWidth = 11
                         removeButton =
                             <Grid >
@@ -81,12 +81,12 @@ class FlashCardEditor extends React.Component {
                         <Grid item xs={_gridWidth} sm={_gridWidth}>
                             <IntegratedInput
                                 label={label}
-                                placeholder={'Correct answer '+(i+1)}
+                                placeholder={'Correct answer ' + (i + 1)}
                                 onChange={
-                                    (event) => { flashCard.correctAnswers[i] = event.target.value }
+                                    (event) => { flashCard.correctAnswers[i] = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
                                 }
                                 ref={
-                                    input=>input ? input.reset(answer) : true
+                                    input => input ? input.reset(answer) : true
                                 }
                             />
                         </Grid>
@@ -131,17 +131,17 @@ class FlashCardEditor extends React.Component {
                 return (
                     <Grid container
                         direction="row"
-                        justify="space-between" 
+                        justify="space-between"
                         alignItems="flex-end">
-                        <Grid item xs={_gridWidth} sm={_gridWidth-1}>
+                        <Grid item xs={_gridWidth} sm={_gridWidth - 1}>
                             <IntegratedInput
                                 label={label}
-                                placeholder={'Incorrect answer '+(i+1)}
+                                placeholder={'Incorrect answer ' + (i + 1)}
                                 onChange={
-                                    (event) => { flashCard.incorrectAnswers[i] = event.target.value }
+                                    (event) => { flashCard.incorrectAnswers[i] = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
                                 }
                                 ref={
-                                    input=>input ? input.reset(answer) : true
+                                    input => input ? input.reset(answer) : true
                                 }
                             />
                         </Grid>
@@ -159,15 +159,15 @@ class FlashCardEditor extends React.Component {
                 direction="column"
                 justify="space-between"
                 alignItems="stretch"
-                >
+            >
                 <IntegratedInput
                     label='Description'
                     placeholder='flash card question'
                     onChange={
-                        (event) => { flashCard.question = event.target.value }
+                        (event) => { flashCard.question = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
                     }
                     ref={
-                        input=>input ? input.reset(flashCard.question) : true
+                        input => input ? input.reset(flashCard.question) : true
                     }
                 />
                 {generateCorrectAnswerList()}
@@ -175,7 +175,7 @@ class FlashCardEditor extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
-                    startIcon={<Icon style={{ fontSize: 20, color:'green' }}>check_box</Icon>}
+                    startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>check_box</Icon>}
                     onClick={
                         this.addCorrectAnswer
                     }
@@ -187,7 +187,7 @@ class FlashCardEditor extends React.Component {
                     color='secondary'
                     variant='contained'
                     buttonType='system'
-                    startIcon={<Icon style={{ fontSize: 20, color:'red' }}>check_box</Icon>}
+                    startIcon={<Icon style={{ fontSize: 20, color: 'red' }}>check_box</Icon>}
                     onClick={
                         this.addIncorrectAnswer
                     }
@@ -198,37 +198,51 @@ class FlashCardEditor extends React.Component {
                     direction="row"
                     justify="space-between"
                     alignItems="flex-start"
-                    >
+                >
 
-                <FlashButton
-                    color='primary'
-                    variant='contained'
-                    style={{width:'49%'}}
-                    icon='navigate_before'
-                    buttonType='system'
-                    onClick={() => this.props.nextCard(this.props.flashDeck)}
-                >
-                    Previous Card
+                    <FlashButton
+                        color='primary'
+                        variant='contained'
+                        style={{ width: '49%' }}
+                        icon='navigate_before'
+                        buttonType='system'
+                        onClick={() => this.props.prevCard(this.props.flashDeck)}
+                    >
+                        Previous Card
                 </FlashButton>
-                <FlashButton
-                    color='primary'
-                    variant='contained'
-                    style={{width:'49%'}}
-                    iconRight='navigate_next'
-                    buttonType='system'
-                    onClick={() => this.props.nextCard(this.props.flashDeck)}
-                >
-                    Next Card
+                    <FlashButton
+                        color='primary'
+                        variant='contained'
+                        style={{ width: '49%' }}
+                        iconRight='navigate_next'
+                        buttonType='system'
+                        disabled={(!flashCard.question || flashCard.question == '') || (!flashCard.correctAnswers || flashCard.correctAnswers.length == 0 || flashCard.correctAnswers[0]=='')}
+                        onClick={() => this.props.nextCard(this.props.flashDeck)}
+                    >
+                        Next Card
                 </FlashButton>
                 </Grid>
                 <FlashButton
                     color='primary'
                     variant='contained'
-                    icon='work'
+                    icon='delete'
                     buttonType='system'
                     onClick={() => {
-                            this.props.saveDeck(this.props.flashDeck)
-                        }
+                        this.props.deleteCard(this.props.flashDeck)
+                    }
+                    }
+                >
+                    Delete Card
+                </FlashButton>
+                <FlashButton
+                    color='primary'
+                    variant='contained'
+                    icon='work'
+                    buttonType='system'
+                    disabled={!this.props.flashDeck.dirty}
+                    onClick={() => {
+                        this.props.saveDeck(this.props.flashDeck)
+                    }
                     }
                 >
                     Save Deck
@@ -240,7 +254,7 @@ class FlashCardEditor extends React.Component {
                     icon='home'
                     onClick={this.props.goHome}
                 >
-                Home
+                    Home
                 </FlashButton>
             </Grid>
         )
@@ -248,7 +262,7 @@ class FlashCardEditor extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    return {flashCard: state.flashCard}
+    return { flashCard: state.flashCard }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

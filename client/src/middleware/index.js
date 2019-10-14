@@ -1,4 +1,6 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD } from '../action'
+import { doesNotReject } from 'assert';
+import FuzzySet from 'fuzzyset.js';
 
 const uuidv4 = require('uuid/v4');
 
@@ -18,7 +20,17 @@ function scoreCard(deck) {
     } else if (!card.userAnswer || card.userAnswer == '') {
         card.correct = false
     } else {
-        if (card.userAnswer != card.correctAnswers[0]) {
+        let fuzzyAnswer = FuzzySet([card.correctAnswers[0]])
+        let fuzzyAnswered = fuzzyAnswer.get(card.userAnswer)
+        let fuzziness = 0
+        let deckFuzziness = deck.fuzziness ? deck.fuzziness:1
+        if (fuzzyAnswer && fuzzyAnswered[0]){
+            if (fuzzyAnswered[0][0]){
+                fuzziness = fuzzyAnswered[0][0]
+            }
+        }
+        let invertedFuzziness = 10-(fuzziness*10)
+        if (invertedFuzziness>deckFuzziness) {
             card.correct = false
         }
     }
@@ -28,7 +40,7 @@ function selectNextCard(deck) {
     const testType = deck.testType
     if (testType == 'EXAM') {
         if (!deck.hasOwnProperty('currentIndex')) {
-            deck.currentIndex=-1;
+            deck.currentIndex = -1;
         }
         if (deck.currentIndex && deck.currentIndex + 1 >= deck.flashCards.length) {
             deck.mode = 'COMPLETE'
@@ -111,6 +123,7 @@ export function flashGangMiddleware({ dispatch }) {
                     action.data.flashDeck.id = uuidv4()
                 }
                 var mode = action.data.flashDeck.mode
+                delete action.data.flashDeck.dirty
                 delete action.data.flashDeck.mode
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
                 action.data.flashDeck.mode = mode
@@ -152,9 +165,10 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware LOAD_FLASHDECK')
                 var flashDeck = JSON.parse(localStorage.getItem('flashDeck-' + action.data.flashDeckId))
                 action.data.flashDeck = flashDeck
+                flashDeck.dirty=false
                 delete flashDeck.currentIndex
                 action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
-                if (action.data.answerType && action.data.testType){
+                if (action.data.answerType && action.data.testType) {
                     flashDeck.answerType = action.data.answerType
                     flashDeck.testType = action.data.testType
                     selectNextCard(flashDeck)
@@ -162,10 +176,28 @@ export function flashGangMiddleware({ dispatch }) {
             }
             else if (action.type === SCORE_CARD) {
                 scoreCard(action.data.flashDeck);
-                if (action.data.flashDeck.testType!='REVISION' && action.data.flashDeck.testType!='CRAM') {
+                if (action.data.flashDeck.testType != 'REVISION' && action.data.flashDeck.testType != 'CRAM') {
                     selectNextCard(action.data.flashDeck)
                 }
                 console.log('Middleware SCORE_CARD')
+            } else if (action.type === DELETE_DECK) {
+                console.log('Middleware DELETE_DECK')
+                localStorage.removeItem('flashDeck-' + action.data.flashDeckId)
+            } else if (action.type === DELETE_CARD) {
+                console.log('Middleware DELETE_CARD')
+                action.data.flashDeck.flashCards.splice(action.data.flashDeck.currentIndex, 1)
+                if (action.data.flashDeck.currentIndex >= action.data.flashDeck.flashCards.length) {
+                    action.data.flashDeck.currentIndex = action.data.flashDeck.flashCards.length - 1
+                    if (action.data.flashDeck.currentIndex < 0) {
+                        delete action.data.flashDeck.currentIndex
+                    }
+                }
+            } else if (action.type === PREV_CARD) {
+                console.log('Middleware PREV_CARD')
+                action.data.flashDeck.currentIndex = action.data.flashDeck.currentIndex - 1
+                if (action.data.flashDeck.currentIndex < 0) {
+                    delete action.data.flashDeck.currentIndex
+                }
             }
             return next(action);
         }

@@ -21,6 +21,9 @@ export default class FlashTestSingleAnswer extends React.Component {
                 <Grid>
                     {card.question}
                     <IntegratedInput
+                        onEnterKey={(e)=>{
+                            this.props.onNextCard(this.props.flashDeck)
+                        }}
                         label={'Answer'}
                         placeholder={'Correct answer '}
                         onChange={

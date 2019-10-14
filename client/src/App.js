@@ -20,7 +20,7 @@ export default class App extends React.Component {
     this.goHome = this.goHome.bind(this)
   }
   createFlashDeck() {
-    this.setState({ mode: 'EDIT' })
+    this.setState({ mode: 'EDIT', flashDeckId: null })
   }
   onFlashDeckSelected(flashDeckId, mode) {
     this.setState({ flashDeckId: flashDeckId, mode: mode })

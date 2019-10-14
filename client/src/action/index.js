@@ -4,7 +4,9 @@ export const NEXT_CARD = 'NEXT_CARD';
 export const LOAD_DECKS = 'LOAD_DECKS';
 export const LOAD_FLASHDECK = 'LOAD_FLASHDECK';
 export const SCORE_CARD = 'SCORE_CARD';
-
+export const DELETE_DECK = 'DELETE_DECK';
+export const DELETE_CARD = 'DELETE_CARD';
+export const PREV_CARD = 'PREV_CARD';
 
 export function newDeck()    
 {
@@ -37,5 +39,23 @@ export function scoreCard(flashDeck)
 {
     console.log("Action SCORE_CARD")
     return {type:SCORE_CARD, data:{flashDeck}}
+    
+}
+export function deleteDeck(flashDeckId)
+{
+    console.log("Action DELETE_DECK")
+    return {type:DELETE_DECK, data:{flashDeckId}}
+    
+}
+export function deleteCard(flashDeck)
+{
+    console.log("Action DELETE_CARD")
+    return {type:DELETE_CARD, data:{flashDeck}}
+    
+}
+export function prevCard(flashDeck)
+{
+    console.log("Action PREV_CARD")
+    return {type:PREV_CARD, data:{flashDeck}}
     
 }
