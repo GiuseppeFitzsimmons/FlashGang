@@ -113,6 +113,10 @@ const greenTheme = createMuiTheme({
     },
     incorrect: {
       color: red[400]
+    },
+    disabled: {
+      color: 'rgba(0,0,0,0.6)',
+      backgroundColor: lightGreen[200]
     }
   });
 

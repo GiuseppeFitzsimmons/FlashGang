@@ -24,6 +24,9 @@ class FlashButtonStyled extends Component {
         if (additionalStyle && this.props.square && this.props.width) {
             additionalStyle=Object.assign({}, additionalStyle, {borderRadius:0})
         }
+        if (this.props.disabled) {
+            additionalStyle=Object.assign({}, additionalStyle, this.props.theme.disabled)
+        }
         if (this.props.style) {
             additionalStyle=Object.assign({}, this.props.style, additionalStyle)
         }
