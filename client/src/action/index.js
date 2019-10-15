@@ -7,6 +7,7 @@ export const SCORE_CARD = 'SCORE_CARD';
 export const DELETE_DECK = 'DELETE_DECK';
 export const DELETE_CARD = 'DELETE_CARD';
 export const PREV_CARD = 'PREV_CARD';
+export const LOAD_GANGS = 'LOAD_GANGS';
 
 export function newDeck()    
 {
@@ -58,4 +59,9 @@ export function prevCard(flashDeck)
     console.log("Action PREV_CARD")
     return {type:PREV_CARD, data:{flashDeck}}
     
+}
+export function loadGangs()    
+{
+    console.log("Action LOAD_GANGS")
+    return {type:LOAD_GANGS}
 }

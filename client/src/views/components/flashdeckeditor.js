@@ -66,7 +66,6 @@ class FlashDeckEditor extends React.Component {
   }
   render() {
     const flashDeck = this.props.flashDeck
-    console.log('flashDeck', flashDeck)
     const theme = this.theme;
     return (
       <Grid container

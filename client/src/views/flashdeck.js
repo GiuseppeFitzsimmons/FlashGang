@@ -56,7 +56,7 @@ class FlashDeck extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name: null} station='DECK' goHome = {this.props.goHome}/>
+        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name: null} station='DECK' goHome = {this.props.goHome} goGangs = {this.props.goGangs}/>
         {renderable}
       </>
     )

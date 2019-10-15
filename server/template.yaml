@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Test template
+
+Globals:
+  Function:
+    Timeout: 18
+    Runtime: nodejs8.10
+    Handler: index.handler
+Resources:
+  ApiGateway:
+    Type: 'AWS::Serverless::Api'
+    Properties:
+      Name: gateway
+      StageName: dev
+  SynchroniseLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Environment:
+        Variables:
+          FLASHDECK_TABLE_NAME: !Sub ${AWS::StackName}-flashdeck-table
+          DYNAMODB_ENDPOINT: "http://localhost:8000"
+          REGION: "eu-west-1"
+      CodeUri: synchroniselambda/
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      RestApiId: 
+        !Ref ApiGateway
+      Events:
+        ApiEventSource:
+          Type: Api
+          Properties:
+            Path: /synchronise
+            Method: any
+  FlashDeckTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName:
+        !Sub ${AWS::StackName}-flashdeck-table
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5

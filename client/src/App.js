@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './views/home';
 import FlashDeck from './views/flashdeck';
+import FlashGangs from './views/flashgangs';
 import { Provider } from 'react-redux';
 import store from './store';
 import './App.css';
@@ -18,6 +19,7 @@ export default class App extends React.Component {
     this.createFlashDeck = this.createFlashDeck.bind(this)
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
     this.goHome = this.goHome.bind(this)
+    this.goGangs = this.goGangs.bind(this)
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
@@ -28,6 +30,9 @@ export default class App extends React.Component {
   goHome(){
     this.setState({mode:''})
   }
+  goGangs(){
+    this.setState({mode:'GANGS'})
+  }
   render() {
     let renderable = <Home onNewButton={this.createFlashDeck} onFlashDeckSelected={this.onFlashDeckSelected} />
     if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
@@ -35,6 +40,11 @@ export default class App extends React.Component {
         goHome = {this.goHome}
         flashDeckId={this.state.flashDeckId}
         mode={this.state.mode}
+        goGangs = {this.goGangs}
+      />
+    } else if (this.state.mode == 'GANGS'){
+      renderable = <FlashGangs
+      goHome = {this.goHome}
       />
     }
     return (

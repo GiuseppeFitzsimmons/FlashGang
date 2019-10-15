@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -198,6 +198,17 @@ export function flashGangMiddleware({ dispatch }) {
                 if (action.data.flashDeck.currentIndex < 0) {
                     delete action.data.flashDeck.currentIndex
                 }
+            } else if (action.type === LOAD_GANGS) {
+                console.log('Middleware LOAD_GANGS')
+                var gangs = []
+                var keys = Object.entries(localStorage)
+                for (var i = 0; i < localStorage.length; i++) {
+                    var key = keys[i];
+                    if (key[0].indexOf('flashGang-') == 0) {
+                        gangs.push(JSON.parse(localStorage.getItem(key[0])))
+                    }
+                }
+                action.flashGangs = gangs
             }
             return next(action);
         }

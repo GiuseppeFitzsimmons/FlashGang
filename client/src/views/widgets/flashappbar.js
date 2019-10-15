@@ -64,6 +64,20 @@ export default class FlashAppBar extends React.Component {
         />
       </FlashListItem>
       }
+      {(this.props.station == 'DECK') &&
+        <FlashListItem alignItems="flex-start"
+        onClick={this.props.goGangs}
+        button
+      >
+        <ListItemAvatar>
+          <Icon style={{ fontSize: 30 }}>home</Icon>
+        </ListItemAvatar>
+        <ListItemText
+          primary="Flash gangs"
+          secondary="Click here to go see your gangs"
+        />
+      </FlashListItem>
+      }
     </>
     return (
       <div>
