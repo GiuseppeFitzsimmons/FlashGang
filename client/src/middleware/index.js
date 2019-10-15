@@ -24,7 +24,7 @@ function scoreCard(deck) {
         let fuzzyAnswered = fuzzyAnswer.get(card.userAnswer)
         let fuzziness = 0
         let deckFuzziness = deck.fuzziness ? deck.fuzziness:1
-        if (fuzzyAnswer && fuzzyAnswered[0]){
+        if (fuzzyAnswered && fuzzyAnswered[0]){
             if (fuzzyAnswered[0][0]){
                 fuzziness = fuzzyAnswered[0][0]
             }

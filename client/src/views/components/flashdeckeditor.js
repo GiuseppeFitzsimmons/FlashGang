@@ -107,9 +107,7 @@ class FlashDeckEditor extends React.Component {
             input => input ? input.reset(flashDeck.description) : true
           }
         />
-        <div>
-          Fuzziness
-        </div>
+        <label style={{ color: 'rgba(0,0,0,0.6)', marginTop:'18px' }}>Fuzziness</label>
         <Slider
           defaultValue={flashDeck.fuzziness ? flashDeck.fuzziness : 0}
           getAriaValueText={valuetext}
@@ -139,7 +137,7 @@ class FlashDeckEditor extends React.Component {
           color='primary'
           variant='contained'
           buttonType='system'
-          icon='work'
+          icon={!flashDeck.dirty || !flashDeck.name || flashDeck.name == '' ? 'lens' : 'blur_on'}
           disabled={!flashDeck.dirty || !flashDeck.name || flashDeck.name == ''}
           onClick={() => {
             this.props.saveDeck(this.props.flashDeck)
