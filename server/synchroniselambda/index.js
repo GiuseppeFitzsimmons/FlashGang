@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
         }
         //return all the flashcards to which the user has access and which have a lastModified date
         //later than the date passed in the request (TODO - user id and lastModified date)
-        var allFlashDecks=await dynamodbfordummies.getFlashDecks(null, null, process.env.FLASHDECK_TABLE_NAME);
+        var allFlashDecks=await dynamodbfordummies.getFlashDecks(null, 0, process.env.FLASHDECK_TABLE_NAME);
         reply.flashDecks=allFlashDecks;
     }
     returnObject.body = JSON.stringify(reply)
@@ -47,7 +47,7 @@ Example post
 		{
 			"id":"11",
 			"name":"My gang",
-			"description": "My homeys studying the multiplication tables",
+			"description": "My homies studying the multiplication tables",
 			"owner": "1000",
 			"members":[
 				{

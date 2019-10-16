@@ -36,13 +36,34 @@ Resources:
             Path: /synchronise
             Method: any
   FlashDeckTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      TableName:
-        !Sub ${AWS::StackName}-flashdeck-table
-      PrimaryKey:
-        Name: id
-        Type: String
+      TableName: !Sub ${AWS::StackName}-flashdeck-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: lastModified
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: lastModified
+          AttributeType: N
+      GlobalSecondaryIndexes:
+        - IndexName: last_modified_index
+          KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+            - AttributeName: lastModified
+              KeyType: RANGE
+          Projection:
+            ProjectionType: KEYS_ONLY
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true

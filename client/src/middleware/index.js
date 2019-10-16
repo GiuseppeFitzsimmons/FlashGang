@@ -1,8 +1,159 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
+const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
+
+async function synchronise() {
+    console.log('Synchronisation')
+    var questObject = {}
+    questObject.params = {}
+    var decks = []
+    var keys = Object.entries(localStorage)
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = keys[i];
+        if (key[0].indexOf('flashDeck-') == 0) {
+            decks.push(JSON.parse(localStorage.getItem(key[0])))
+        }
+    }
+    questObject.params.flashDecks = decks
+    //questObject.params.flashGangs = gangs
+    questObject.resource = 'synchronise'
+    let postResult = await postToServer(questObject)
+    if (postResult.flashDecks){
+        for (var i in postResult.flashDecks){
+            let _deck = postResult.flashDecks[i]
+            localStorage.setItem('flashDeck-' + _deck.id, JSON.stringify(_deck))
+        }
+    }
+}
+
+const restfulResources = { synchronise: '/synchronise' }
+
+async function postToServer(questObject) {
+    var environment = env.getEnvironment(window.location.origin);
+    var restfulResource = questObject.resource;
+    var params = questObject.params;
+    console.log('Params0', questObject.params)
+    var isFormData = false
+    if (typeof (params) == 'object') {
+        for (var _name in params) {
+            var param = params[_name]
+            if (param && param.type == 'file') {
+                isFormData = true
+                //break
+            }
+        }
+        if (isFormData) {
+            var data = new FormData()
+            for (var _name in params) {
+                var param = params[_name]
+                console.log('paramandname', param, _name)
+                if (param && param.type == 'file') {
+                    data.append('file', param.files[0])
+                } else {
+                    data.append(_name, param)
+                }
+            }
+            params = data
+        } else {
+            params = JSON.stringify(params)
+        }
+    }
+    var token = localStorage.getItem('token')
+    var responseCode = 0;
+    var method = 'POST'
+    if (questObject.update) {
+        method = 'PUT'
+    }
+    var _headers = {}
+    _headers.Authorization = token
+    _headers.Accept = 'application/json, text/plain, */*'
+    if (!isFormData) {
+        _headers['Content-Type'] = 'application/json'
+    }
+    let reply = await fetch(environment.url + restfulResources[restfulResource], {
+        method: method,
+        credentials: "same-origin",
+        headers: _headers,
+        body: params
+    })
+        .then(function (response) {
+            responseCode = response.status;
+            return response.json();
+
+        })
+        .then(function (json) {
+            console.log("REPLY FROM POST", json);
+            return json
+        })
+    if (responseCode == 401 && reply.code === 'exp' && !questObject.retry) {
+        //the token expired, refresh it and try again
+        await refreshToken();
+        questObject.retry = true;
+        return await postToServer(questObject);
+    }
+    reply.responseCode = responseCode;
+    return reply
+}
+
+async function getFromServer(questObject) {
+    var environment = env.getEnvironment(window.location.origin);
+    var restfulResource = questObject.resource;
+    var params = questObject.params;
+    var responseCode = 0;
+    var token = localStorage.getItem('token');
+    var _url = environment.url + restfulResources[restfulResource];
+    if (params && params.id) {
+        _url += '/' + params.id
+    }
+    let reply = await fetch(_url, {
+        method: "GET",
+        credentials: "same-origin", // send cookies
+        headers: {
+            'Authorization': token,
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(function (response) {
+            responseCode = response.status;
+            return response.json();
+
+        })
+        .then(function (json) {
+            console.log("getFromServer then", json);
+            return json
+        })
+    if (responseCode == 401 && reply.code === 'exp' && !questObject.retry) {
+        await refreshToken();
+        questObject.retry = true;
+        return await getFromServer(questObject);
+    } else {
+        reply.responseCode = responseCode;
+        return reply
+    }
+}
+
+async function refreshToken() {
+    var _refreshToken = localStorage.getItem('refresh');
+    const params = {
+        "grant_type": "refresh",
+        "token": _refreshToken
+    }
+    var questObject = { resource: 'login', params: params };
+    let refresh = await postToServer(questObject);
+    if (refresh.responseCode != 200 && refresh.responseCode != 201) {
+        console.log("failed to refresh token TODO clear the session, return to login")
+    } else {
+        console.log("token is refreshed, storing new tokens in session")
+        localStorage.setItem('token', refresh.token)
+        localStorage.setItem('refresh', refresh.refreshToken)
+    }
+    return refresh;
+
+}
 
 function scoreCard(deck) {
     console.log('deck', deck)
@@ -23,14 +174,14 @@ function scoreCard(deck) {
         let fuzzyAnswer = FuzzySet([card.correctAnswers[0]])
         let fuzzyAnswered = fuzzyAnswer.get(card.userAnswer)
         let fuzziness = 0
-        let deckFuzziness = deck.fuzziness ? deck.fuzziness:1
-        if (fuzzyAnswered && fuzzyAnswered[0]){
-            if (fuzzyAnswered[0][0]){
+        let deckFuzziness = deck.fuzziness ? deck.fuzziness : 1
+        if (fuzzyAnswered && fuzzyAnswered[0]) {
+            if (fuzzyAnswered[0][0]) {
                 fuzziness = fuzzyAnswered[0][0]
             }
         }
-        let invertedFuzziness = 10-(fuzziness*10)
-        if (invertedFuzziness>deckFuzziness) {
+        let invertedFuzziness = 10 - (fuzziness * 10)
+        if (invertedFuzziness > deckFuzziness) {
             card.correct = false
         }
     }
@@ -116,6 +267,9 @@ export function flashGangMiddleware({ dispatch }) {
             if (action.type === NEW_DECK) {
                 console.log('Middleware NEW_DECK')
                 action.data.flashDeck = { mode: 'EDIT' }
+            } else if (action.type === NEW_GANG) {
+                console.log('Middleware NEW_GANG')
+                action.flashGang = {}
             }
             else if (action.type === SAVE_DECK) {
                 console.log('Middleware SAVE_DECK')
@@ -127,6 +281,7 @@ export function flashGangMiddleware({ dispatch }) {
                 delete action.data.flashDeck.mode
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
                 action.data.flashDeck.mode = mode
+                synchronise()
             }
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
@@ -165,7 +320,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware LOAD_FLASHDECK')
                 var flashDeck = JSON.parse(localStorage.getItem('flashDeck-' + action.data.flashDeckId))
                 action.data.flashDeck = flashDeck
-                flashDeck.dirty=false
+                flashDeck.dirty = false
                 delete flashDeck.currentIndex
                 action.data.flashDeck.mode = action.data.mode ? action.data.mode : 'TEST'
                 if (action.data.answerType && action.data.testType) {

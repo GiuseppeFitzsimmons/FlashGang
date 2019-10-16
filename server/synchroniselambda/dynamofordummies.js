@@ -2,12 +2,16 @@ const AWS = require('aws-sdk');
 
 async function getFlashDecks(userId, lastModifiedDate, tableName) {
     var params = {
-        TableName: tableName
-    };
-
+        TableName: tableName,
+        IndexName: 'last_modified_index',
+        KeyConditionExpression: 'lastModified > :ldate',
+        ExpressionAttributeValues: {
+          ':ldate': lastModifiedDate
+        }
+    }
     var documentClient = getDocumentDbClient();
     let decks = await new Promise((resolve, reject) => {
-        documentClient.scan(params, function (err, data) {
+        documentClient.query(params, function (err, data) {
             if (err) {
                 console.log(err);
                 resolve();

@@ -79,6 +79,7 @@ class FlashGangs extends React.Component {
             <ListItemText
               primary="New"
               secondary="Click here to create a new FlashGang"
+              onClick={this.props.createFlashGang}
               />
           </FlashListItem>
           {generateFlashGangList()}

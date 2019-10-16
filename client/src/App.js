@@ -4,6 +4,7 @@ import './App.css';
 import Home from './views/home';
 import FlashDeck from './views/flashdeck';
 import FlashGangs from './views/flashgangs';
+import FlashGangEditor from './views/components/flashgangeditor';
 import { Provider } from 'react-redux';
 import store from './store';
 import './App.css';
@@ -20,12 +21,16 @@ export default class App extends React.Component {
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
     this.goHome = this.goHome.bind(this)
     this.goGangs = this.goGangs.bind(this)
+    this.createFlashGang = this.createFlashGang.bind(this)
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
   }
   onFlashDeckSelected(flashDeckId, mode) {
     this.setState({ flashDeckId: flashDeckId, mode: mode })
+  }
+  createFlashGang() {
+    this.setState({ mode: 'EDITGANG', flashGangId: null })
   }
   goHome(){
     this.setState({mode:''})
@@ -45,6 +50,12 @@ export default class App extends React.Component {
     } else if (this.state.mode == 'GANGS'){
       renderable = <FlashGangs
       goHome = {this.goHome}
+      createFlashGang={this.createFlashGang}
+      />
+    } else if (this.state.mode == 'EDITGANG'){
+      renderable = <FlashGangEditor
+      goHome = {this.goHome}
+      flashGangId={this.state.flashGangId}
       />
     }
     return (

@@ -1,4 +1,5 @@
 export const NEW_DECK = 'NEW_DECK';
+export const NEW_GANG = 'NEW_GANG';
 export const SAVE_DECK = 'SAVE_DECK';
 export const NEXT_CARD = 'NEXT_CARD';
 export const LOAD_DECKS = 'LOAD_DECKS';
@@ -9,10 +10,16 @@ export const DELETE_CARD = 'DELETE_CARD';
 export const PREV_CARD = 'PREV_CARD';
 export const LOAD_GANGS = 'LOAD_GANGS';
 
+
 export function newDeck()    
 {
     console.log("Action NEW_DECK")
     return {type:NEW_DECK,data:{flashDeck:{}}}
+}
+export function newGang()    
+{
+    console.log("Action NEW_GANG")
+    return {type:NEW_GANG,data:{flashGang:{}}}
 }
 export function saveDeck(flashDeck)    
 {
