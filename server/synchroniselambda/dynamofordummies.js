@@ -1,5 +1,24 @@
 const AWS = require('aws-sdk');
 
+async function getFlashDecks(userId, lastModifiedDate, tableName) {
+    var params = {
+        TableName: tableName
+    };
+
+    var documentClient = getDocumentDbClient();
+    let decks = await new Promise((resolve, reject) => {
+        documentClient.scan(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                resolve();
+            } else {
+                console.log(data);
+                resolve(data.Items)
+            }
+        });
+    })
+    return decks;
+}
 
 async function putItem(item, tableName) {
     console.log('tableName', tableName)
