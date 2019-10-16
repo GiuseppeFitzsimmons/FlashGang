@@ -5,6 +5,7 @@ exports.handler = async (event, context) => {
     returnObject.statusCode = 200
     console.log('event', event)
     let now=new Date();
+    var reply={}
     if (event.httpMethod == 'post'){
         //store all the flashcards sent from the user
         for (var i in event.body.flashDecks){
@@ -14,11 +15,11 @@ exports.handler = async (event, context) => {
             await dynamodbfordummies.putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
         }
         //return all the flashcards to which the user has access and which have a lastModified date
-        //later than the 
+        //later than the date passed in the request (TODO - user id and lastModified date)
+        var allFlashDecks=await dynamodbfordummies.getFlashDecks(null, null, process.env.FLASHDECK_TABLE_NAME);
+        reply.flashDecks=allFlashDecks;
     }
-    returnObject.body = JSON.stringify({
-        answer:'helloworld'
-    })
+    returnObject.body = JSON.stringify(reply)
     return returnObject
 }
 

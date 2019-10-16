@@ -104,5 +104,6 @@ async function removeItem(id, tableName) {
 module.exports = {
     putItem,
     removeItem,
-    getItem
+    getItem,
+    getFlashDecks
 }
