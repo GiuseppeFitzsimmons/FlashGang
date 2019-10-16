@@ -19,7 +19,8 @@ Resources:
     Properties:
       Environment:
         Variables:
-          FLASHDECK_TABLE_NAME: !Sub ${AWS::StackName}-flashdeck-table
+          FLASHDECK_TABLE_NAME:
+            !Sub ${AWS::StackName}-flashdeck-table
           DYNAMODB_ENDPOINT: "http://localhost:8000"
           REGION: "eu-west-1"
       CodeUri: synchroniselambda/
