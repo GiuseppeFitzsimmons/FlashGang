@@ -238,6 +238,7 @@ class FlashGangEditor extends React.Component {
 
 
 function mapStateToProps(state, props) {
+    console.log("mapStateToProps", state);
     return {
         flashGang: state.flashGang
     }

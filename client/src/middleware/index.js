@@ -382,7 +382,7 @@ export function flashGangMiddleware({ dispatch }) {
             } else if (action.type === LOAD_FLASHGANG) {
                 console.log('Middleware LOAD_FLASHGANG')
                 var flashGang = JSON.parse(localStorage.getItem('flashGang-' + action.data.flashGangId))
-                action.data.flashGang = flashGang
+                action.flashGang = flashGang
                 //flashDeck.dirty = false
                 let gangDecks = []
                 if (flashGang.flashDecks){

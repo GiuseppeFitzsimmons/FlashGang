@@ -3,7 +3,7 @@ import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD,
 const initialState = {};
 
 function rootReducer(state = initialState, action) {
-    console.log('Reducer');
+    console.log('Reducer', action);
     let flashDeck;
     if (action && action.data && action.data.flashDeck) {
         //This is why flashdeck wasn't updating - redux insists that you exchange immutable objects
