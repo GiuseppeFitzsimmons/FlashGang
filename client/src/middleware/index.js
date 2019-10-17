@@ -378,6 +378,8 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                 }
                 localStorage.setItem('flashGang-' + action.data.flashGang.id, JSON.stringify(cleanGang))
+                action.flashGang=action.data.flashGang;
+                delete action.data.flashGang;
                 //synchronise()
             } else if (action.type === LOAD_FLASHGANG) {
                 console.log('Middleware LOAD_FLASHGANG')
