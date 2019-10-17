@@ -21,6 +21,8 @@ Resources:
         Variables:
           FLASHDECK_TABLE_NAME:
             !Sub ${AWS::StackName}-flashdeck-table
+          FLASHDECK_USER_TABLE_NAME:
+            !Sub ${AWS::StackName}-flashdeck-user-table
           DYNAMODB_ENDPOINT: "http://localhost:8000"
           REGION: "eu-west-1"
       CodeUri: synchroniselambda/
@@ -49,10 +51,32 @@ Resources:
           AttributeType: S
         - AttributeName: lastModified
           AttributeType: N
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  FlashDeckUserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-flashdeck-user-table
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: flashDeckId
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: flashDeckId
+          AttributeType: S
+        - AttributeName: lastModified
+          AttributeType: N
       GlobalSecondaryIndexes:
-        - IndexName: last_modified_index
+        - IndexName: userId_index
           KeySchema:
-            - AttributeName: id
+            - AttributeName: userId
               KeyType: HASH
             - AttributeName: lastModified
               KeyType: RANGE
@@ -64,6 +88,6 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
-      BillingMode: PROVISIONED
+      BillingMode: PAY_PER_REQUEST
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true

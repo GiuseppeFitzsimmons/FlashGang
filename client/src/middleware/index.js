@@ -61,7 +61,7 @@ async function postToServer(questObject) {
             params = JSON.stringify(params)
         }
     }
-    var token = localStorage.getItem('token')
+    var token = localStorage.getItem('flashToken')
     var responseCode = 0;
     var method = 'POST'
     if (questObject.update) {

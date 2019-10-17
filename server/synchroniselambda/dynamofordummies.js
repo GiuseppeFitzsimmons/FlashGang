@@ -1,17 +1,31 @@
 const AWS = require('aws-sdk');
 
-async function getFlashDecks(userId, lastModifiedDate, tableName) {
+async function getFlashDecks(userId, lastModifiedDate) {
+    //TODO
+    /*
     var params = {
-        TableName: tableName,
-        IndexName: 'last_modified_index',
-        KeyConditionExpression: 'lastModified > :ldate',
+    TableName: 'CrockStack-flashdeck-user-table',
+    IndexName: 'userId_index', // optional (if querying an index)
+    KeyConditionExpression: 'userId = :value and lastModified > :lm', // a string representing a constraint on the attribute
+    
+    ExpressionAttributeValues: { // a map of substitutions for all attribute values
+      ':value': 'phillip@flash.com',
+      ':lm': 1571318216307
+    },
+    ScanIndexForward: true
+};
+    */
+    var params = {
+        TableName: process.env.FLASHDECK_TABLE_NAME,
+        FilterExpression : 'lastModified > :ldate',
         ExpressionAttributeValues: {
           ':ldate': lastModifiedDate
         }
     }
+    
     var documentClient = getDocumentDbClient();
     let decks = await new Promise((resolve, reject) => {
-        documentClient.query(params, function (err, data) {
+        documentClient.scan(params, function (err, data) {
             if (err) {
                 console.log(err);
                 resolve();
@@ -22,6 +36,18 @@ async function getFlashDecks(userId, lastModifiedDate, tableName) {
         });
     })
     return decks;
+}
+async function putFlashDeck(flashDeck, userId) {
+    let now=new Date();
+    flashDeck.lastModified=now.getTime();
+    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
+    let flashDeckOwner={
+        userId: userId,
+        flashDeckId: flashDeck.id,
+        lastModified: flashDeck.lastModified,
+        role: 'BOSS'
+    }
+    await putItem(flashDeckOwner, process.env.FLASHDECK_USER_TABLE_NAME)
 }
 
 async function putItem(item, tableName) {
@@ -109,5 +135,6 @@ module.exports = {
     putItem,
     removeItem,
     getItem,
-    getFlashDecks
+    getFlashDecks,
+    putFlashDeck
 }
