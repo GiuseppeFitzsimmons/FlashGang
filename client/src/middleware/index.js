@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -21,8 +21,8 @@ async function synchronise() {
     //questObject.params.flashGangs = gangs
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
-    if (postResult.flashDecks){
-        for (var i in postResult.flashDecks){
+    if (postResult.flashDecks) {
+        for (var i in postResult.flashDecks) {
             let _deck = postResult.flashDecks[i]
             localStorage.setItem('flashDeck-' + _deck.id, JSON.stringify(_deck))
         }
@@ -364,6 +364,35 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                 }
                 action.flashGangs = gangs
+            } else if (action.type === SAVE_GANG) {
+                if (!action.data.flashGang.id) {
+                    action.data.flashGang.id = uuidv4()
+                }
+                //delete action.data.flashDeck.dirty
+                let cleanGang = Object.assign({}, action.data.flashGang)
+                cleanGang.flashDecks = []
+                if (action.data.flashGang.flashDecks) {
+                    for (var i in action.data.flashGang.flashDecks) {
+                        let gangDeck = action.data.flashGang.flashDecks[i]
+                        cleanGang.flashDecks.push(gangDeck.id)
+                    }
+                }
+                localStorage.setItem('flashGang-' + action.data.flashGang.id, JSON.stringify(cleanGang))
+                //synchronise()
+            } else if (action.type === LOAD_FLASHGANG) {
+                console.log('Middleware LOAD_FLASHGANG')
+                var flashGang = JSON.parse(localStorage.getItem('flashGang-' + action.data.flashGangId))
+                action.data.flashGang = flashGang
+                //flashDeck.dirty = false
+                let gangDecks = []
+                if (flashGang.flashDecks){
+                    for (var i in flashGang.flashDecks){
+                        let deckId = flashGang.flashDecks[i]
+                        let deck = JSON.parse(localStorage.getItem('flashDeck-' + deckId))
+                        gangDecks.push(deck)
+                    }
+                }
+                flashGang.flashDecks = gangDecks
             }
             return next(action);
         }

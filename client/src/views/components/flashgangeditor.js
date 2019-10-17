@@ -30,8 +30,10 @@ class FlashGangEditor extends React.Component {
             deckTab: 'none'
         }
         this.invite = this.invite.bind(this)
+        this.onDecksSelected = this.onDecksSelected.bind(this)
     }
     componentDidMount() {
+        console.log('this.props',this.props)
         if (!this.props.flashGangId) {
             this.props.newGang()
         } else {
@@ -40,6 +42,9 @@ class FlashGangEditor extends React.Component {
     }
     componentDidUpdate() {
         console.log('props', this.props)
+    }
+    onDecksSelected() {
+        this.forceUpdate()
     }
     invite() {
         if (!this.props.flashGang.members) {
@@ -123,11 +128,16 @@ class FlashGangEditor extends React.Component {
                 >
                     DECK LIST
                     <List>
-                       <DeckSelector/>
+                        <DeckSelector
+                            onClose={this.onDecksSelected}
+                            flashGang={flashGang}
+                        />
+                        {this.generateFlashDeckList()}
                     </List>
                 </div>
                 <FlashButton
                     buttonType='system'
+                    onClick={() => { this.props.saveGang(flashGang) }}
                 >
                     Save
                 </FlashButton>
@@ -189,7 +199,40 @@ class FlashGangEditor extends React.Component {
             </>
         )
     }
+    generateFlashDeckList() {
+        const flashDecks = this.props.flashGang && this.props.flashGang.flashDecks ? this.props.flashGang.flashDecks : []
+        var _display = flashDecks.map((flashDeck, i) => {
+            if (!flashDeck.icon) {
+                flashDeck.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
+            }
+            return (
+                <>
+                    <Grid>
+                        <ListItem alignItems="flex-start"
+                            button>
+                            <ListItemAvatar>
+                                <Icon style={{ fontSize: 30 }}>{flashDeck.icon}</Icon>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={flashDeck.name}
+                                secondary={flashDeck.description}
+                            />
+                        </ListItem>
+                    </Grid>
+                    {i < flashDecks.length - 1 &&
+                        <Divider variant="inset" component="li" />
+                    }
+                </>
+            )
+        })
+        return (
+            <>
+                {_display}
+            </>
+        )
+    }
 }
+
 
 
 

@@ -22,12 +22,16 @@ export default class App extends React.Component {
     this.goHome = this.goHome.bind(this)
     this.goGangs = this.goGangs.bind(this)
     this.createFlashGang = this.createFlashGang.bind(this)
+    this.onFlashGangSelected = this.onFlashGangSelected.bind(this)
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
   }
   onFlashDeckSelected(flashDeckId, mode) {
     this.setState({ flashDeckId: flashDeckId, mode: mode })
+  }
+  onFlashGangSelected(flashGangId) {
+    this.setState({ flashGangId: flashGangId, mode: 'EDITGANG' })
   }
   createFlashGang() {
     this.setState({ mode: 'EDITGANG', flashGangId: null })
@@ -52,6 +56,7 @@ export default class App extends React.Component {
       />
     } else if (this.state.mode == 'GANGS'){
       renderable = <FlashGangs
+      onFlashGangSelected = {this.onFlashGangSelected}
       goHome = {this.goHome}
       createFlashGang={this.createFlashGang}
       />

@@ -9,7 +9,8 @@ export const DELETE_DECK = 'DELETE_DECK';
 export const DELETE_CARD = 'DELETE_CARD';
 export const PREV_CARD = 'PREV_CARD';
 export const LOAD_GANGS = 'LOAD_GANGS';
-
+export const SAVE_GANG = 'SAVE_GANG';
+export const LOAD_FLASHGANG = 'LOAD_FLASHGANG';
 
 export function newDeck()    
 {
@@ -71,4 +72,15 @@ export function loadGangs()
 {
     console.log("Action LOAD_GANGS")
     return {type:LOAD_GANGS}
+}
+export function saveGang(flashGang)    
+{
+    console.log("Action SAVE_GANG")
+    return {type:SAVE_GANG, data:{flashGang}}
+}
+export function loadFlashGang(flashGangId)
+{
+    console.log("Action LOAD_FLASHGANG")
+    return {type:LOAD_FLASHGANG, data:{flashGangId}}
+    
 }

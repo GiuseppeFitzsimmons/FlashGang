@@ -42,7 +42,7 @@ class FlashGangs extends React.Component {
           <ListItem alignItems="flex-start"
             button
             onClick={()=>
-              this.props.onFlashGangSelected(flashGang.id, 'GANG')
+              this.props.onFlashGangSelected(flashGang.id)
             }>
             <ListItemAvatar>
               <Icon style={{fontSize:30}}>{flashGang.icon}</Icon>
