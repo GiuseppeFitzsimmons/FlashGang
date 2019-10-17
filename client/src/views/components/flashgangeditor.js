@@ -57,60 +57,6 @@ class FlashGangEditor extends React.Component {
     }
     render() {
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
-        const generateFlashGangMemberList = () => {
-            if (!flashGang.members) {
-                return (
-                    <></>
-                )
-            }
-            var _display = flashGang.members.map((member, i) => {
-                if (!member.icon) {
-                    member.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
-                }
-                return (
-                    <>
-                        <Grid>
-                            <ListItem alignItems="flex-start"
-                                button>
-                                <ListItemAvatar>
-                                    <Icon style={{ fontSize: 30 }}>{member.icon}</Icon>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={member.name}
-                                    secondary={member.rank}
-                                />
-                            </ListItem>
-                            <IntegratedInput
-                                label="Email"
-                                id='memberEmail'
-                                placeholder='Gang member email'
-                                onChange={
-                                    (event) => { member.email = event.target.value }
-                                }
-                                ref={
-                                    input => input ? input.reset(member.email) : true
-                                }
-                            />
-                            <MdDelete
-                                onClick={
-                                    () => {
-                                        this.removeMember(i)
-                                    }
-                                }
-                            />
-                        </Grid>
-                        {i < flashGang.members.length - 1 &&
-                            <Divider variant="inset" component="li" />
-                        }
-                    </>
-                )
-            })
-            return (
-                <>
-                    {_display}
-                </>
-            )
-        }
         return (
             <div>
                 <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} />
@@ -167,7 +113,7 @@ class FlashGangEditor extends React.Component {
                                 secondary="Click here to invite a gang member"
                             />
                         </FlashListItem>
-                        {generateFlashGangMemberList()}
+                        {this.generateFlashGangMemberList()}
                     </List>
                 </div>
                 <div
@@ -186,6 +132,61 @@ class FlashGangEditor extends React.Component {
                     Save
                 </FlashButton>
             </div>
+        )
+    }
+    generateFlashGangMemberList = () => {
+        const flashGang = this.props.flashGang ? this.props.flashGang : {}
+        if (!flashGang.members) {
+            return (
+                <></>
+            )
+        }
+        var _display = flashGang.members.map((member, i) => {
+            if (!member.icon) {
+                member.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
+            }
+            return (
+                <>
+                    <Grid>
+                        <ListItem alignItems="flex-start"
+                            button>
+                            <ListItemAvatar>
+                                <Icon style={{ fontSize: 30 }}>{member.icon}</Icon>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={member.name}
+                                secondary={member.rank}
+                            />
+                        </ListItem>
+                        <IntegratedInput
+                            label="Email"
+                            id='memberEmail'
+                            placeholder='Gang member email'
+                            onChange={
+                                (event) => { member.email = event.target.value }
+                            }
+                            ref={
+                                input => input ? input.reset(member.email) : true
+                            }
+                        />
+                        <MdDelete
+                            onClick={
+                                () => {
+                                    this.removeMember(i)
+                                }
+                            }
+                        />
+                    </Grid>
+                    {i < flashGang.members.length - 1 &&
+                        <Divider variant="inset" component="li" />
+                    }
+                </>
+            )
+        })
+        return (
+            <>
+                {_display}
+            </>
         )
     }
 }

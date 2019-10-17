@@ -22,13 +22,13 @@ class DeckSelector extends React.Component {
     constructor(props) {
         super(props);
         this.state = { open: false, icon: 'add_circle' }
-        this.handleCancel=this.handleCancel.bind(this);
+        this.handleClose=this.handleClose.bind(this);
         this.handleEntering=this.handleEntering.bind(this);
     }
     handleEntering() {
 
     }
-    handleCancel() {
+    handleClose() {
         this.setState({ open: false })
     }
     componentDidMount(){
@@ -95,15 +95,15 @@ class DeckSelector extends React.Component {
                     aria-labelledby="confirmation-dialog-title"
                     open={this.state.open}
                 >
-                    <DialogTitle id="confirmation-dialog-title">Select Icon</DialogTitle>
+                    <DialogTitle id="confirmation-dialog-title">Select Decks</DialogTitle>
 
                     <DialogContent dividers>
                         {generateFlashDeckList()}
                     </DialogContent>
 
                     <DialogActions>
-                        <FlashButton onClick={this.handleCancel} color="primary">
-                            Cancel
+                        <FlashButton onClick={this.handleClose} color="primary">
+                            Close
                         </FlashButton>
                     </DialogActions>
                 </Dialog>
