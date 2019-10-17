@@ -39,7 +39,10 @@ export default class App extends React.Component {
     this.setState({mode:'GANGS'})
   }
   render() {
-    let renderable = <Home onNewButton={this.createFlashDeck} onFlashDeckSelected={this.onFlashDeckSelected} />
+    let renderable = <Home 
+        onNewButton={this.createFlashDeck} 
+        onFlashDeckSelected={this.onFlashDeckSelected}
+        goGangs = {this.goGangs}/>
     if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
         goHome = {this.goHome}

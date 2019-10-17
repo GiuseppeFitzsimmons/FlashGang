@@ -52,9 +52,9 @@ export default class FlashAppBar extends React.Component {
       </FlashListItem>
       {(this.props.station == 'DECK' || this.props.station == 'GANGS') &&
         <FlashListItem alignItems="flex-start"
-        onClick={this.props.goHome}
-        button
-      >
+          onClick={this.props.goHome}
+          button
+        >
         <ListItemAvatar>
           <Icon style={{ fontSize: 30 }}>home</Icon>
         </ListItemAvatar>
@@ -64,7 +64,7 @@ export default class FlashAppBar extends React.Component {
         />
       </FlashListItem>
       }
-      {(this.props.station == 'DECK') &&
+      {(this.props.station == 'DECK' || this.props.station == 'HOME') &&
         <FlashListItem alignItems="flex-start"
         onClick={this.props.goGangs}
         button

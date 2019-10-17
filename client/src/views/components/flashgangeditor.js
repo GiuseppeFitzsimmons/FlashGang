@@ -113,7 +113,7 @@ class FlashGangEditor extends React.Component {
         }
         return (
             <div>
-                <FlashAppBar title='FlashGang!' station='GANGS' />
+                <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} />
                 <IntegratedInput
                     label="Gang Name"
                     id='gangName'

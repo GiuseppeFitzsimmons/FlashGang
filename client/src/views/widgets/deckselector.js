@@ -15,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
+import {FlashListItem} from './FlashBits'
 
 
 class DeckSelector extends React.Component {
@@ -70,16 +71,26 @@ class DeckSelector extends React.Component {
           }
         return (
             <>
-                <FlashButton square buttonType='action'
-                    onClick={
-                        () => this.setState({ open: true })
-                    }>
-                    Select decks
-                </FlashButton>
+                <FlashListItem alignItems="flex-start"
+                             onClick={
+                              () => this.setState({ open: true })
+                          }
+                            buttonType='action'
+                            button
+                        >
+                            <ListItemAvatar>
+                                <Icon style={{ fontSize: 30 }}>add_circle</Icon>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary="Select FlashDecks"
+                                secondary="Click here to manage your gang's FlashDecks"
+                            />
+                        </FlashListItem>
                 <Dialog
                     disableBackdropClick
                     disableEscapeKeyDown
-                    maxWidth="xs"
+                    fullWidth={true}
+                    maxWidth='lg'
                     onEntering={this.handleEntering}
                     aria-labelledby="confirmation-dialog-title"
                     open={this.state.open}
