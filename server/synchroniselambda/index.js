@@ -69,7 +69,7 @@ Example post
 					"id":"1001",
 					"state":"TO_INVITE",
 					"email":"homey@hood.com",
-					"rank":"sottocappo"
+					"rank":"SOTTOCAPPO"
 				}
 			],
 			"flashdecks":["10"]

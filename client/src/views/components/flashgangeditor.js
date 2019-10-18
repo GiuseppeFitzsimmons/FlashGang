@@ -94,16 +94,17 @@ class FlashGangEditor extends React.Component {
                         deckTab: value == 1 ? 'block' : 'none'
                     })
                 }}>
-                    <Tab label="Gang members" />
-                    <Tab label="Gang decks" />
+                    <Tab label="Gang members" style={{backgroundColor: this.state.memberTab=='block' ? 'rgba(255,255,255,0.4)': 'rgba(0,0,0,0.0)'}}/>
+                    <Tab label="Gang decks" style={{backgroundColor: this.state.deckTab=='block' ? 'rgba(255,255,255,0.4)': 'rgba(0,0,0,0.0)'}}/>
                 </Tabs>
 
                 <div
                     style={{
-                        display: this.state.memberTab
+                        display: this.state.memberTab,
+                        backgroundColor: 'rgba(255,255,255,0.4)',
+                        padding: '2px'
                     }}
                 >
-                    GANG MEMBERS
                     <List>
                         <FlashListItem alignItems="flex-start"
                             onClick={this.invite}
@@ -123,10 +124,11 @@ class FlashGangEditor extends React.Component {
                 </div>
                 <div
                     style={{
-                        display: this.state.deckTab
+                        display: this.state.deckTab,
+                        backgroundColor: 'rgba(255,255,255,0.4)',
+                        padding: '2px'
                     }}
                 >
-                    DECK LIST
                     <List>
                         <DeckSelector
                             onClose={this.onDecksSelected}

@@ -49,11 +49,10 @@ export default class FlashTestMultipleAnswer extends React.Component {
                             }}
                         />
                         :
-                        <FlashRadio
-                        value={answer}
-                        checked={card.userAnswer = card.userAnswer}
-                         onChange={(event) => { card.userAnswer = event.target.value; this.forceUpdate() }}
+                        <Radio
+                         onChange={(event) => { card.userAnswer = answer; this.forceUpdate() }}
                          name='FormControlLabelButton'
+                         value={answer+" "+index+" "}
                         />
                 } 
                 label={answer} 

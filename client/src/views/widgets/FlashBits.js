@@ -101,7 +101,8 @@ class RadioStyled extends Component {
     render() {
         const props=Object.assign({}, this.props, {checked: this.state.checked});
         return (
-            <Radio {...props}
+            <Radio {...this.props}
+            checked={this.state.checked}
                 onChange={
                     (e)=> {
                         console.log("radio props",this.props);
