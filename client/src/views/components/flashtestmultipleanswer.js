@@ -52,7 +52,7 @@ export default class FlashTestMultipleAnswer extends React.Component {
                         <Radio
                          onChange={(event) => { card.userAnswer = answer; }}
                          name='FormControlLabelButton'
-                         value={answer+" "+index+" "+(Math.floor(Math.random() * Math.floor(9)))}
+                         value={answer+" "+index+" "+(Math.floor(Math.random() * Math.floor(9999)))}
                          
                         />
                 } 
