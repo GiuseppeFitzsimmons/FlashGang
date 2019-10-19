@@ -8,15 +8,20 @@ exports.handler = async (event, context) => {
     var token=validateToken(event);
     if (event.httpMethod == 'post'){
         //store all the flashcards sent from the user
+        //TODO deletions
         for (var i in event.body.flashDecks){
             flashDeck = event.body.flashDecks[i]
-            console.log('flashDeck', flashDeck)
             await dynamodbfordummies.putFlashDeck(flashDeck, token.sub)
         }
+        //store all the flashgangs sent from the user
+        for (var i in event.body.flashGangs){
+            flashGang = event.body.flashGangs[i]
+            await dynamodbfordummies.putFlashGang(flashGang, token.sub)
+        }
+        let lastModified=event.body.lastModified ? event.body.lastModified :0;
         //return all the flashcards to which the user has access and which have a lastModified date
-        //later than the date passed in the request (TODO - user id and lastModified date)
-        var allFlashDecks=await dynamodbfordummies.getFlashDecks(token.sub, 0);
-        reply.flashDecks=allFlashDecks;
+        //later than the date passed in the request
+        reply=await dynamodbfordummies.getFlashDecks(token.sub, lastModified);
     }
     returnObject.body = JSON.stringify(reply)
     return returnObject

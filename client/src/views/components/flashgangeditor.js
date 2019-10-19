@@ -33,7 +33,6 @@ class FlashGangEditor extends React.Component {
         this.onDecksSelected = this.onDecksSelected.bind(this)
     }
     componentDidMount() {
-        console.log('this.props',this.props)
         if (!this.props.flashGangId) {
             this.props.newGang()
         } else {
@@ -41,7 +40,6 @@ class FlashGangEditor extends React.Component {
         }
     }
     componentDidUpdate() {
-        console.log('props', this.props)
     }
     onDecksSelected() {
         this.forceUpdate()
@@ -87,8 +85,7 @@ class FlashGangEditor extends React.Component {
                         input => input ? input.reset(flashGang.description) : true
                     }
                 />
-                <Tabs aria-label="simple tabs example" onChange={(e, value) => {
-                    console.log('VALUE', value)
+                <Tabs onChange={(e, value) => {
                     this.setState({
                         memberTab: value == 0 ? 'block' : 'none',
                         deckTab: value == 1 ? 'block' : 'none'
@@ -240,7 +237,6 @@ class FlashGangEditor extends React.Component {
 
 
 function mapStateToProps(state, props) {
-    console.log("mapStateToProps", state);
     return {
         flashGang: state.flashGang
     }
