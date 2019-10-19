@@ -17,8 +17,10 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Icon from '@material-ui/core/Icon';
-import { MdDelete } from 'react-icons/md'
+import { MdDelete } from 'react-icons/md';
 import DeckSelector from '../widgets/deckselector';
+import { IconSelector } from '../widgets/iconselector';
+import { FlashGangMemberListItem } from './flashgangmemberlistitem';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
@@ -63,17 +65,28 @@ class FlashGangEditor extends React.Component {
         return (
             <div>
                 <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} />
-                <IntegratedInput
-                    label="Gang Name"
-                    id='gangName'
-                    placeholder='Your gang name'
-                    onChange={
-                        (event) => { flashGang.name = event.target.value }
-                    }
-                    ref={
-                        input => input ? input.reset(flashGang.name) : true
-                    }
-                />
+                <Grid container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="stretch"
+                >
+                    <Grid item xs='1'>
+                        <IconSelector icon={flashGang.icon} iconClient={flashGang} />
+                    </Grid>
+                    <Grid item xs='10'>
+                        <IntegratedInput
+                            label="Gang Name"
+                            id='gangName'
+                            placeholder='Your gang name'
+                            onChange={
+                                (event) => { flashGang.name = event.target.value }
+                            }
+                            ref={
+                                input => input ? input.reset(flashGang.name) : true
+                            }
+                        />
+                    </Grid>
+                </Grid>
                 <IntegratedInput
                     label="Gang Description"
                     id='gangDescription'
@@ -91,8 +104,8 @@ class FlashGangEditor extends React.Component {
                         deckTab: value == 1 ? 'block' : 'none'
                     })
                 }}>
-                    <Tab label="Gang members" style={{backgroundColor: this.state.memberTab=='block' ? 'rgba(255,255,255,0.4)': 'rgba(0,0,0,0.0)'}}/>
-                    <Tab label="Gang decks" style={{backgroundColor: this.state.deckTab=='block' ? 'rgba(255,255,255,0.4)': 'rgba(0,0,0,0.0)'}}/>
+                    <Tab label="Gang members" style={{ backgroundColor: this.state.memberTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
+                    <Tab label="Gang decks" style={{ backgroundColor: this.state.deckTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
                 </Tabs>
 
                 <div
@@ -156,36 +169,10 @@ class FlashGangEditor extends React.Component {
             }
             return (
                 <>
-                    <Grid>
-                        <ListItem alignItems="flex-start"
-                            button>
-                            <ListItemAvatar>
-                                <Icon style={{ fontSize: 30 }}>{member.icon}</Icon>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={member.name}
-                                secondary={member.rank}
-                            />
-                        </ListItem>
-                        <IntegratedInput
-                            label="Email"
-                            id='memberEmail'
-                            placeholder='Gang member email'
-                            onChange={
-                                (event) => { member.email = event.target.value }
-                            }
-                            ref={
-                                input => input ? input.reset(member.email) : true
-                            }
-                        />
-                        <MdDelete
-                            onClick={
-                                () => {
-                                    this.removeMember(i)
-                                }
-                            }
-                        />
-                    </Grid>
+                <FlashGangMemberListItem
+                gangMember = {member}
+                onDelete = {()=>{this.removeMember(i)}}
+                />
                     {i < flashGang.members.length - 1 &&
                         <Divider variant="inset" component="li" />
                     }

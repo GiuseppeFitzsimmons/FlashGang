@@ -79,7 +79,7 @@ class FlashDeckEditor extends React.Component {
           alignItems="stretch"
         >
           <Grid item xs='1'>
-            <IconSelector icon={flashDeck.icon} flashDeck={flashDeck} />
+            <IconSelector icon={flashDeck.icon} iconClient={flashDeck} />
           </Grid>
           <Grid item xs='10'>
             <IntegratedInput

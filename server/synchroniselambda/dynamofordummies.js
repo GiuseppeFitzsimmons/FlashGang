@@ -111,9 +111,11 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 let existing=result.flashGangsters.filter(gm=>gm.id==gangMember.id);
                 if (existing.length==0) {
                     console.log("USER GANGMEMBER", gangMember)
-                    let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
-                    console.log("USER GANGSTER", gangster)
-                    result.flashGangsters.push(gangster);
+                    if (gangMember.id){
+                        let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
+                        console.log("USER GANGSTER", gangster)
+                        result.flashGangsters.push(gangster);
+                    }
                 }
             }
         }

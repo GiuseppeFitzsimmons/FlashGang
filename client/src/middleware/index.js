@@ -17,8 +17,15 @@ async function synchronise() {
             decks.push(JSON.parse(localStorage.getItem(key[0])))
         }
     }
+    var gangs = []
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = keys[i];
+        if (key[0].indexOf('flashGang-') == 0) {
+            gangs.push(JSON.parse(localStorage.getItem(key[0])))
+        }
+    }
     questObject.params.flashDecks = decks
-    //questObject.params.flashGangs = gangs
+    questObject.params.flashGangs = gangs
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
     if (postResult.flashDecks) {
@@ -27,6 +34,13 @@ async function synchronise() {
             localStorage.setItem('flashDeck-' + _deck.id, JSON.stringify(_deck))
         }
     }
+    if (postResult.flashGangs) {
+        for (var i in postResult.flashGangs) {
+            let _gang = postResult.flashGangs[i]
+            localStorage.setItem('flashGang-' + _gang.id, JSON.stringify(_gang))
+        }
+    }
+    console.log('Synchronisation complete')
 }
 
 const restfulResources = { synchronise: '/synchronise' }
@@ -35,7 +49,6 @@ async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
     var restfulResource = questObject.resource;
     var params = questObject.params;
-    console.log('Params0', questObject.params)
     var isFormData = false
     if (typeof (params) == 'object') {
         for (var _name in params) {
@@ -61,7 +74,7 @@ async function postToServer(questObject) {
             params = JSON.stringify(params)
         }
     }
-    var token = localStorage.getItem('flashToken')
+    var token = localStorage.getItem('flashJwt')
     var responseCode = 0;
     var method = 'POST'
     if (questObject.update) {
@@ -88,6 +101,11 @@ async function postToServer(questObject) {
             console.log("REPLY FROM POST", json);
             return json
         })
+        .catch(function(err) {
+            responseCode = 0
+            console.log('postToServer error', err)
+            return {}
+        })
     if (responseCode == 401 && reply.code === 'exp' && !questObject.retry) {
         //the token expired, refresh it and try again
         await refreshToken();
@@ -95,6 +113,7 @@ async function postToServer(questObject) {
         return await postToServer(questObject);
     }
     reply.responseCode = responseCode;
+    console.log('server reply', reply)
     return reply
 }
 
@@ -380,7 +399,7 @@ export function flashGangMiddleware({ dispatch }) {
                 localStorage.setItem('flashGang-' + action.data.flashGang.id, JSON.stringify(cleanGang))
                 action.flashGang=action.data.flashGang;
                 delete action.data.flashGang;
-                //synchronise()
+                synchronise()
             } else if (action.type === LOAD_FLASHGANG) {
                 console.log('Middleware LOAD_FLASHGANG')
                 var flashGang = JSON.parse(localStorage.getItem('flashGang-' + action.data.flashGangId))

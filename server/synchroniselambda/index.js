@@ -6,6 +6,7 @@ exports.handler = async (event, context) => {
     console.log('event', event)
     var reply={}
     var token=validateToken(event);
+    console.log('token', token)
     if (event.httpMethod == 'post'){
         //store all the flashcards sent from the user
         //TODO deletions
@@ -22,6 +23,7 @@ exports.handler = async (event, context) => {
         //return all the flashcards to which the user has access and which have a lastModified date
         //later than the date passed in the request
         reply=await dynamodbfordummies.getFlashDecks(token.sub, lastModified);
+        console.log('synch lambda reply', reply)
     }
     returnObject.body = JSON.stringify(reply)
     return returnObject

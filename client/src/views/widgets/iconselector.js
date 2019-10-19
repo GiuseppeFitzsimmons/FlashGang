@@ -18,21 +18,23 @@ class IconSelectorStyled extends React.Component {
         this.handleEntering=this.handleEntering.bind(this);
     }
     handleEntering() {
-        if (this.props.flashDeck && this.props.flashDeck.icon) {
-            all_icons.splice(0, 0, this.props.flashDeck.icon);
+        if (this.props.iconClient && this.props.iconClient.icon) {
+            all_icons.splice(0, 0, this.props.iconClient.icon);
         }
     }
     handleCancel() {
         this.setState({ open: false })
     }
     setIcon(icon) {
+        if (this.props.iconClient) {
+            this.props.iconClient.icon=icon;
+        }
         this.setState({
             open:false,
             icon:icon
         })
-        if (this.props.flashDeck) {
-            this.props.flashDeck.icon=icon;
-        }
+        
+        console.log('iconClient', this.props.iconClient)
     }
     render() {
         return (
@@ -41,7 +43,7 @@ class IconSelectorStyled extends React.Component {
                     onClick={
                         () => this.setState({ open: true })
                     }>
-                    <Icon style={{ fontSize: 30 }}>{this.props.flashDeck && this.props.flashDeck.icon ? this.props.flashDeck.icon : this.state.icon}</Icon>
+                    <Icon style={{ fontSize: 30 }}>{this.props.iconClient && this.props.iconClient.icon ? this.props.iconClient.icon : this.state.icon}</Icon>
                 </FlashButton>
                 <Dialog
                     disableBackdropClick
