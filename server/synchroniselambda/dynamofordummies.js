@@ -1,44 +1,7 @@
 const AWS = require('aws-sdk');
 
-async function getFlashDecksOld(userId, lastModifiedDate) {
-    var params = {
-        TableName: process.env.FLASHDECK_TABLE_NAME,
-        FilterExpression : 'lastModified > :ldate',
-        ExpressionAttributeValues: {
-          ':ldate': lastModifiedDate
-        }
-    }
-    
-    var documentClient = getDocumentDbClient();
-    let decks = await new Promise((resolve, reject) => {
-        documentClient.scan(params, function (err, data) {
-            if (err) {
-                console.log(err);
-                resolve();
-            } else {
-                console.log(data);
-                resolve(data.Items)
-            }
-        });
-    })
-    return decks;
-}
 
 async function getFlashDecks(userId, lastModifiedDate) {
-    //TODO
-    /*
-    var params = {
-    TableName: 'CrockStack-flashdeck-user-table',
-    IndexName: 'userId_index', // optional (if querying an index)
-    KeyConditionExpression: 'userId = :value and lastModified > :lm', // a string representing a constraint on the attribute
-    
-    ExpressionAttributeValues: { // a map of substitutions for all attribute values
-      ':value': 'phillip@flash.com',
-      ':lm': 1571318216307
-    },
-    ScanIndexForward: true
-};
-    */
    const result={};
     const params = {
         TableName: process.env.FLASHDECK_USER_TABLE_NAME,
@@ -66,7 +29,6 @@ async function getFlashDecks(userId, lastModifiedDate) {
         //These decks belong to this user, so he's the boss
         userDecks[i].rank='BOSS';
     }
-    console.log("USER DECKS ", userDecks);
     params.TableName=process.env.FLASHGANG_MEMBER_TABLE_NAME
     params.KeyConditionExpression='memberId = :uid and lastModified > :ldate';
     
@@ -81,14 +43,11 @@ async function getFlashDecks(userId, lastModifiedDate) {
             }
         });
     })
-    console.log("USER GANGS ", userGangs);
     result.flashGangs=[];
     result.flashGangsters=[];
     for (var i in userGangs) {
         let userGang=userGangs[i];
-        console.log("USER GANG", userGang)
         let flashGang=await getItem(userGang.flashGangId, process.env.FLASHGANG_TABLE_NAME);
-        console.log("USER FLASHGANG", flashGang)
         result.flashGangs.push(flashGang);
         //put the decks of this gang into the list of gangs, if it's not already there
         if (flashGang.flashDecks) {
@@ -111,11 +70,9 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 let existing=result.flashGangsters.filter(gm=>gm.id==gangMember.id);
                 if (existing.length==0) {
                     console.log("USER GANGMEMBER", gangMember)
-                    if (gangMember.id){
-                        let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
-                        console.log("USER GANGSTER", gangster)
-                        result.flashGangsters.push(gangster);
-                    }
+                    let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
+                    console.log("USER GANGSTER", gangster)
+                    result.flashGangsters.push(gangster);
                 }
             }
         }
@@ -144,6 +101,10 @@ async function putFlashDeck(flashDeck, userId) {
         rank: 'BOSS'
     }
     await putItem(flashDeckOwner, process.env.FLASHDECK_USER_TABLE_NAME)
+    //TODO
+    //Now do the same thing for all gang-to-template records - the lastModified needs to be
+    //updated so that subsequent calls to synchronise from gang members know that there's been
+    //a change to this deck.
 }
 async function putFlashGang(flashGang, userId) {
     let now=new Date();
@@ -158,8 +119,12 @@ async function putFlashGang(flashGang, userId) {
     await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
     if (flashGang.members) {
         for (var i in flashGang.members) {
-            flashGangMember.memberId=flashGang.members[i].userId;
-            flashGangMember.rank=flashGang.members[i].rank;
+            let member=flashGang.members[i];
+            flashGangMember.memberId=member.userId;
+            flashGangMember.rank=member.rank;
+            flashGangMember.email=member.email;
+            flashGangMember.state=member.state;
+            //if state is "TO_INVITE" then we need to generate an invitation token
         }
     }
 }
@@ -199,8 +164,29 @@ function getDocumentDbClient() {
     var documentClient = new AWS.DynamoDB.DocumentClient();
     return documentClient;
 }
-
 async function getItem(id, tableName) {
+    var params = {
+        TableName: tableName,
+        Key: {
+            'id': id
+        }
+    };
+    var documentClient = new AWS.DynamoDB.DocumentClient();
+    let item = await new Promise((resolve, reject) => {
+        documentClient.get(params, function (err, data) {
+            if (err) {
+                console.log("Error", err);
+                reject(err);
+            } else {
+                console.log("Success", data.Item);
+                resolve(data.Item);
+            }
+        });
+    });
+    return item;
+}
+
+async function getItemMaybe(id, tableName) {
     console.log("GET ITEM ", id, tableName);
     let lastModifiedDate=0;
     var params = {
