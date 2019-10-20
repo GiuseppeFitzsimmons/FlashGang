@@ -1,3 +1,5 @@
+const { generateNewPair } = require('tokenutility')
+
 const AWS = require('aws-sdk');
 
 
@@ -6,7 +8,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
     const params = {
         TableName: process.env.FLASHDECK_USER_TABLE_NAME,
         KeyConditionExpression : 'userId = :uid and lastModified > :ldate',
-        IndexName: 'userId_index',
+        IndexName: 'last_modified_index',
         ExpressionAttributeValues: {
           ':ldate': lastModifiedDate,
           ':uid': userId
@@ -69,10 +71,8 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 let gangMember=flashGang.members[j];
                 let existing=result.flashGangsters.filter(gm=>gm.id==gangMember.id);
                 if (existing.length==0) {
-                    console.log("USER GANGMEMBER", gangMember)
-                    let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
-                    console.log("USER GANGSTER", gangster)
-                    result.flashGangsters.push(gangster);
+                    //let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
+                    //result.flashGangsters.push(gangster);
                 }
             }
         }
@@ -83,9 +83,12 @@ async function getFlashDecks(userId, lastModifiedDate) {
     result.flashDecks=[];
     for (var i in userDecks) {
         let userDeck=userDecks[i];
-        let flashDeck=await await getItem(userDeck.flashDeckId, process.env.FLASHDECK_TABLE_NAME);
-        flashDeck.rank=userDeck.rank;
-        result.flashDecks.push(flashDeck);
+        let exists=result.flashDecks.filter(deck=>deck.id===userDeck.flashDeckId);
+        if (exists.length==0) {
+            let flashDeck=await getItem(userDeck.flashDeckId, process.env.FLASHDECK_TABLE_NAME);
+            flashDeck.rank=userDeck.rank;
+            result.flashDecks.push(flashDeck);
+        }
     }
 
     return result;
@@ -120,17 +123,23 @@ async function putFlashGang(flashGang, userId) {
     if (flashGang.members) {
         for (var i in flashGang.members) {
             let member=flashGang.members[i];
-            flashGangMember.memberId=member.userId;
+            flashGangMember.memberId=member.userId ? member.userId : member.email;
             flashGangMember.rank=member.rank;
             flashGangMember.email=member.email;
             flashGangMember.state=member.state;
             //if state is "TO_INVITE" then we need to generate an invitation token
+            //TODO this should be done asynchronously
+            if (flashGangMember.state==='TO_INVITE') {
+                let invitationToken=generateNewPair(flashGangMember.memberId, "REGISTER", (60*24*7));
+                flashGangMember.invitationToken=invitationToken.signedJwt;
+                console.log("FOR TESTING PURPOSES, this is the user to be invited", flashGangMember);
+            }
+            await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
         }
     }
 }
 
 async function putItem(item, tableName) {
-    console.log('tableName', tableName)
     var params = {
         TableName: tableName,
         Item: item
@@ -140,7 +149,7 @@ async function putItem(item, tableName) {
     let updatedItem = await new Promise((resolve, reject) => {
         documentClient.put(params, function (err, data) {
             if (err) {
-                console.log(err);
+                console.log("putItem error ",params, err);
                 reject(err);
             } else {
                 console.log(data);
@@ -152,7 +161,6 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
-    console.log("process.env.REGION", process.env.REGION, process.env.DYNAMODB_ENDPOINT);
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '') {
             AWS.config.update({
@@ -187,7 +195,6 @@ async function getItem(id, tableName) {
 }
 
 async function getItemMaybe(id, tableName) {
-    console.log("GET ITEM ", id, tableName);
     let lastModifiedDate=0;
     var params = {
         TableName: tableName,
@@ -221,7 +228,6 @@ async function getItemMaybe(id, tableName) {
             }
         });
     });
-    console.log("GET item", item)
     return item;
 }
 async function removeItem(id, tableName) {

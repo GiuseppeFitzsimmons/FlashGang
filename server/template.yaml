@@ -2,12 +2,16 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   Test template
+Parameters:
+  AParameter: "hello world"
 
 Globals:
   Function:
     Timeout: 18
     Runtime: nodejs8.10
     Handler: index.handler
+    Layers:
+      - !Ref CommonLayer
 Resources:
   ApiGateway:
     Type: 'AWS::Serverless::Api'
@@ -29,6 +33,7 @@ Resources:
             !Sub ${AWS::StackName}-flashgang-member-table
           DYNAMODB_ENDPOINT: "http://localhost:8000"
           REGION: "eu-west-1"
+          SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
       CodeUri: synchroniselambda/
       Runtime: nodejs8.10
       Role: 
@@ -41,6 +46,18 @@ Resources:
           Properties:
             Path: /synchronise
             Method: any
+
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Join ['-',  [ !Ref 'AWS::StackName', 'CommonLayer' ],]
+      Description: A few shareable code snippets that should work this time
+      ContentUri: commonlayer
+      CompatibleRuntimes:
+        - nodejs8.10
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
+
   FlashDeckTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -48,13 +65,9 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: lastModified
-          KeyType: RANGE
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
-        - AttributeName: lastModified
-          AttributeType: N
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
@@ -78,7 +91,7 @@ Resources:
         - AttributeName: lastModified
           AttributeType: N
       GlobalSecondaryIndexes:
-        - IndexName: userId_index
+        - IndexName: last_modified_index
           KeySchema:
             - AttributeName: userId
               KeyType: HASH
@@ -102,13 +115,9 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
-        - AttributeName: lastModified
-          KeyType: RANGE
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
-        - AttributeName: lastModified
-          AttributeType: N
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
@@ -132,7 +141,7 @@ Resources:
         - AttributeName: lastModified
           AttributeType: N
       GlobalSecondaryIndexes:
-        - IndexName: userId_index
+        - IndexName: last_modified_index
           KeySchema:
             - AttributeName: memberId
               KeyType: HASH

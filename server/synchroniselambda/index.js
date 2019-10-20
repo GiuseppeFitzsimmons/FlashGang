@@ -1,4 +1,4 @@
-const dynamodbfordummies = require('./dynamofordummies')
+const dynamodbfordummies = require('dynamofordummies')
 
 exports.handler = async (event, context) => {
     let returnObject = {}
