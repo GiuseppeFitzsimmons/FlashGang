@@ -11,76 +11,69 @@ export const PREV_CARD = 'PREV_CARD';
 export const LOAD_GANGS = 'LOAD_GANGS';
 export const SAVE_GANG = 'SAVE_GANG';
 export const LOAD_FLASHGANG = 'LOAD_FLASHGANG';
+export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 
-export function newDeck()    
-{
+export function newDeck() {
     console.log("Action NEW_DECK")
-    return {type:NEW_DECK,data:{flashDeck:{}}}
+    return { type: NEW_DECK, data: { flashDeck: {} } }
 }
-export function newGang()    
-{
+export function newGang() {
     console.log("Action NEW_GANG")
-    return {type:NEW_GANG,data:{flashGang:{}}}
+    return { type: NEW_GANG, data: { flashGang: {} } }
 }
-export function saveDeck(flashDeck)    
-{
+export function saveDeck(flashDeck) {
     console.log("Action SAVE_DECK")
-    return {type:SAVE_DECK,data:{flashDeck}}
+    return { type: SAVE_DECK, data: { flashDeck } }
 }
-export function nextCard(flashDeck)    
-{
+export function nextCard(flashDeck) {
     console.log("Action NEXT_CARD")
-    return {type:NEXT_CARD,data:{flashDeck}}
+    return { type: NEXT_CARD, data: { flashDeck } }
 }
-export function loadDecks()    
-{
+export function loadDecks() {
     console.log("Action LOAD_DECKS")
-    return {type:LOAD_DECKS}
+    return { type: LOAD_DECKS }
 }
-export function loadFlashDeck(flashDeckId, mode, answerType, testType)
-{
+export function loadFlashDeck(flashDeckId, mode, answerType, testType) {
     console.log("Action LOAD_FLASHDECK")
     console.log('mode', mode, 'answerType', answerType, 'testType', testType)
-    return {type:LOAD_FLASHDECK, data:{flashDeckId, mode, answerType, testType}}
-    
+    return { type: LOAD_FLASHDECK, data: { flashDeckId, mode, answerType, testType } }
+
 }
-export function scoreCard(flashDeck)
-{
+export function scoreCard(flashDeck) {
     console.log("Action SCORE_CARD")
-    return {type:SCORE_CARD, data:{flashDeck}}
-    
+    return { type: SCORE_CARD, data: { flashDeck } }
+
 }
-export function deleteDeck(flashDeckId)
-{
+export function deleteDeck(flashDeckId) {
     console.log("Action DELETE_DECK")
-    return {type:DELETE_DECK, data:{flashDeckId}}
-    
+    return { type: DELETE_DECK, data: { flashDeckId } }
+
 }
-export function deleteCard(flashDeck)
-{
+export function deleteCard(flashDeck) {
     console.log("Action DELETE_CARD")
-    return {type:DELETE_CARD, data:{flashDeck}}
-    
+    return { type: DELETE_CARD, data: { flashDeck } }
+
 }
-export function prevCard(flashDeck)
-{
+export function prevCard(flashDeck) {
     console.log("Action PREV_CARD")
-    return {type:PREV_CARD, data:{flashDeck}}
-    
+    return { type: PREV_CARD, data: { flashDeck } }
+
 }
-export function loadGangs()    
-{
+export function loadGangs() {
     console.log("Action LOAD_GANGS")
-    return {type:LOAD_GANGS}
+    return { type: LOAD_GANGS }
 }
-export function saveGang(flashGang)    
-{
+export function saveGang(flashGang) {
     console.log("Action SAVE_GANG")
-    return {type:SAVE_GANG, data:{flashGang}}
+    return { type: SAVE_GANG, data: { flashGang } }
 }
-export function loadFlashGang(flashGangId)
-{
+export function loadFlashGang(flashGangId) {
     console.log("Action LOAD_FLASHGANG")
-    return {type:LOAD_FLASHGANG, data:{flashGangId}}
-    
+    return { type: LOAD_FLASHGANG, data: { flashGangId } }
+
+}
+export function createAccount(user) {
+    console.log("Action CREATE_ACCOUNT")
+    return { type: CREATE_ACCOUNT, data: { user } }
+
 }

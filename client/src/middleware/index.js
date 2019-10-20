@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -43,7 +43,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise' }
+const restfulResources = { synchronise: '/synchronise', account: '/account' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -101,7 +101,7 @@ async function postToServer(questObject) {
             console.log("REPLY FROM POST", json);
             return json
         })
-        .catch(function(err) {
+        .catch(function (err) {
             responseCode = 0
             console.log('postToServer error', err)
             return {}
@@ -397,7 +397,7 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                 }
                 localStorage.setItem('flashGang-' + action.data.flashGang.id, JSON.stringify(cleanGang))
-                action.flashGang=action.data.flashGang;
+                action.flashGang = action.data.flashGang;
                 delete action.data.flashGang;
                 synchronise()
             } else if (action.type === LOAD_FLASHGANG) {
@@ -406,14 +406,24 @@ export function flashGangMiddleware({ dispatch }) {
                 action.flashGang = flashGang
                 //flashDeck.dirty = false
                 let gangDecks = []
-                if (flashGang.flashDecks){
-                    for (var i in flashGang.flashDecks){
+                if (flashGang.flashDecks) {
+                    for (var i in flashGang.flashDecks) {
                         let deckId = flashGang.flashDecks[i]
                         let deck = JSON.parse(localStorage.getItem('flashDeck-' + deckId))
                         gangDecks.push(deck)
                     }
                 }
                 flashGang.flashDecks = gangDecks
+            }
+            else if (action.type === CREATE_ACCOUNT) {
+                console.log('Middleware CREATE_ACCOUNT')
+                let questObject = {}
+                questObject.params = action.data.user
+                questObject.resource = 'account'
+                let postResult = await postToServer(questObject)
+                if (postResult.token){
+                    localStorage.setItem('flashJwt', postResult.token)
+                }
             }
             return next(action);
         }
