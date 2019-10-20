@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT } from '../action';
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action';
 
 const initialState = {};
 
@@ -54,7 +54,10 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashGang: action.flashGang })
             return state
         case CREATE_ACCOUNT:
-                state = Object.assign({}, state, { loggedIn: true })
+            state = Object.assign({}, state, { loggedIn: true })
+            return state
+        case LOGIN:
+            state = Object.assign({}, state, { loggedIn: true })
             return state
         default:
             return state

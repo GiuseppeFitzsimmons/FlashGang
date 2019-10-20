@@ -48,6 +48,7 @@ Resources:
           Properties:
             Path: /synchronise
             Method: any
+        
   AccountLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -58,10 +59,15 @@ Resources:
       RestApiId: 
         !Ref ApiGateway
       Events:
-        ApiEventSource:
+        AccountEventSource:
           Type: Api
           Properties:
             Path: /account
+            Method: any
+        LoginEventSource:
+          Type: Api
+          Properties:
+            Path: /login
             Method: any
   CommonLayer:
     Type: AWS::Serverless::LayerVersion

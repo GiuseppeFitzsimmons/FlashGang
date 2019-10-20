@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT } from '../action'
+import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -43,7 +43,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -414,8 +414,7 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                 }
                 flashGang.flashDecks = gangDecks
-            }
-            else if (action.type === CREATE_ACCOUNT) {
+            } else if (action.type === CREATE_ACCOUNT) {
                 console.log('Middleware CREATE_ACCOUNT')
                 let questObject = {}
                 questObject.params = action.data.user
@@ -423,6 +422,18 @@ export function flashGangMiddleware({ dispatch }) {
                 let postResult = await postToServer(questObject)
                 if (postResult.token){
                     localStorage.setItem('flashJwt', postResult.token)
+                }
+            } else if (action.type === LOGIN) {
+                console.log('Middleware LOGIN')
+                let questObject = {}
+                questObject.params = action.data.user
+                questObject.resource = 'login'
+                questObject.params.grant_type = 'password'
+                let postResult = await postToServer(questObject)
+                if (postResult.token){
+                    localStorage.setItem('flashJwt', postResult.token)
+                } else {
+                    action.error = postResult.error
                 }
             }
             return next(action);

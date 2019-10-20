@@ -14,9 +14,7 @@ class Login extends React.Component {
     componentDidUpdate() {
         console.log('this.props', this.props)
         if (this.props.loggedIn) {
-            console.log('onLoggedIn 1')
             if (this.props.onLoggedIn) {
-                console.log('onLoggedIn 2')
                 this.props.onLoggedIn()
             }
         }
@@ -50,24 +48,12 @@ class Login extends React.Component {
                         input => input ? input.reset('') : true
                     }
                 />
-                <IntegratedInput
-                    type='password'
-                    label='Confirm password'
-                    placeholder='Confirm password'
-                    onChange={
-                        (event) => {
-                        }
-                    }
-                    ref={
-                        input => input ? input.reset('') : true
-                    }
-                />
                 <FlashButton
                     color='primary'
                     variant='contained'
                     buttonType='system'
                     onClick={
-                        () => { this.props.login(this.state.user) }
+                        () => { this.props.logIn(this.state.user) }
                     }
                 >
                     Log in
@@ -104,6 +90,18 @@ class Login extends React.Component {
                         onChange={
                             (event) => {
                                 this.state.user.password = event.target.value
+                            }
+                        }
+                        ref={
+                            input => input ? input.reset('') : true
+                        }
+                    />
+                    <IntegratedInput
+                        type='password'
+                        label='Confirm password'
+                        placeholder='Confirm password'
+                        onChange={
+                            (event) => {
                             }
                         }
                         ref={

@@ -12,6 +12,8 @@ export const LOAD_GANGS = 'LOAD_GANGS';
 export const SAVE_GANG = 'SAVE_GANG';
 export const LOAD_FLASHGANG = 'LOAD_FLASHGANG';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
+export const LOGIN = 'LOGIN';
+
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -75,5 +77,10 @@ export function loadFlashGang(flashGangId) {
 export function createAccount(user) {
     console.log("Action CREATE_ACCOUNT")
     return { type: CREATE_ACCOUNT, data: { user } }
+
+}
+export function logIn(user) {
+    console.log("Action LOGIN")
+    return { type: LOGIN, data: { user } }
 
 }
