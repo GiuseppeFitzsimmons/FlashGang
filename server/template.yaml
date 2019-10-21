@@ -12,6 +12,21 @@ Globals:
     Handler: index.handler
     Layers:
       - !Ref CommonLayer
+    Environment:  
+      Variables:
+        USER_TABLE_NAME:
+          !Sub ${AWS::StackName}-user-table
+        FLASHDECK_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashdeck-table
+        FLASHDECK_USER_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashdeck-user-table
+        FLASHGANG_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-table
+        FLASHGANG_MEMBER_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-member-table
+        DYNAMODB_ENDPOINT: "http://localhost:8000"
+        REGION: "eu-west-1"
+        SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
 Resources:
   ApiGateway:
     Type: 'AWS::Serverless::Api'
@@ -21,19 +36,6 @@ Resources:
   SynchroniseLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Environment:
-        Variables:
-          FLASHDECK_TABLE_NAME:
-            !Sub ${AWS::StackName}-flashdeck-table
-          FLASHDECK_USER_TABLE_NAME:
-            !Sub ${AWS::StackName}-flashdeck-user-table
-          FLASHGANG_TABLE_NAME:
-            !Sub ${AWS::StackName}-flashgang-table
-          FLASHGANG_MEMBER_TABLE_NAME:
-            !Sub ${AWS::StackName}-flashgang-member-table
-          DYNAMODB_ENDPOINT: "http://localhost:8000"
-          REGION: "eu-west-1"
-          SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
       CodeUri: synchroniselambda/
       Runtime: nodejs8.10
       Role: 
@@ -46,7 +48,27 @@ Resources:
           Properties:
             Path: /synchronise
             Method: any
-
+        
+  AccountLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: accountlambda/
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      RestApiId: 
+        !Ref ApiGateway
+      Events:
+        AccountEventSource:
+          Type: Api
+          Properties:
+            Path: /account
+            Method: any
+        LoginEventSource:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: any
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -152,6 +174,22 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-user-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1

@@ -5,6 +5,7 @@ import Home from './views/home';
 import FlashDeck from './views/flashdeck';
 import FlashGangs from './views/flashgangs';
 import FlashGangEditor from './views/components/flashgangeditor';
+import Login from './views/components/login';
 import { Provider } from 'react-redux';
 import store from './store';
 import './App.css';
@@ -23,6 +24,7 @@ export default class App extends React.Component {
     this.goGangs = this.goGangs.bind(this)
     this.createFlashGang = this.createFlashGang.bind(this)
     this.onFlashGangSelected = this.onFlashGangSelected.bind(this)
+    this.onLoggedIn = this.onLoggedIn.bind(this)
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
@@ -42,12 +44,30 @@ export default class App extends React.Component {
   goGangs(){
     this.setState({mode:'GANGS'})
   }
+  onLoggedIn(){
+    this.forceUpdate()
+  }
+  checkIfUserIsnScope() {
+    if (this.loggedIn){
+    //  return true
+    }
+    var _jwt=localStorage.getItem("flashJwt");
+    if (!_jwt) {
+      this.loggedIn = false
+    } else {
+      this.loggedIn = true
+    }
+    return this.loggedIn
+  }
   render() {
+    const loggedIn = this.checkIfUserIsnScope()
     let renderable = <Home 
         onNewButton={this.createFlashDeck} 
         onFlashDeckSelected={this.onFlashDeckSelected}
         goGangs = {this.goGangs}/>
-    if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
+    if (!loggedIn){
+      renderable = <Login onLoggedIn={this.onLoggedIn}/>
+    } else if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
         goHome = {this.goHome}
         flashDeckId={this.state.flashDeckId}
