@@ -66,94 +66,107 @@ class FlashGangEditor extends React.Component {
         return (
             <div>
                 <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} />
+
                 <Grid container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="stretch"
-                >
-                    <Grid item xs='1'>
-                        <IconSelector icon={flashGang.icon} iconClient={flashGang} />
+                    direction="column"
+                    justify="flex-start"
+                    alignItems="stretch">
+
+                    <Grid container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="stretch">
+                        <Grid item xs='1'>
+                            <IconSelector icon={flashGang.icon} iconClient={flashGang} />
+                        </Grid>
+                        <Grid item xs='9'>
+                            <IntegratedInput
+                                label="Gang Name"
+                                id='gangName'
+                                placeholder='Your gang name'
+                                onChange={
+                                    (event) => { flashGang.name = event.target.value }
+                                }
+                                ref={
+                                    input => input ? input.reset(flashGang.name) : true
+                                }
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs='10'>
+                    <Grid item
+                        direction="row"
+                        justify="space-between"
+                        alignItems="stretch">
                         <IntegratedInput
-                            label="Gang Name"
-                            id='gangName'
-                            placeholder='Your gang name'
+                            label="Gang Description"
+                            id='gangDescription'
+                            placeholder='Your gang description'
                             onChange={
-                                (event) => { flashGang.name = event.target.value }
+                                (event) => { flashGang.description = event.target.value }
                             }
                             ref={
-                                input => input ? input.reset(flashGang.name) : true
+                                input => input ? input.reset(flashGang.description) : true
                             }
                         />
                     </Grid>
-                </Grid>
-                <IntegratedInput
-                    label="Gang Description"
-                    id='gangDescription'
-                    placeholder='Your gang description'
-                    onChange={
-                        (event) => { flashGang.description = event.target.value }
-                    }
-                    ref={
-                        input => input ? input.reset(flashGang.description) : true
-                    }
-                />
-                <Tabs onChange={(e, value) => {
-                    this.setState({
-                        memberTab: value == 0 ? 'block' : 'none',
-                        deckTab: value == 1 ? 'block' : 'none'
-                    })
-                }}>
-                    <Tab label="Gang members" style={{ backgroundColor: this.state.memberTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
-                    <Tab label="Gang decks" style={{ backgroundColor: this.state.deckTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
-                </Tabs>
+                    <Tabs onChange={(e, value) => {
+                        this.setState({
+                            memberTab: value == 0 ? 'block' : 'none',
+                            deckTab: value == 1 ? 'block' : 'none'
+                        })
+                    }}>
+                        <Tab label="Gang members" style={{ backgroundColor: this.state.memberTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
+                        <Tab label="Gang decks" style={{ backgroundColor: this.state.deckTab == 'block' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.0)' }} />
+                    </Tabs>
 
-                <div
-                    style={{
-                        display: this.state.memberTab,
-                        backgroundColor: 'rgba(255,255,255,0.4)',
-                        padding: '2px'
-                    }}
-                >
-                    <List>
-                        <FlashListItem alignItems="flex-start"
-                            onClick={this.invite}
-                            buttonType='action'
-                            button
-                        >
-                            <ListItemAvatar>
-                                <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="New"
-                                secondary="Click here to invite a gang member"
+                    <div
+                        style={{
+                            display: this.state.memberTab,
+                            backgroundColor: 'rgba(255,255,255,0.4)',
+                            padding: '2px'
+                        }}
+                    >
+                        <List>
+                            <FlashListItem alignItems="flex-start"
+                                onClick={this.invite}
+                                buttonType='action'
+                                button
+                            >
+                                <ListItemAvatar>
+                                    <Icon style={{ fontSize: 30 }}>add_circle</Icon>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary="New"
+                                    secondary="Click here to invite a gang member"
+                                />
+                            </FlashListItem>
+                            {this.generateFlashGangMemberList()}
+                        </List>
+                    </div>
+                    <div
+                        style={{
+                            display: this.state.deckTab,
+                            backgroundColor: 'rgba(255,255,255,0.4)',
+                            padding: '2px'
+                        }}
+                    >
+                        <List>
+                            <DeckSelector
+                                onClose={this.onDecksSelected}
+                                flashGang={flashGang}
                             />
-                        </FlashListItem>
-                        {this.generateFlashGangMemberList()}
-                    </List>
-                </div>
-                <div
-                    style={{
-                        display: this.state.deckTab,
-                        backgroundColor: 'rgba(255,255,255,0.4)',
-                        padding: '2px'
-                    }}
-                >
-                    <List>
-                        <DeckSelector
-                            onClose={this.onDecksSelected}
-                            flashGang={flashGang}
-                        />
-                        {this.generateFlashDeckList()}
-                    </List>
-                </div>
-                <FlashButton
-                    buttonType='system'
-                    onClick={() => { this.props.saveGang(flashGang) }}
-                >
-                    Save
-                </FlashButton>
+                            {this.generateFlashDeckList()}
+                        </List>
+                    </div>
+                    <div style={{position:'absolute', bottom: 0, width:'95%'}}>
+                        <FlashButton
+                            buttonType='system'
+                            style={{width:'100%'}}
+                            onClick={() => { this.props.saveGang(flashGang) }} >
+                            Save
+                        </FlashButton>
+                    </div>
+                </Grid>
             </div>
         )
     }
@@ -170,10 +183,10 @@ class FlashGangEditor extends React.Component {
             }
             return (
                 <>
-                <FlashGangMemberListItem
-                gangMember = {member}
-                onDelete = {()=>{this.removeMember(i)}}
-                />
+                    <FlashGangMemberListItem
+                        gangMember={member}
+                        onDelete={() => { this.removeMember(i) }}
+                    />
                     {i < flashGang.members.length - 1 &&
                         <Divider variant="inset" component="li" />
                     }

@@ -81,7 +81,7 @@ class FlashDeckEditor extends React.Component {
           <Grid item xs='1'>
             <IconSelector icon={flashDeck.icon} iconClient={flashDeck} />
           </Grid>
-          <Grid item xs='10'>
+          <Grid item xs='9'>
             <IntegratedInput
               label="FlashDeck Name"
               id='flashCardName'
