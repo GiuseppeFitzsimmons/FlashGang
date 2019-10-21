@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
 import IntegratedInput from '../widgets/IntegratedInput';
 import { FlashButton } from '../widgets/FlashBits';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { Button, Grid, GridList } from '@material-ui/core';
 
 class Login extends React.Component {
     constructor(props) {
@@ -12,7 +13,6 @@ class Login extends React.Component {
         this.state = { user: {}, mode: 'LOGIN' }
     }
     componentDidUpdate() {
-        console.log('this.props', this.props)
         if (this.props.loggedIn) {
             if (this.props.onLoggedIn) {
                 this.props.onLoggedIn()
@@ -24,18 +24,22 @@ class Login extends React.Component {
         let renderable =
             <>
                 <IntegratedInput
-                    label='Username'
-                    placeholder='Username'
+                    errors={this.props.errors}
+                    id='userName'
+                    label='Email address'
+                    placeholder='user@name.com'
                     onChange={
                         (event) => {
                             this.state.user.userName = event.target.value
                         }
                     }
                     ref={
-                        input => input ? input.reset('') : true
+                        input => input ? input.reset(this.state.user.userName) : true
                     }
                 />
                 <IntegratedInput
+                    errors={this.props.errors}
+                    id='password'
                     type='password'
                     label='Password'
                     placeholder='Password'
@@ -73,18 +77,23 @@ class Login extends React.Component {
             renderable =
                 <>
                     <IntegratedInput
-                        label='Username'
-                        placeholder='Username'
+                        errors={this.props.errors}
+                        id='userName'
+                        label='Email address'
+                        placeholder='user@name.com'
                         onChange={
                             (event) => {
                                 this.state.user.userName = event.target.value
                             }
                         }
                         ref={
-                            input => input ? input.reset('') : true
+                            input => input ? input.reset(this.state.user.userName) : true
                         }
                     />
                     <IntegratedInput
+                        errors={this.props.errors}
+                        id='password'
+                        type='password'
                         label='Password'
                         placeholder='Password'
                         onChange={
@@ -102,6 +111,7 @@ class Login extends React.Component {
                         placeholder='Confirm password'
                         onChange={
                             (event) => {
+                                this.state.user.confirmPassword = event.target.value
                             }
                         }
                         ref={
@@ -155,13 +165,35 @@ class Login extends React.Component {
                 </>
         }
         return (
-            <>{renderable}</>
+            <>{renderable}
+                {
+                    this.props.loading &&
+                    <div className='sweet-loading' style={{
+                        display: 'inline-block',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        top: '0', right: '0', left: '0', bottom: '0',
+                        paddingTop: '50%',
+                        position: 'fixed',
+                        backgroundColor: 'rgb(255,255,255,.5)'
+                    }} >
+                        <Grid
+                            container
+                            direction="row"
+                            justify="center"
+                            alignItems="center"
+                        >
+                            <CircularProgress />
+                        </Grid>
+                    </div>
+                }
+            </>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    return { loggedIn: state.loggedIn }
+    return { loggedIn: state.loggedIn, errors: state.errors, user: state.user, loading: state.loading }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

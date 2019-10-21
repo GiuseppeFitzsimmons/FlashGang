@@ -34,8 +34,9 @@ class IntegratedInput extends Component {
         var _invalid = false;
         if (this.props.errors && this.props.errors.fields) {
             this.props.errors.fields.forEach(field => {
-                if (field.fieldId == this.props.id || field.fieldName == this.props.id) {
-                    message = field.message
+                let keys = Object.keys(field)
+                if (keys[0]==this.props.id) {
+                    message = field[keys[0]]
                     _invalid = true;
                 }
             })
@@ -46,7 +47,11 @@ class IntegratedInput extends Component {
         }
         let _label = <></>
         if (this.props.label && this.props.label != '') {
-            _label = <><label style={{ color: 'rgba(0,0,0,0.6)' }}>{this.props.label}</label><br /></>
+            let color = 'rgba(0,0,0,0.6)'
+            if (_invalid){
+                color = 'rgba(255,0,0,0.6)'
+            }
+            _label = <><label style={{ color: color }}>{this.props.label}</label><br /></>
         }
         return (
             <span>

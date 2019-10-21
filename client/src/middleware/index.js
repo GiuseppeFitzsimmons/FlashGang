@@ -1,4 +1,4 @@
-import { NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -156,7 +156,7 @@ async function getFromServer(questObject) {
 }
 
 async function refreshToken() {
-    var _refreshToken = localStorage.getItem('refresh');
+    var _refreshToken = localStorage.getItem('flashJwtRefresh');
     const params = {
         "grant_type": "refresh",
         "token": _refreshToken
@@ -167,8 +167,8 @@ async function refreshToken() {
         console.log("failed to refresh token TODO clear the session, return to login")
     } else {
         console.log("token is refreshed, storing new tokens in session")
-        localStorage.setItem('token', refresh.token)
-        localStorage.setItem('refresh', refresh.refreshToken)
+        localStorage.setItem('flashJwt', refresh.token)
+        localStorage.setItem('flashJwtRefresh', refresh.refreshToken)
     }
     return refresh;
 
@@ -415,25 +415,45 @@ export function flashGangMiddleware({ dispatch }) {
                 }
                 flashGang.flashDecks = gangDecks
             } else if (action.type === CREATE_ACCOUNT) {
+                dispatch({ type: LOADING, data: { loading: true } })
                 console.log('Middleware CREATE_ACCOUNT')
-                let questObject = {}
-                questObject.params = action.data.user
-                questObject.resource = 'account'
-                let postResult = await postToServer(questObject)
-                if (postResult.token){
-                    localStorage.setItem('flashJwt', postResult.token)
+                var regExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                let isValid = regExp.test((action.data.user.userName).toLowerCase());
+                let errors = { fields: [] }
+                if (!isValid) {
+                    errors.fields.push({ userName: 'Email address must be valid.' })
+                }
+                if (action.data.user.password != action.data.user.confirmPassword) {
+                    errors.fields.push({ password: 'Passwords must be identical.' })
+                }
+                if (errors.fields.length > 0) {
+                    action.errors = errors
+                } else {
+                    let questObject = {}
+                    questObject.params = action.data.user
+                    questObject.resource = 'account'
+                    let postResult = await postToServer(questObject)
+                    if (postResult.token) {
+                        localStorage.setItem('flashJwt', postResult.token)
+                        localStorage.setItem('flashJwtRefresh', postResult.refresh)
+                    }
+                    if (postResult.errors) {
+                        action.errors = postResult.errors
+                    }
                 }
             } else if (action.type === LOGIN) {
                 console.log('Middleware LOGIN')
+                dispatch({ type: LOADING, data: { loading: true } })
                 let questObject = {}
                 questObject.params = action.data.user
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
                 let postResult = await postToServer(questObject)
-                if (postResult.token){
+                if (postResult.token) {
                     localStorage.setItem('flashJwt', postResult.token)
+                    localStorage.setItem('flashJwtRefresh', postResult.refresh)
                 } else {
-                    action.error = postResult.error
+                    action.errors = postResult.errors
                 }
             }
             return next(action);

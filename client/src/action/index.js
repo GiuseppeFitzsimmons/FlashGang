@@ -13,6 +13,7 @@ export const SAVE_GANG = 'SAVE_GANG';
 export const LOAD_FLASHGANG = 'LOAD_FLASHGANG';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const LOGIN = 'LOGIN';
+export const LOADING = 'LOADING';
 
 
 export function newDeck() {
