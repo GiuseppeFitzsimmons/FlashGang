@@ -11,27 +11,31 @@ exports.handler = async (event, context) => {
     if (event.httpMethod == 'post') {
         //store all the flashcards sent from the user
         //TODO deletions
-        for (var i in event.body.flashDecks) {
-            flashDeck = event.body.flashDecks[i]
-            await dynamodbfordummies.putFlashDeck(flashDeck, token.sub)
+        if (event.body.flashDecks) {
+            for (var i in event.body.flashDecks) {
+                flashDeck = event.body.flashDecks[i]
+                await dynamodbfordummies.putFlashDeck(flashDeck, token.sub)
+            }
         }
         //store all the flashgangs sent from the user
-        for (var i in event.body.flashGangs) {
-            flashGang = event.body.flashGangs[i]
-            if (flashGang.members) {
-                for (var j in flashGang.members) {
-                    let member = flashGang.members[j]
-                    if (!member.email && !member.id){
-                        continue
-                    }
-                    if (member.state == 'TO_INVITE'){
-                        member.id = member.email
-                        await mailUtility.sendInvitationMail(token.sub, member.email, flashGang.name)
-                        member.state = 'INVITED'
+        if (event.body.flashGangs) {
+            for (var i in event.body.flashGangs) {
+                flashGang = event.body.flashGangs[i]
+                if (flashGang.members) {
+                    for (var j in flashGang.members) {
+                        let member = flashGang.members[j]
+                        if (!member.email && !member.id){
+                            continue
+                        }
+                        if (member.state == 'TO_INVITE'){
+                            member.id = member.email
+                            await mailUtility.sendInvitationMail(token.sub, member.email, flashGang.name)
+                            member.state = 'INVITED'
+                        }
                     }
                 }
+                await dynamodbfordummies.putFlashGang(flashGang, token.sub)
             }
-            await dynamodbfordummies.putFlashGang(flashGang, token.sub)
         }
         let lastModified = event.body.lastModified ? event.body.lastModified : 0;
         //return all the flashcards to which the user has access and which have a lastModified date
@@ -53,6 +57,11 @@ function validateToken(event) {
     if (!token || token == '') {
         return;
     }
+    console.log(".......................", token);
+    if (token.toLowerCase().indexOf('bearer')==0) {
+        token=token.substr(7);
+    }
+    console.log(";;;;;;;;;;;;;;;;;;;;", token);
     let splitted = token.split(".");
     if (splitted.length<2){
         return

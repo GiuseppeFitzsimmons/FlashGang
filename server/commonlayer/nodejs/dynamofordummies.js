@@ -33,7 +33,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
     }
     params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
     params.KeyConditionExpression = 'memberId = :uid and lastModified > :ldate';
-
+    console.log("Getting user Gangs", params);
     let userGangs = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
             if (err) {
@@ -125,10 +125,12 @@ async function putFlashGang(flashGang, userId) {
     if (flashGang.members) {
         for (var i in flashGang.members) {
             let member = flashGang.members[i];
+            console.log('saving gang member 1', member)
             flashGangMember.memberId = member.userId ? member.userId : member.email;
-            if (!flashGang.memberId || flashGang.memberId==''){
+            if (!flashGangMember.memberId || flashGangMember.memberId==''){
                 continue
             }
+            console.log('saving gang member 2', member)
             flashGangMember.rank = member.rank;
             flashGangMember.email = member.email;
             flashGangMember.state = member.state;
