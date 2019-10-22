@@ -46,7 +46,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         });
     })
     result.flashGangs = [];
-    result.flashGangsters = [];
+    result.users = [];
     for (var i in userGangs) {
         let userGang = userGangs[i];
         let flashGang = await getItem(userGang.flashGangId, process.env.FLASHGANG_TABLE_NAME);
@@ -60,19 +60,20 @@ async function getFlashDecks(userId, lastModifiedDate) {
                     userDecks.push({
                         flashDeckId: gangDeckId,
                         rank: userGang.rank,
-                        lastModified: userGang.lastModified
+                        lastModified: userGang.lastModified,
+                        state: userGang.state
                     })
                 }
             }
         }
-        //put the members of this gang into the list of gangsters, if it's not already there
+        //put the members of this gang into the list of users, if it's not already there
         if (flashGang.members) {
             for (var j in flashGang.members) {
                 let gangMember = flashGang.members[j];
-                let existing = result.flashGangsters.filter(gm => gm.id == gangMember.id);
+                let existing = result.users.filter(gm => gm.id == gangMember.id);
                 if (existing.length == 0) {
-                    //let gangster=await getItem(gangMember.id, process.env.FLASHGANG_TABLE_NAME);
-                    //result.flashGangsters.push(gangster);
+                    let gangster=await getItem(gangMember.id, process.env.USER_TABLE_NAME);
+                    result.users.push(gangster);
                 }
             }
         }
@@ -87,6 +88,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         if (exists.length == 0) {
             let flashDeck = await getItem(userDeck.flashDeckId, process.env.FLASHDECK_TABLE_NAME);
             flashDeck.rank = userDeck.rank;
+            flashDeck.state = userDeck.state;
             result.flashDecks.push(flashDeck);
         }
     }
