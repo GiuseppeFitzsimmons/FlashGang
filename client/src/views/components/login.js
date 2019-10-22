@@ -13,6 +13,8 @@ class Login extends React.Component {
         this.state = { user: {}, mode: 'LOGIN' }
     }
     componentDidUpdate() {
+        console.log('this.props from login', this.props)
+        console.log('this.state from login', this.state)
         if (this.props.loggedIn) {
             if (this.props.onLoggedIn) {
                 this.props.onLoggedIn()
@@ -67,7 +69,11 @@ class Login extends React.Component {
                     variant='contained'
                     buttonType='system'
                     onClick={
-                        () => { this.setState({ mode: 'CREATE' }) }
+                        () => { 
+                            if (this.props.errors){
+                                this.props.errors.fields=[]
+                            }
+                            this.setState({ mode: 'CREATE' }) }
                     }
                 >
                     Create account
@@ -157,7 +163,11 @@ class Login extends React.Component {
                         variant='contained'
                         buttonType='system'
                         onClick={
-                            () => { this.setState({ mode: 'LOGIN' }) }
+                            () => { 
+                                if (this.props.errors){
+                                    this.props.errors.fields=[]
+                                }
+                                this.setState({ mode: 'LOGIN' }) }
                         }
                     >
                         Cancel

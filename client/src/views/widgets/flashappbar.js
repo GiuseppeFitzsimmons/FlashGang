@@ -39,7 +39,7 @@ export default class FlashAppBar extends React.Component {
         />
       </FlashListItem>
       <FlashListItem alignItems="flex-start"
-        onClick={this.props.onNewButton}
+        onClick={this.props.onLogOut}
         button
       >
         <ListItemAvatar>

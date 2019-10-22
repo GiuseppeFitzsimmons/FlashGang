@@ -48,7 +48,7 @@ class FlashGangs extends React.Component {
               <Icon style={{fontSize:30}}>{flashGang.icon}</Icon>
             </ListItemAvatar>
             <ListItemText
-              primary={flashGang.name}
+              primary={flashGang.state}
               secondary={flashGang.description}
               />
           </ListItem>
@@ -66,7 +66,7 @@ class FlashGangs extends React.Component {
     }
     return (
       <>
-      <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome}/>
+      <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut = {this.props.onLogOut}/>
         <List>
         <FlashListItem alignItems="flex-start"
             onClick={this.props.onNewButton}

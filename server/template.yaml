@@ -27,6 +27,11 @@ Globals:
         DYNAMODB_ENDPOINT: "http://localhost:8000"
         REGION: "eu-west-1"
         SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
+        SMTP_USER_NAME: 'AKIATBSOR2QNIX5M4BMD'
+        SMTP_PASSWORD: 'BOkI1ZXCWOex5w7tDRtRLl3qA46N/QmJ8Ncu4sCWxMhl'
+        MEMBERSHIP_SENDMAIL_ADDRESS: 'membership@flashgang.io'
+        SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
+        RSVP_URL: 'http://localhost:3000/rsvp'
 Resources:
   ApiGateway:
     Type: 'AWS::Serverless::Api'

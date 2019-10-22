@@ -65,7 +65,7 @@ class FlashGangEditor extends React.Component {
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
         return (
             <div>
-                <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} />
+                <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut = {this.props.onLogOut}/>
 
                 <Grid container
                     direction="column"

@@ -126,16 +126,12 @@ async function putFlashGang(flashGang, userId) {
         for (var i in flashGang.members) {
             let member = flashGang.members[i];
             flashGangMember.memberId = member.userId ? member.userId : member.email;
+            if (!flashGang.memberId || flashGang.memberId==''){
+                continue
+            }
             flashGangMember.rank = member.rank;
             flashGangMember.email = member.email;
             flashGangMember.state = member.state;
-            //if state is "TO_INVITE" then we need to generate an invitation token
-            //TODO this should be done asynchronously
-            if (flashGangMember.state === 'TO_INVITE') {
-                let invitationToken = generateNewPair(flashGangMember.memberId, "REGISTER", (60 * 24 * 7));
-                flashGangMember.invitationToken = invitationToken.signedJwt;
-                console.log("FOR TESTING PURPOSES, this is the user to be invited", flashGangMember);
-            }
             await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
         }
     }

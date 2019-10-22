@@ -25,6 +25,12 @@ export default class App extends React.Component {
     this.createFlashGang = this.createFlashGang.bind(this)
     this.onFlashGangSelected = this.onFlashGangSelected.bind(this)
     this.onLoggedIn = this.onLoggedIn.bind(this)
+    this.logOut = this.logOut.bind(this)
+  }
+  logOut() {
+    localStorage.removeItem('flashJwt');
+    localStorage.removeItem('flashJwtRefresh');
+    this.setState({ mode: '', flashDeckId: null })
   }
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
@@ -38,20 +44,20 @@ export default class App extends React.Component {
   createFlashGang() {
     this.setState({ mode: 'EDITGANG', flashGangId: null })
   }
-  goHome(){
-    this.setState({mode:''})
+  goHome() {
+    this.setState({ mode: '' })
   }
-  goGangs(){
-    this.setState({mode:'GANGS'})
+  goGangs() {
+    this.setState({ mode: 'GANGS' })
   }
-  onLoggedIn(){
+  onLoggedIn() {
     this.forceUpdate()
   }
   checkIfUserIsnScope() {
-    if (this.loggedIn){
-    //  return true
+    if (this.loggedIn) {
+      //  return true
     }
-    var _jwt=localStorage.getItem("flashJwt");
+    var _jwt = localStorage.getItem("flashJwt");
     if (!_jwt) {
       this.loggedIn = false
     } else {
@@ -61,29 +67,36 @@ export default class App extends React.Component {
   }
   render() {
     const loggedIn = this.checkIfUserIsnScope()
-    let renderable = <Home 
-        onNewButton={this.createFlashDeck} 
-        onFlashDeckSelected={this.onFlashDeckSelected}
-        goGangs = {this.goGangs}/>
-    if (!loggedIn){
-      renderable = <Login onLoggedIn={this.onLoggedIn}/>
+    let renderable = <Home
+      onNewButton={this.createFlashDeck}
+      onFlashDeckSelected={this.onFlashDeckSelected}
+      goGangs={this.goGangs}
+      onLogOut={this.logOut}
+    />
+    if (!loggedIn) {
+      renderable = <Login onLoggedIn={this.onLoggedIn}
+        onLogOut={this.logOut}
+      />
     } else if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
-        goHome = {this.goHome}
+        goHome={this.goHome}
         flashDeckId={this.state.flashDeckId}
         mode={this.state.mode}
-        goGangs = {this.goGangs}
+        goGangs={this.goGangs}
+        onLogOut={this.logOut}
       />
-    } else if (this.state.mode == 'GANGS'){
+    } else if (this.state.mode == 'GANGS') {
       renderable = <FlashGangs
-      onFlashGangSelected = {this.onFlashGangSelected}
-      goHome = {this.goHome}
-      createFlashGang={this.createFlashGang}
+        onFlashGangSelected={this.onFlashGangSelected}
+        goHome={this.goHome}
+        createFlashGang={this.createFlashGang}
+        onLogOut={this.logOut}
       />
-    } else if (this.state.mode == 'EDITGANG'){
+    } else if (this.state.mode == 'EDITGANG') {
       renderable = <FlashGangEditor
-      goHome = {this.goHome}
-      flashGangId={this.state.flashGangId}
+        goHome={this.goHome}
+        flashGangId={this.state.flashGangId}
+        onLogOut={this.logOut}
       />
     }
     return (

@@ -430,7 +430,7 @@ export function flashGangMiddleware({ dispatch }) {
                     action.errors = errors
                 } else {
                     let questObject = {}
-                    questObject.params = action.data.user
+                    questObject.params = Object.assign({}, action.data.user)
                     questObject.resource = 'account'
                     let postResult = await postToServer(questObject)
                     if (postResult.token) {
@@ -445,13 +445,14 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware LOGIN')
                 dispatch({ type: LOADING, data: { loading: true } })
                 let questObject = {}
-                questObject.params = action.data.user
+                questObject.params = Object.assign({}, action.data.user)
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
                 let postResult = await postToServer(questObject)
                 if (postResult.token) {
                     localStorage.setItem('flashJwt', postResult.token)
                     localStorage.setItem('flashJwtRefresh', postResult.refresh)
+                    await synchronise()
                 } else {
                     action.errors = postResult.errors
                 }
