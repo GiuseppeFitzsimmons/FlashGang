@@ -70,11 +70,16 @@ async function getFlashDecks(userId, lastModifiedDate) {
         if (flashGang.members) {
             for (var j in flashGang.members) {
                 let gangMember = flashGang.members[j];
-                let existing = result.users.filter(gm => gm.id == gangMember.id);
+                console.log("gangMember", gangMember);
+                gangMember.id=gangMember.id ? gangMember.id : gangMember.memberId ? gangMember.memberId : gangMember.email
+                let user=await getItem(gangMember.id, process.env.USER_TABLE_NAME);
+                Object.assign(gangMember, user);
+                console.log("gangMember/user", gangMember);
+                /*let existing = result.users.filter(gm => gm.memberId == gangMember.id);
                 if (existing.length == 0) {
                     let gangster=await getItem(gangMember.id, process.env.USER_TABLE_NAME);
                     result.users.push(gangster);
-                }
+                }*/
             }
         }
     }
@@ -114,6 +119,21 @@ async function putFlashDeck(flashDeck, userId) {
 async function putFlashGang(flashGang, userId) {
     let now = new Date();
     flashGang.lastModified = now.getTime();
+    if (!flashGang.members) {
+        flashGang.members=[]
+    }
+    if (flashGang.members) {
+        let existing=flashGang.members.filter(member=>{
+            let memberId=member.userId ? member.userId : member.email;
+            return memberId==userId;
+        })
+        if (existing.length==0) {
+            flashGang.members.push({
+                memberId: userId,
+                rank: "BOSS"
+            })
+        }
+    }
     await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
     const flashGangMember = {
         memberId: userId,
@@ -121,16 +141,14 @@ async function putFlashGang(flashGang, userId) {
         lastModified: flashGang.lastModified,
         rank: 'BOSS'
     }
-    await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
+    //await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
     if (flashGang.members) {
         for (var i in flashGang.members) {
             let member = flashGang.members[i];
-            console.log('saving gang member 1', member)
             flashGangMember.memberId = member.userId ? member.userId : member.email;
             if (!flashGangMember.memberId || flashGangMember.memberId==''){
                 continue
             }
-            console.log('saving gang member 2', member)
             flashGangMember.rank = member.rank;
             flashGangMember.email = member.email;
             flashGangMember.state = member.state;
