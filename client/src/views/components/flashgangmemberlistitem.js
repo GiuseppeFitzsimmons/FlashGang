@@ -57,7 +57,12 @@ class FlashGangMemberListItem extends React.Component {
                                             this.setState({ editing: !this.state.editing })
                                         }}
                                     >
-                                        {this.props.gangMember.name+'HELLO MY DUDE'}
+                                        {
+                                            !this.props.gangMember.firstName && !this.props.gangMember.lastName ? 
+                                                this.props.gangMember.id :
+                                                this.props.gangMember.firstName ? this.props.gangMember.firstName : '' +
+                                                this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
+                                        }
                                     </div>
                                 </Grid>
                                 <Grid

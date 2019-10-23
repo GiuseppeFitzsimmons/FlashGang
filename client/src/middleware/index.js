@@ -418,10 +418,10 @@ export function flashGangMiddleware({ dispatch }) {
                 dispatch({ type: LOADING, data: { loading: true } })
                 console.log('Middleware CREATE_ACCOUNT')
                 var regExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                let isValid = regExp.test((action.data.user.userName).toLowerCase());
+                let isValid = regExp.test((action.data.user.id).toLowerCase());
                 let errors = { fields: [] }
                 if (!isValid) {
-                    errors.fields.push({ userName: 'Email address must be valid.' })
+                    errors.fields.push({ id: 'Email address must be valid.' })
                 }
                 if (action.data.user.password != action.data.user.confirmPassword) {
                     errors.fields.push({ password: 'Passwords must be identical.' })

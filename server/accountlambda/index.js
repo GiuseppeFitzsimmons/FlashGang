@@ -20,7 +20,8 @@ exports.handler = async (event, context) => {
         if (event.body.grant_type) {
             //Login sequence
             if (event.body.grant_type == 'password') {
-                let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME)
+                let userId=event.body.id ? event.body.id.toLowerCase() : ''
+                let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
                 console.log('user', user)
                 let _compare = await new Promise((resolve, reject) => {
                     bcrypt.compare(event.body.password, user.password, function (err, res) {
@@ -40,7 +41,7 @@ exports.handler = async (event, context) => {
                     reply.token = tokenPair.signedJwt
                     reply.refresh = tokenPair.signedRefresh
                 } else {
-                    reply.errors = { fields: [{ userName: `Email and password do not match` }, { password: `Email and password do not match` }] }
+                    reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
                     returnObject.statusCode = 401
                 }
             } else if (event.body.grant_type == 'refresh'){

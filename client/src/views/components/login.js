@@ -27,16 +27,16 @@ class Login extends React.Component {
             <>
                 <IntegratedInput
                     errors={this.props.errors}
-                    id='userName'
+                    id='id'
                     label='Email address'
                     placeholder='user@name.com'
                     onChange={
                         (event) => {
-                            this.state.user.userName = event.target.value
+                            this.state.user.id = event.target.value
                         }
                     }
                     ref={
-                        input => input ? input.reset(this.state.user.userName) : true
+                        input => input ? input.reset(this.state.user.id) : true
                     }
                 />
                 <IntegratedInput
@@ -84,16 +84,16 @@ class Login extends React.Component {
                 <>
                     <IntegratedInput
                         errors={this.props.errors}
-                        id='userName'
+                        id='id'
                         label='Email address'
                         placeholder='user@name.com'
                         onChange={
                             (event) => {
-                                this.state.user.userName = event.target.value
+                                this.state.user.id = event.target.value
                             }
                         }
                         ref={
-                            input => input ? input.reset(this.state.user.userName) : true
+                            input => input ? input.reset(this.state.user.id) : true
                         }
                     />
                     <IntegratedInput
