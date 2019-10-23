@@ -19,7 +19,7 @@ exports.handler = async (event, context) => {
                     )
 
                 } else {
-                    //dynamodbfordummies.removeItem()
+                    dynamodbfordummies.removeFlashGangMember(token.sub, event.body.flashGangId);
                 }
             } else {
                 reply.message = 'Error'

@@ -158,6 +158,29 @@ async function getFlashGang(id) {
         });
     })
     return flashGang;
+}
+
+async function removeFlashGangMember(id, flashGangId) {
+    const params = {
+        TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
+        Key: {
+            flashGangId: flashGangId,
+            id: id
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.delete(params, function (err, data) {
+            if (err) {
+                console.log("Failed to delete flashgang member", err);
+                resolve();
+            } else {
+                console.log("Deleted flashgang member", err);
+                resolve(data)
+            }
+        });
+    })
+    return result;
 
 }
 async function putFlashDeck(flashDeck, userId) {
@@ -290,5 +313,6 @@ module.exports = {
     getItem,
     getFlashDecks,
     putFlashDeck,
-    putFlashGang
+    putFlashGang,
+    removeFlashGangMember
 }
