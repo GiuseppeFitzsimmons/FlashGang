@@ -156,12 +156,12 @@ Resources:
     Properties:
       TableName: !Sub ${AWS::StackName}-flashgang-member-table
       KeySchema:
-        - AttributeName: memberId
+        - AttributeName: id
           KeyType: HASH
         - AttributeName: flashGangId
           KeyType: RANGE
       AttributeDefinitions:
-        - AttributeName: memberId
+        - AttributeName: id
           AttributeType: S
         - AttributeName: flashGangId
           AttributeType: S
@@ -170,12 +170,23 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: last_modified_index
           KeySchema:
-            - AttributeName: memberId
+            - AttributeName: id
               KeyType: HASH
             - AttributeName: lastModified
               KeyType: RANGE
           Projection:
-            ProjectionType: KEYS_ONLY
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: gang_index
+          KeySchema:
+            - AttributeName: flashGangId
+              KeyType: HASH
+            - AttributeName: lastModified
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1

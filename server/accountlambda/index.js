@@ -20,7 +20,7 @@ exports.handler = async (event, context) => {
         if (event.body.grant_type) {
             //Login sequence
             if (event.body.grant_type == 'password') {
-                let user = await dynamodbfordummies.getItem(event.body.userName.toLowerCase(), process.env.USER_TABLE_NAME)
+                let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME)
                 console.log('user', user)
                 let _compare = await new Promise((resolve, reject) => {
                     bcrypt.compare(event.body.password, user.password, function (err, res) {
@@ -36,7 +36,7 @@ exports.handler = async (event, context) => {
                     return false
                 });
                 if (_compare) {
-                    let tokenPair = tokenUtility.generateNewPair(event.body.userName, 'all')
+                    let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                     reply.token = tokenPair.signedJwt
                     reply.refresh = tokenPair.signedRefresh
                 } else {
@@ -62,8 +62,9 @@ exports.handler = async (event, context) => {
             }
         } else {
             //Account creation sequence
-            event.body.id = event.body.userName.toLowerCase()
-            let user = await dynamodbfordummies.getItem(event.body.userName.toLowerCase(), process.env.USER_TABLE_NAME)
+            console.log("EVENT DOT BODY", event.body, event.body.id);
+            event.body.id = event.body.id.toLowerCase()
+            let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME)
             if (!user) {
                 event.body.password = await hashAPass(event.body.password)
                 let dynamoItem = await dynamodbfordummies.putItem(event.body, process.env.USER_TABLE_NAME)
@@ -71,7 +72,7 @@ exports.handler = async (event, context) => {
                 reply.token = tokenPair.signedJwt
                 reply.refresh = tokenPair.signedRefresh
             } else {
-                reply.errors = { fields: [{ userName: `${event.body.userName} is already taken` }] }
+                reply.errors = { fields: [{ id: `${event.body.id} is already taken` },{ userName: `${event.body.id} is already taken` }] }
             }
         }
     }

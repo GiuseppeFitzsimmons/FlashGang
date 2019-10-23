@@ -51,7 +51,7 @@ class FlashGangEditor extends React.Component {
             this.props.flashGang.members = []
         }
         this.props.flashGang.members.push({
-            email: '',
+            id: '',
             rank: 'MEMBER',
             state: "TO_INVITE"
         })

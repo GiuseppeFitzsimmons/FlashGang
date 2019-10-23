@@ -4,10 +4,8 @@ const mailUtility = require('mailutility')
 exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
-    console.log('event', event)
     var reply = {}
     var token = validateToken(event);
-    console.log('token', token)
     if (event.httpMethod == 'post') {
         //store all the flashcards sent from the user
         //TODO deletions
@@ -24,12 +22,16 @@ exports.handler = async (event, context) => {
                 if (flashGang.members) {
                     for (var j in flashGang.members) {
                         let member = flashGang.members[j]
-                        if (!member.email && !member.id){
+                        if (!member.id){
                             continue
                         }
                         if (member.state == 'TO_INVITE'){
-                            member.id = member.email
-                            await mailUtility.sendInvitationMail(token.sub, member.email, flashGang.name)
+                            let user = await dynamodbfordummies.getItem(token.sub, process.env.USER_TABLE_NAME)
+                            let invitor=token.sub;
+                            if (user.firstName || user.lastName) {
+                                invitor=`${user.firstName ? user.firstName: ''} ${user.lastName ? user.lastName : ''}`
+                            }
+                            //await mailUtility.sendInvitationMail(invitor, member.email, flashGang.name)
                             member.state = 'INVITED'
                         }
                     }
@@ -41,7 +43,6 @@ exports.handler = async (event, context) => {
         //return all the flashcards to which the user has access and which have a lastModified date
         //later than the date passed in the request
         reply = await dynamodbfordummies.getFlashDecks(token.sub, lastModified);
-        console.log('synch lambda reply', reply)
     }
     returnObject.body = JSON.stringify(reply)
     return returnObject
@@ -57,11 +58,9 @@ function validateToken(event) {
     if (!token || token == '') {
         return;
     }
-    console.log(".......................", token);
     if (token.toLowerCase().indexOf('bearer')==0) {
         token=token.substr(7);
     }
-    console.log(";;;;;;;;;;;;;;;;;;;;", token);
     let splitted = token.split(".");
     if (splitted.length<2){
         return

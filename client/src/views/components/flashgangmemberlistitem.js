@@ -110,10 +110,10 @@ class FlashGangMemberListItem extends React.Component {
                                         id='memberEmail'
                                         placeholder='Gang member email'
                                         onChange={
-                                            (event) => { this.props.gangMember.email = event.target.value }
+                                            (event) => { this.props.gangMember.id = event.target.value }
                                         }
                                         ref={
-                                            input => input ? input.reset(this.props.gangMember.email) : true
+                                            input => input ? input.reset(this.props.gangMember.id) : true
                                         }
                                     />
                                     <MdDelete
