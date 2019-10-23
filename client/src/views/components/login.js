@@ -69,17 +69,59 @@ class Login extends React.Component {
                     variant='contained'
                     buttonType='system'
                     onClick={
-                        () => { 
-                            if (this.props.errors){
-                                this.props.errors.fields=[]
+                        () => {
+                            if (this.props.errors) {
+                                this.props.errors.fields = []
                             }
-                            this.setState({ mode: 'CREATE' }) }
+                            this.setState({ mode: 'CREATE' })
+                        }
                     }
                 >
                     Create account
                 </FlashButton>
+                {this.props.errors && this.props.errors.fields.length>0 &&
+                <FlashButton
+                    color='primary'
+                    variant='contained'
+                    buttonType='system'
+                    onClick={
+                        () => { this.setState({mode: 'FORGOTTENPW'}) }
+                    }
+                >
+                    Forgotten password
+                </FlashButton>
+                }
             </>
-        if (this.state.mode != 'LOGIN') {
+        if (this.state.mode == 'FORGOTTENPW') {
+            renderable =
+            <>
+            <IntegratedInput
+                    errors={this.props.errors}
+                    id='id'
+                    label='Email address'
+                    placeholder='user@name.com'
+                    onChange={
+                        (event) => {
+                            this.state.user.id = event.target.value
+                        }
+                    }
+                    ref={
+                        input => input ? input.reset(this.state.user.id) : true
+                    }
+                />
+                <FlashButton
+                    color='primary'
+                    variant='contained'
+                    buttonType='system'
+                    onClick={
+                        () => { this.props.resetPassword(this.state.user) }
+                    }
+                >
+                    Reset password
+                </FlashButton>
+                </>
+        }
+        else if (this.state.mode == 'CREATE') {
             renderable =
                 <>
                     <IntegratedInput
@@ -163,11 +205,12 @@ class Login extends React.Component {
                         variant='contained'
                         buttonType='system'
                         onClick={
-                            () => { 
-                                if (this.props.errors){
-                                    this.props.errors.fields=[]
+                            () => {
+                                if (this.props.errors) {
+                                    this.props.errors.fields = []
                                 }
-                                this.setState({ mode: 'LOGIN' }) }
+                                this.setState({ mode: 'LOGIN' })
+                            }
                         }
                     >
                         Cancel

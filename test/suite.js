@@ -37,7 +37,7 @@ synchroniseTony = {
                 {
                     "id": "chris@soprano.id",
                     "state": "TO_INVITE",
-                    "rank": "SOTTOCAPPO"
+                    "rank": "LIEUTENANT"
                 }
             ],
             "flashDecks": ["10"]
@@ -99,7 +99,7 @@ async function test() {
     console.log(chris);
     console.log("SYNCHRONISING CHRIS");
     let chrisSynch=await post('http://localhost:8080/synchronise', synchroniseChris, chris.token);
-    console.log(chrisSynch);
+    console.log(JSON.stringify(chrisSynch));
 }
 
 test();

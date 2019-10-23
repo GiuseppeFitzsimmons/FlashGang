@@ -14,6 +14,8 @@ export const LOAD_FLASHGANG = 'LOAD_FLASHGANG';
 export const CREATE_ACCOUNT = 'CREATE_ACCOUNT';
 export const LOGIN = 'LOGIN';
 export const LOADING = 'LOADING';
+export const RSVP = 'RSVP';
+export const RESET_PASSWORD = 'RESET_PASSWORD';
 
 
 export function newDeck() {
@@ -83,5 +85,15 @@ export function createAccount(user) {
 export function logIn(user) {
     console.log("Action LOGIN")
     return { type: LOGIN, data: { user } }
+
+}
+export function sendRSVP(flashGangId, acceptance) {
+    console.log("Action RSVP")
+    return { type: RSVP, data: { flashGangId, acceptance } }
+
+}
+export function resetPassword(user) {
+    console.log("Action RESET_PASSWORD")
+    return { type: RESET_PASSWORD, data: { user } }
 
 }

@@ -32,6 +32,7 @@ Globals:
         MEMBERSHIP_SENDMAIL_ADDRESS: 'membership@flashgang.io'
         SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
         RSVP_URL: 'http://localhost:3000/rsvp'
+        PASSWORD_RESET: 'http://localhost:3000/'
 Resources:
   ApiGateway:
     Type: 'AWS::Serverless::Api'
@@ -74,6 +75,28 @@ Resources:
           Properties:
             Path: /login
             Method: any
+        ResetEventSource:
+          Type: Api
+          Properties:
+            Path: /resetpw
+            Method: any
+
+  RsvpLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: rsvplambda/
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      RestApiId: 
+        !Ref ApiGateway
+      Events:
+        RsvpEventSource:
+          Type: Api
+          Properties:
+            Path: /rsvp
+            Method: any
+
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:

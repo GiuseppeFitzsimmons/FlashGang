@@ -31,6 +31,18 @@ const sendMail = async ( send ) => {
         });
     })
 }
+sendResetEmail = async (emailAddress, token) => {
+    let sendParams={
+        from: process.env.MEMBERSHIP_SENDMAIL_ADDRESS,
+        to: emailAddress,
+        subject: "FlashGang password reset",
+        text: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token} !`,
+        html: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token} !`
+    }
+    console.log('sendParams', sendParams)
+    return await sendMail(sendParams)
+}
+
 sendInvitationMail = async (invitor, invitee, gang) => {
     let sendParams={
         from: process.env.MEMBERSHIP_SENDMAIL_ADDRESS,
@@ -45,7 +57,8 @@ sendInvitationMail = async (invitor, invitee, gang) => {
 
 module.exports = {
     sendMail,
-    sendInvitationMail
+    sendInvitationMail,
+    sendResetEmail
 };
 
 async function test() {

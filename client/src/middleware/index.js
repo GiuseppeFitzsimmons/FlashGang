@@ -1,4 +1,4 @@
-import { LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -43,7 +43,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -456,6 +456,22 @@ export function flashGangMiddleware({ dispatch }) {
                 } else {
                     action.errors = postResult.errors
                 }
+            } else if (action.type === RSVP) {
+                console.log('Middleware RSVP')
+                let questObject = {}
+                questObject.params = Object.assign({}, action.data)
+                questObject.resource = 'rsvp'
+                let postResult = await postToServer(questObject)
+                synchronise()
+            } else if (action.type === RESET_PASSWORD) {
+                console.log('Middleware RESET_PASSWORD')
+                dispatch({ type: LOADING, data: { loading: true } })
+                let questObject = {}
+                questObject.params = Object.assign({}, action.data.user)
+                questObject.params.account_function = 'resetpw'
+                questObject.resource = 'resetpw'
+                let postResult = await postToServer(questObject)
+                action.errors = postResult.errors
             }
             return next(action);
         }

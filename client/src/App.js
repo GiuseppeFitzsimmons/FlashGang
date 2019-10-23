@@ -28,8 +28,7 @@ export default class App extends React.Component {
     this.logOut = this.logOut.bind(this)
   }
   logOut() {
-    localStorage.removeItem('flashJwt');
-    localStorage.removeItem('flashJwtRefresh');
+    localStorage.clear();
     this.setState({ mode: '', flashDeckId: null })
   }
   createFlashDeck() {

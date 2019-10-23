@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const dynamodbfordummies = require('dynamofordummies');
 const tokenUtility = require('tokenutility');
+const mailUtility = require('mailutility')
 
 exports.handler = async (event, context) => {
     async function hashAPass(password) {
@@ -20,31 +21,37 @@ exports.handler = async (event, context) => {
         if (event.body.grant_type) {
             //Login sequence
             if (event.body.grant_type == 'password') {
-                let userId=event.body.id ? event.body.id.toLowerCase() : ''
-                let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
-                console.log('user', user)
-                let _compare = await new Promise((resolve, reject) => {
-                    bcrypt.compare(event.body.password, user.password, function (err, res) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(res);
-                        }
+                let userId = event.body.id ? event.body.id.toLowerCase() : ''
+                if (userId != '') {
+                    let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
+                    console.log('user', user)
+                    let _compare = await new Promise((resolve, reject) => {
+                        bcrypt.compare(event.body.password, user.password, function (err, res) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve(res);
+                            }
+                        });
+                    }).then(res => {
+                        return res;
+                    }).catch(error => {
+                        return false
                     });
-                }).then(res => {
-                    return res;
-                }).catch(error => {
-                    return false
-                });
-                if (_compare) {
-                    let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
-                    reply.token = tokenPair.signedJwt
-                    reply.refresh = tokenPair.signedRefresh
+                    if (_compare) {
+                        let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
+                        reply.token = tokenPair.signedJwt
+                        reply.refresh = tokenPair.signedRefresh
+                    } else {
+                        reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
+                        returnObject.statusCode = 401
+                    }
                 } else {
                     reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
                     returnObject.statusCode = 401
                 }
-            } else if (event.body.grant_type == 'refresh'){
+
+            } else if (event.body.grant_type == 'refresh') {
                 let decodedAccessToken;
                 let decodedRefreshAccessToken;
                 try {
@@ -52,8 +59,8 @@ exports.handler = async (event, context) => {
                     event.authorizationToken = event.body.token
                     decodedRefreshAccessToken = jwtUtility.validateToken(event, false)
                 }
-                catch (err){}
-                if (decodedAccessToken && decodedRefreshAccessToken && decodedAccessToken.uuid == decodedRefreshAccessToken.uuid ){
+                catch (err) { }
+                if (decodedAccessToken && decodedRefreshAccessToken && decodedAccessToken.uuid == decodedRefreshAccessToken.uuid) {
                     let tokenPair = tokenUtility.generateNewPair(decodedRefreshAccessToken.sub, 'all')
                     reply.token = tokenPair.signedJwt
                     reply.refresh = tokenPair.signedRefresh
@@ -61,6 +68,13 @@ exports.handler = async (event, context) => {
                     returnObject.statusCode = 401
                 }
             }
+        } else if (event.body.account_function) {
+            let userId = event.body.id ? event.body.id.toLowerCase() : ''
+            let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
+            //if (user){
+            let tokenPair = tokenUtility.generateNewPair(userId, 'resetpw')
+            await mailUtility.sendResetEmail(userId, tokenPair.signedJwt)
+            //}
         } else {
             //Account creation sequence
             console.log("EVENT DOT BODY", event.body, event.body.id);
@@ -73,7 +87,7 @@ exports.handler = async (event, context) => {
                 reply.token = tokenPair.signedJwt
                 reply.refresh = tokenPair.signedRefresh
             } else {
-                reply.errors = { fields: [{ id: `${event.body.id} is already taken` },{ userName: `${event.body.id} is already taken` }] }
+                reply.errors = { fields: [{ id: `${event.body.id} is already taken` }, { userName: `${event.body.id} is already taken` }] }
             }
         }
     }

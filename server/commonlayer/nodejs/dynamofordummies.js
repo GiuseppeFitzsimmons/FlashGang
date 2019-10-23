@@ -262,7 +262,6 @@ async function getItem(id, tableName) {
 }
 
 async function removeItem(id, tableName) {
-    const ddb = getDBClient();
     var params = {
         TableName: tableName,
         Key: {
@@ -276,7 +275,7 @@ async function removeItem(id, tableName) {
                 console.log("Error", err);
                 reject(err);
             } else {
-                console.log("sucess deleting", id);
+                console.log("success deleting", id);
                 resolve(data);
             }
         });
