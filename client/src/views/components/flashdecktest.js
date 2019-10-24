@@ -42,6 +42,8 @@ class FlashDeckTest extends React.Component {
     }
     render() {
         const flashDeck = this.props.flashDeck
+        const editable=(this.props.flashDeck.rank == 'BOSS' || this.props.flashDeck.rank == 'LIEUTENANT') &&
+                (this.props.flashDeck.state!='TO_INVITE' && this.props.flashDeck.state!='INVITED')
         console.log('flashDeck', flashDeck)
         return (
             <>
@@ -78,7 +80,7 @@ class FlashDeckTest extends React.Component {
                             icon='flight_takeoff'
                             variant='contained'
                             buttonType='system'
-                            style={{ width: '49%' }}
+                            style={{ width: editable ? '49%': '100%' }}
                             disabled={!this.state.valid}
                             onClick={() => { this.props.nextCard(this.props.flashDeck) }}
                         >
@@ -90,7 +92,9 @@ class FlashDeckTest extends React.Component {
                                 color='primary'
                                 variant='contained'
                                 buttonType='system'
-                                style={{ width: '49%', display: this.props.flashDeck.rank == 'BOSS' || this.props.flashDeck.rank == 'LIEUTENANT' ? '':'none' }}
+                                style={{ 
+                                    width: '49%', 
+                                    display: editable ? '': 'none' }}
                                 onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
                             >
                                 Edit test

@@ -212,7 +212,7 @@ function selectNextCard(deck) {
         if (!deck.hasOwnProperty('currentIndex')) {
             deck.currentIndex = -1;
         }
-        if (deck.currentIndex && deck.currentIndex + 1 >= deck.flashCards.length) {
+        if (deck.currentIndex + 1 >= deck.flashCards.length) {
             deck.mode = 'COMPLETE'
         } else {
             deck.currentIndex++
