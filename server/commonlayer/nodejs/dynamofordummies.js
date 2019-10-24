@@ -213,8 +213,7 @@ async function putFlashGang(flashGang, userId) {
     const flashGangMember = {
         id: userId,
         flashGangId: flashGang.id,
-        lastModified: flashGang.lastModified,
-        rank: 'BOSS'
+        lastModified: flashGang.lastModified
     }
     for (var i in flashGang.members) {
         let member = flashGang.members[i];

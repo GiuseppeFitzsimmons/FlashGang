@@ -5,18 +5,55 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
 import IntegratedInput from '../widgets/IntegratedInput';
-import { MdDelete } from 'react-icons/md';
+import { MdDelete, MdModeEdit } from 'react-icons/md';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { withTheme } from '@material-ui/styles';
 
-class FlashGangMemberListItem extends React.Component {
+class FlashGangMemberListItemStyled extends React.Component {
     constructor(props) {
         super(props)
         this.state = { editing: false, rank: 'MEMBER' }
     }
     render() {
+        var editLevel=2;
+        if (this.props.flashGang) {
+            if (this.props.flashGang.rank=='LIEUTENANT') {
+                editLevel=1;
+            } else if (this.props.flashGang.rank=='BOSS') {
+                editLevel=0;
+            }
+        }
         return (
             <Grid>
+                <div style={{ 
+                            position: 'relative', 
+                            top: 0, left: 0, 
+                            display: editLevel<2 && this.props.gangMember.rank!='BOSS' ? '' : 'none', zIndex: 99,
+                            bottomMargin: '18px'
+                        }}>
+                    <div style={{ 
+                                position: 'absolute', 
+                                top: 0, left: 0, 
+                            ...this.props.theme.systemButton}}>
+                        <MdModeEdit
+                            onClick={
+                                () => {
+                                    this.setState({ editing: !this.state.editing })
+                                }
+                            }
+                        />
+                        <MdDelete
+                            style={{ display: this.state.editing ? '' : 'none' }}
+                            onClick={
+                                () => {
+                                    this.props.onDelete()
+                                }
+                            }
+                        />
+
+                    </div>
+                </div>
                 <ListItem
                     alignItems="flex-start"
                     button
@@ -31,16 +68,16 @@ class FlashGangMemberListItem extends React.Component {
                             item
                             xs='2'
                         >
+                            
                             <ListItemAvatar
-                                onClick={() => {
-                                    this.setState({ editing: !this.state.editing })
-                                }}>
-                                <Icon style={{ fontSize: 30 }}>{this.props.gangMember.icon}</Icon>
+                            backgroundColor='blue'
+                            >
+                              <Icon style={{ fontSize: 30 }}>{this.props.gangMember.icon}</Icon>
                             </ListItemAvatar>
                         </Grid>
                         <Grid
                             item
-                            xs='10'
+                            xs='9'
                         >
                             <Grid
                                 container
@@ -53,16 +90,33 @@ class FlashGangMemberListItem extends React.Component {
                                     xs='10'
                                 >
                                     <div
-                                        onClick={() => {
-                                            this.setState({ editing: !this.state.editing })
+                                        style={{
+                                            display: !this.state.editing ? 'block' : 'none'
                                         }}
                                     >
                                         {
-                                            !this.props.gangMember.firstName && !this.props.gangMember.lastName ? 
+                                            !this.props.gangMember.firstName && !this.props.gangMember.lastName ?
                                                 this.props.gangMember.id :
                                                 this.props.gangMember.firstName ? this.props.gangMember.firstName : '' +
-                                                this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
+                                                    this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
                                         }
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            display: this.state.editing ? 'block' : 'none'
+                                        }}
+                                    >
+                                        <IntegratedInput
+                                            id='id'
+                                            placeholder='Gang member email'
+                                            onChange={
+                                                (event) => { this.props.gangMember.id = event.target.value }
+                                            }
+                                            ref={
+                                                input => input ? input.reset(this.props.gangMember.id) : true
+                                            }
+                                        />
                                     </div>
                                 </Grid>
                                 <Grid
@@ -80,7 +134,11 @@ class FlashGangMemberListItem extends React.Component {
                                     </div>
                                     <div
                                         style={{
-                                            display: this.state.editing ? 'block' : 'none'
+                                            display: 
+                                                this.state.editing && 
+                                                editLevel<2 && 
+                                                this.props.gangMember.rank!='BOSS'
+                                                ? 'block' : 'none'
                                         }}
                                     >
                                         <Select
@@ -89,46 +147,20 @@ class FlashGangMemberListItem extends React.Component {
                                                 (event) => {
                                                     this.props.gangMember.rank = event.target.value;
                                                     this.forceUpdate()
-                                                    console.log('this.props.gangMember.rank', this.props.gangMember.rank)
                                                 }
                                             }
-                                            inputProps={{
-                                                name: 'age',
-                                                id: 'age-simple',
-                                            }}
                                         >
+                                        {editLevel<1 &&
                                             <MenuItem value={'BOSS'}>Boss</MenuItem>
+                                        }
+                                        {editLevel<2 &&
                                             <MenuItem value={'LIEUTENANT'}>Lieutenant</MenuItem>
+                                        }
                                             <MenuItem value={'MEMBER'}>Member</MenuItem>
                                         </Select>
+
                                     </div>
                                 </Grid>
-                            </Grid>
-                            <Grid>
-                                <div
-                                    style={{
-                                        display: this.state.editing ? 'block' : 'none'
-                                    }}
-                                >
-                                    <IntegratedInput
-                                        label="Email"
-                                        id='memberEmail'
-                                        placeholder='Gang member email'
-                                        onChange={
-                                            (event) => { this.props.gangMember.id = event.target.value }
-                                        }
-                                        ref={
-                                            input => input ? input.reset(this.props.gangMember.id) : true
-                                        }
-                                    />
-                                    <MdDelete
-                                        onClick={
-                                            () => {
-                                                this.props.onDelete()
-                                            }
-                                        }
-                                    />
-                                </div>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -137,7 +169,7 @@ class FlashGangMemberListItem extends React.Component {
         )
     }
 }
-
+const FlashGangMemberListItem=withTheme(FlashGangMemberListItemStyled);
 export {
     FlashGangMemberListItem
 }
