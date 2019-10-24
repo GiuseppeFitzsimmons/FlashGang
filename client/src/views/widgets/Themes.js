@@ -30,6 +30,16 @@ const greenTheme = createMuiTheme({
           color: lightGreen[500]
         }
       },
+      MuiListItem: {
+        gutters: {
+          paddingLeft: 4,
+          paddingRight: 4
+        }
+      },
+      MuiInputBase: {
+        paddingLeft:0,
+        paddingRigth:0
+      },
       MuiDialogTitle: {
         root: {
           backgroundColor: lightGreen[300],
@@ -117,6 +127,9 @@ const greenTheme = createMuiTheme({
     disabled: {
       color: 'rgba(0,0,0,0.6)',
       backgroundColor: lightGreen[200]
+    },
+    icon: {
+      color: lightGreen[500]
     }
   });
 

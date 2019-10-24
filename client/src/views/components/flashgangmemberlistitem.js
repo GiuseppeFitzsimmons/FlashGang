@@ -5,10 +5,14 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Icon from '@material-ui/core/Icon';
 import IntegratedInput from '../widgets/IntegratedInput';
-import { MdDelete, MdModeEdit } from 'react-icons/md';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { withTheme } from '@material-ui/styles';
+//https://react-icons.netlify.com/#/icons/md
+import { MdDelete, MdModeEdit } from 'react-icons/md';
+//https://react-icons.netlify.com/#/icons/gi
+import { GiSwordman, GiHoodedFigure, GiBrutalHelm } from 'react-icons/gi';
+
 
 class FlashGangMemberListItemStyled extends React.Component {
     constructor(props) {
@@ -87,7 +91,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                             >
                                 <Grid
                                     item
-                                    xs='10'
+                                    xs='11'
                                 >
                                     <div
                                         style={{
@@ -121,7 +125,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 </Grid>
                                 <Grid
                                     item
-                                    xs='2'
+                                    xs='1'
                                 >
                                     <div
                                         style={{
@@ -129,7 +133,16 @@ class FlashGangMemberListItemStyled extends React.Component {
                                         }}
                                     >
                                         {
-                                            this.props.gangMember.rank
+                                            this.props.gangMember.rank=='BOSS' &&
+                                                <GiBrutalHelm style={this.props.theme.icon}/>
+                                        }
+                                        {
+                                            this.props.gangMember.rank=='LIEUTENANT' &&
+                                                <GiSwordman style={this.props.theme.icon}/>
+                                        }
+                                        {
+                                            this.props.gangMember.rank=='MEMBER' &&
+                                                <GiHoodedFigure style={this.props.theme.icon}/>
                                         }
                                     </div>
                                     <div
@@ -137,7 +150,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                             display: 
                                                 this.state.editing && 
                                                 editLevel<2 && 
-                                                this.props.gangMember.rank!='BOSS'
+                                                (this.props.gangMember.rank!='BOSS' || this.props.flashGang.rank=='BOSS')
                                                 ? 'block' : 'none'
                                         }}
                                     >
@@ -151,12 +164,18 @@ class FlashGangMemberListItemStyled extends React.Component {
                                             }
                                         >
                                         {editLevel<1 &&
-                                            <MenuItem value={'BOSS'}>Boss</MenuItem>
+                                            <MenuItem value={'BOSS'}>
+                                                <GiBrutalHelm style={this.props.theme.icon}/>
+                                            </MenuItem>
                                         }
                                         {editLevel<2 &&
-                                            <MenuItem value={'LIEUTENANT'}>Lieutenant</MenuItem>
+                                            <MenuItem value={'LIEUTENANT'}>
+                                                    <GiSwordman style={this.props.theme.icon}/>
+                                            </MenuItem>
                                         }
-                                            <MenuItem value={'MEMBER'}>Member</MenuItem>
+                                            <MenuItem value={'MEMBER'}>
+                                                <GiHoodedFigure style={this.props.theme.icon}/>
+                                            </MenuItem>
                                         </Select>
 
                                     </div>
