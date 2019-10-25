@@ -227,6 +227,7 @@ async function putFlashGang(flashGang, userId) {
         }
         flashGangMember.rank = member.rank;
         flashGangMember.state = member.state;
+        flashGangMember.invitedBy = member.invitedBy;
         await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
     }
     delete flashGang.members

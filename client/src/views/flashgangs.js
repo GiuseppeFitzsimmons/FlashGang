@@ -54,6 +54,9 @@ class FlashGangs extends React.Component {
     }
     this.props.sendRSVP(this.state.flashGang.id, acceptance)
     this.setState({ RSVPDialogOpen: false })
+    if (acceptance) {
+      this.props.onFlashGangSelected(this.state.flashGang.id)
+    }
   }
   render() {
     const flashGangs = this.props.flashGangs;
@@ -129,7 +132,7 @@ class FlashGangs extends React.Component {
     if (this.state.flashGang.invitedBy) {
       var invitor=this.state.flashGang.invitedBy.id;
       if (this.state.flashGang.invitedBy.firstName || this.state.flashGang.invitedBy.lastName) {
-        invitor= (this.state.flashGang.invitedBy.firstName ? this.state.flashGang.invitedBy.firstName : '') +
+        invitor= (this.state.flashGang.invitedBy.firstName ? this.state.flashGang.invitedBy.firstName+' ' : '') +
         (this.state.flashGang.invitedBy.lastName ? this.state.flashGang.invitedBy.lastName : '')
       }
       message=<>You have been invited to join <b>{this.state.flashGang.name}</b> by {invitor}. Would you like to accept?</>;
