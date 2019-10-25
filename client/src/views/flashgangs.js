@@ -125,6 +125,15 @@ class FlashGangs extends React.Component {
     )
   }
   renderRSVPdialog() {
+    var message=<>You have been invited to join <b>{this.state.flashGang.name}</b> <i>({this.state.flashGang.description})</i>. Would you like to accept?</>;
+    if (this.state.flashGang.invitedBy) {
+      var invitor=this.state.flashGang.invitedBy.id;
+      if (this.state.flashGang.invitedBy.firstName || this.state.flashGang.invitedBy.lastName) {
+        invitor= (this.state.flashGang.invitedBy.firstName ? this.state.flashGang.invitedBy.firstName : '') +
+        (this.state.flashGang.invitedBy.lastName ? this.state.flashGang.invitedBy.lastName : '')
+      }
+      message=<>You have been invited to join <b>{this.state.flashGang.name}</b> by {invitor}. Would you like to accept?</>;
+    }
     return (
       <Dialog
         open={this.state.RSVPDialogOpen}
@@ -136,7 +145,7 @@ class FlashGangs extends React.Component {
         <DialogTitle id="alert-dialog-slide-title">{this.state.flashGang.name}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Do you want to join this gang?
+            {message}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

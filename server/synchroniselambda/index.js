@@ -33,6 +33,8 @@ exports.handler = async (event, context) => {
                             }
                             //await mailUtility.sendInvitationMail(invitor, member.email, flashGang.name)
                             member.state = 'INVITED'
+                            member.invitedBy=token.sub;
+                            console.log("INVITEDBY BUG SAVING MEMBER", member);
                         }
                     }
                 }

@@ -57,6 +57,10 @@ async function getFlashDecks(userId, lastModifiedDate) {
         let flashGang=await getFlashGang(userGang.flashGangId);
         flashGang.rank=userGang.rank;
         flashGang.state=userGang.state;
+        console.log("INVITEDBY BUG", userGang);
+        if (userGang.invitedBy) {
+            flashGang.invitedBy=await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
+        }
         result.flashGangs.push(flashGang);
         //put the decks of this gang into the list of gangs, if it's not already there
         if (flashGang.flashDecks) {
