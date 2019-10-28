@@ -240,6 +240,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 style={{ display: this.state.editing ? '' : 'none' }}
                                 onClick={
                                     () => {
+                                        this.setState({ editing: false })
                                         this.props.onDelete()
                                     }
                                 }
