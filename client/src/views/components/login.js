@@ -58,6 +58,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
+                    style={{width:'100%'}}
                     onClick={
                         () => { this.props.logIn(this.state.user) }
                     }
@@ -68,6 +69,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
+                    style={{width:'100%'}}
                     onClick={
                         () => {
                             if (this.props.errors) {
@@ -84,6 +86,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
+                    style={{width:'100%'}}
                     onClick={
                         () => { this.setState({mode: 'FORGOTTENPW'}) }
                     }
@@ -113,6 +116,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
+                    style={{width:'100%'}}
                     onClick={
                         () => { this.props.resetPassword(this.state.user) }
                     }
@@ -194,6 +198,7 @@ class Login extends React.Component {
                         color='primary'
                         variant='contained'
                         buttonType='system'
+                        style={{width:'100%'}}
                         onClick={
                             () => { this.props.createAccount(this.state.user) }
                         }
@@ -204,6 +209,7 @@ class Login extends React.Component {
                         color='primary'
                         variant='contained'
                         buttonType='system'
+                        style={{width:'100%'}}
                         onClick={
                             () => {
                                 if (this.props.errors) {
