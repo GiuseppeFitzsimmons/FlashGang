@@ -45,7 +45,7 @@ class IntegratedInput extends Component {
         if (_invalid || (message && message != '')) {
             _tooltip = <Tooltip isOpen={this.state.isOpen} toggle={this.toggle} placement="bottom" target={this.props.id}>{message}</Tooltip>
         }
-        let _label = <></>
+        let _label = ''
         if (this.props.label && this.props.label != '') {
             let color = 'rgba(0,0,0,0.6)'
             if (_invalid){

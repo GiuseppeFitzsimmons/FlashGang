@@ -189,9 +189,9 @@ class FlashGangEditor extends React.Component {
                         flashGang={flashGang}
                         onDelete={() => { this.removeMember(i) }}
                     />
-                    {i < flashGang.members.length - 1 &&
+                    {/*i < flashGang.members.length - 1 &&
                         <Divider variant="inset" component="li" />
-                    }
+                    */}
                 </>
             )
         })
