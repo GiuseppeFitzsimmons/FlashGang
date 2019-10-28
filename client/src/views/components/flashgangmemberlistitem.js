@@ -87,10 +87,10 @@ class FlashGangMemberListItemStyled extends React.Component {
                         backgroundSize: '100%',
                         backgroundRepeat: 'no-repeat'
                     }}
-                    height={'10%'}>
+                        height={'10%'}>
                     </Container>
                 </Grid>
-                <Grid item xs={8} sm={8} md={8} style={this.props.theme.actionListItem}>
+                <Grid item xs={8} sm={9} md={9} style={this.props.theme.actionListItem}>
                     <Container height={'10%'} style={{ verticalAlign: 'middle' }}>
 
                         <div
@@ -156,7 +156,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                         editLevel < 2 &&
                                         (this.props.gangMember.rank != 'BOSS' || this.props.flashGang.rank == 'BOSS')
                                         ? 'block' : 'none',
-                                        paddingTop: '8px'
+                                paddingTop: '8px'
                             }}
                         >
                             <Select
