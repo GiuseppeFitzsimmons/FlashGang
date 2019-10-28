@@ -1,4 +1,4 @@
-import { RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -43,7 +43,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -75,6 +75,9 @@ async function postToServer(questObject) {
         }
     }
     var token = localStorage.getItem('flashJwt')
+    if (questObject.resource == 'setpw') {
+        token = questObject.params.token
+    }
     var responseCode = 0;
     var method = 'POST'
     if (questObject.update) {
@@ -472,6 +475,27 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.resource = 'resetpw'
                 let postResult = await postToServer(questObject)
                 action.errors = postResult.errors
+            } else if (action.type === SET_PASSWORD) {
+                console.log('Middleware SET_PASSWORD')
+                dispatch({ type: LOADING, data: { loading: true } })
+                if (action.data.user.password != action.data.user.confirmPassword) {
+                    let errors = {}
+                    errors.fields.push({ password: 'Passwords must be identical.' })
+                } else {
+                    let questObject = {}
+                    questObject.params = Object.assign({}, action.data.user)
+                    questObject.params.account_function = 'setpw'
+                    questObject.resource = 'setpw'
+                    questObject.params.token = action.data.token
+                    let postResult = await postToServer(questObject)
+                    if (postResult.token) {
+                        localStorage.setItem('flashJwt', postResult.token)
+                        localStorage.setItem('flashJwtRefresh', postResult.refresh)
+                        await synchronise()
+                    } else {
+                        action.errors = postResult.errors
+                    }
+                }
             }
             return next(action);
         }

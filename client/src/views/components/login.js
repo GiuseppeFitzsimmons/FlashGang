@@ -6,6 +6,7 @@ import IntegratedInput from '../widgets/IntegratedInput';
 import { FlashButton } from '../widgets/FlashBits';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button, Grid, GridList } from '@material-ui/core';
+import queryString, { parse } from 'query-string'
 
 class Login extends React.Component {
     constructor(props) {
@@ -23,6 +24,8 @@ class Login extends React.Component {
     }
 
     render() {
+        const parsedurl = queryString.parseUrl(window.location.href)
+        console.log('parsedurl', parsedurl)
         let renderable =
             <>
                 <IntegratedInput
@@ -58,7 +61,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
-                    style={{width:'100%'}}
+                    style={{ width: '100%' }}
                     onClick={
                         () => { this.props.logIn(this.state.user) }
                     }
@@ -69,7 +72,7 @@ class Login extends React.Component {
                     color='primary'
                     variant='contained'
                     buttonType='system'
-                    style={{width:'100%'}}
+                    style={{ width: '100%' }}
                     onClick={
                         () => {
                             if (this.props.errors) {
@@ -81,47 +84,47 @@ class Login extends React.Component {
                 >
                     Create account
                 </FlashButton>
-                {this.props.errors && this.props.errors.fields.length>0 &&
-                <FlashButton
-                    color='primary'
-                    variant='contained'
-                    buttonType='system'
-                    style={{width:'100%'}}
-                    onClick={
-                        () => { this.setState({mode: 'FORGOTTENPW'}) }
-                    }
-                >
-                    Forgotten password
+                {this.props.errors && this.props.errors.fields.length > 0 &&
+                    <FlashButton
+                        color='primary'
+                        variant='contained'
+                        buttonType='system'
+                        style={{ width: '100%' }}
+                        onClick={
+                            () => { this.setState({ mode: 'FORGOTTENPW' }) }
+                        }
+                    >
+                        Forgotten password
                 </FlashButton>
                 }
             </>
         if (this.state.mode == 'FORGOTTENPW') {
             renderable =
-            <>
-            <IntegratedInput
-                    errors={this.props.errors}
-                    id='id'
-                    label='Email address'
-                    placeholder='user@name.com'
-                    onChange={
-                        (event) => {
-                            this.state.user.id = event.target.value
+                <>
+                    <IntegratedInput
+                        errors={this.props.errors}
+                        id='id'
+                        label='Email address'
+                        placeholder='user@name.com'
+                        onChange={
+                            (event) => {
+                                this.state.user.id = event.target.value
+                            }
                         }
-                    }
-                    ref={
-                        input => input ? input.reset(this.state.user.id) : true
-                    }
-                />
-                <FlashButton
-                    color='primary'
-                    variant='contained'
-                    buttonType='system'
-                    style={{width:'100%'}}
-                    onClick={
-                        () => { this.props.resetPassword(this.state.user) }
-                    }
-                >
-                    Reset password
+                        ref={
+                            input => input ? input.reset(this.state.user.id) : true
+                        }
+                    />
+                    <FlashButton
+                        color='primary'
+                        variant='contained'
+                        buttonType='system'
+                        style={{ width: '100%' }}
+                        onClick={
+                            () => { this.props.resetPassword(this.state.user) }
+                        }
+                    >
+                        Reset password
                 </FlashButton>
                 </>
         }
@@ -198,7 +201,7 @@ class Login extends React.Component {
                         color='primary'
                         variant='contained'
                         buttonType='system'
-                        style={{width:'100%'}}
+                        style={{ width: '100%' }}
                         onClick={
                             () => { this.props.createAccount(this.state.user) }
                         }
@@ -209,7 +212,7 @@ class Login extends React.Component {
                         color='primary'
                         variant='contained'
                         buttonType='system'
-                        style={{width:'100%'}}
+                        style={{ width: '100%' }}
                         onClick={
                             () => {
                                 if (this.props.errors) {
@@ -220,6 +223,65 @@ class Login extends React.Component {
                         }
                     >
                         Cancel
+                    </FlashButton>
+                </>
+        } if (parsedurl.query.resetpassword) {
+            let email = atob(parsedurl.query.email)
+            this.state.user.id = email
+            renderable =
+                <>
+                    <IntegratedInput
+                        errors={this.props.errors}
+                        id='id'
+                        label='Email address'
+                        placeholder='user@name.com'
+                        onChange={
+                            (event) => {
+                                this.state.user.id = event.target.value
+                            }
+                        }
+                        ref={
+                            input => input ? input.reset(email) : true
+                        }
+                    />
+                    <IntegratedInput
+                        errors={this.props.errors}
+                        id='password'
+                        type='password'
+                        label='Password'
+                        placeholder='Password'
+                        onChange={
+                            (event) => {
+                                this.state.user.password = event.target.value
+                            }
+                        }
+                        ref={
+                            input => input ? input.reset('') : true
+                        }
+                    />
+                    <IntegratedInput
+                        type='password'
+                        label='Confirm password'
+                        placeholder='Confirm password'
+                        onChange={
+                            (event) => {
+                                this.state.user.confirmPassword = event.target.value
+                            }
+                        }
+                        ref={
+                            input => input ? input.reset('') : true
+                        }
+                    />
+                    <FlashButton
+                        color='primary'
+                        variant='contained'
+                        buttonType='system'
+                        style={{ width: '100%' }}
+                        onClick={
+                            () => { this.props.setPassword(this.state.user, parsedurl.query.token) }
+                        }
+                    >
+                        Set password
                     </FlashButton>
                 </>
         }

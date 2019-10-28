@@ -1,4 +1,4 @@
-import { RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD } from '../action';
+import { SET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD } from '../action';
 
 const initialState = {};
 
@@ -66,6 +66,9 @@ function rootReducer(state = initialState, action) {
             return state
         case RESET_PASSWORD:
             state = Object.assign({}, state, { loading: false, errors: action.errors })
+            return state
+        case SET_PASSWORD:
+            state = Object.assign({}, state, { loading: false, errors: action.errors, loggedIn: action.errors ? false : true })
             return state
         default:
             return state

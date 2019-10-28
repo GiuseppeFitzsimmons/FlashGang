@@ -29,6 +29,7 @@ export default class App extends React.Component {
   }
   logOut() {
     localStorage.clear();
+    window.location.href = '/'
     this.setState({ mode: '', flashDeckId: null })
   }
   createFlashDeck() {

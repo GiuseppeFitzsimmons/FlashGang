@@ -80,6 +80,11 @@ Resources:
           Properties:
             Path: /resetpw
             Method: any
+        SetEventSource:
+          Type: Api
+          Properties:
+            Path: /setpw
+            Method: any
 
   RsvpLambda:
     Type: AWS::Serverless::Function

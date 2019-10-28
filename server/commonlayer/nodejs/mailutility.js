@@ -32,12 +32,13 @@ const sendMail = async ( send ) => {
     })
 }
 sendResetEmail = async (emailAddress, token) => {
+    let email = Buffer.from(emailAddress).toString('base64');
     let sendParams={
         from: process.env.MEMBERSHIP_SENDMAIL_ADDRESS,
         to: emailAddress,
         subject: "FlashGang password reset",
-        text: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token} !`,
-        html: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token} !`
+        text: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token}&email=${email} !`,
+        html: `Click here to reset your password: ${process.env.PASSWORD_RESET}?resetpassword=true&token=${token}&email=${email} !`
     }
     console.log('sendParams', sendParams)
     return await sendMail(sendParams)

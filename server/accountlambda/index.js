@@ -70,11 +70,26 @@ exports.handler = async (event, context) => {
             }
         } else if (event.body.account_function) {
             let userId = event.body.id ? event.body.id.toLowerCase() : ''
+            console.log('userId', userId)
             let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
-            //if (user){
-            let tokenPair = tokenUtility.generateNewPair(userId, 'resetpw')
-            await mailUtility.sendResetEmail(userId, tokenPair.signedJwt)
-            //}
+            if (event.body.account_function == 'resetpw') {
+                let tokenPair = tokenUtility.generateNewPair(userId, 'resetpw')
+                await mailUtility.sendResetEmail(userId, tokenPair.signedJwt)
+            } else if (event.body.account_function == 'setpw') {
+                console.log('event.body.token', event.body.token)
+                let token = tokenUtility.validateToken(event)
+                if (token && token.sub == event.body.id && token.scope == 'resetpw') {
+                    console.log('user', user)
+                    user.password = await hashAPass(event.body.password)
+                    await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
+                    let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
+                    reply.token = tokenPair.signedJwt
+                    reply.refresh = tokenPair.signedRefresh
+                } else {
+                    reply.errors = { fields: [{ id: `Bad request` }] }
+                    returnObject.statusCode = 401
+                }
+            }
         } else {
             //Account creation sequence
             console.log("EVENT DOT BODY", event.body, event.body.id);
