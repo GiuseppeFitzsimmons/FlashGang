@@ -5,6 +5,7 @@ exports.handler = async (event, context) => {
     returnObject.statusCode = 200
     var reply = {}
     var token = validateToken(event);
+    console.log("RSVP", event.body);
     if (event.httpMethod == 'post') {
         if (event.body) {
             if (event.body.flashGangId && event.body.hasOwnProperty('acceptance')) {

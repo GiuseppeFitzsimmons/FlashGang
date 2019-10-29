@@ -140,8 +140,9 @@ class FlashGangEditor extends React.Component {
                             display: this.state.memberTab,
                             backgroundColor: 'rgba(255,255,255,0.4)',
                             padding: '2px',
-                            height: '60%',
-                            overflow: 'scroll'
+                            height: '55%',
+                            overflow: 'auto',
+                            overflowX: 'hidden'
                         }}
                     >
                         <FlashListItem alignItems="flex-start"
@@ -164,8 +165,9 @@ class FlashGangEditor extends React.Component {
                             display: this.state.deckTab,
                             backgroundColor: 'rgba(255,255,255,0.4)',
                             padding: '2px',
-                            height: '60%',
-                            overflow: 'scroll'
+                            height: '55%',
+                            overflow: 'auto',
+                            overflowX: 'hidden'
                         }}
                     >
                         <DeckSelector

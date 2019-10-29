@@ -44,6 +44,10 @@ synchroniseTony = {
         }
     ]
 }
+rsvpChris = {
+    flashGangId: '11',
+    acceptance: true
+}
 synchroniseChris = {
 
 }
@@ -96,7 +100,10 @@ async function test() {
         createAccountChris.grant_type="password";
         chris=await post('http://localhost:8080/login', createAccountChris);
     }
-    console.log(chris);
+    console.log(chris);;
+    console.log("RSVP CHRIS");
+    let chrisRsvp=await post('http://localhost:8080/rsvp', rsvpChris, chris.token);
+    console.log(JSON.stringify(chrisRsvp));
     console.log("SYNCHRONISING CHRIS");
     let chrisSynch=await post('http://localhost:8080/synchronise', synchroniseChris, chris.token);
     console.log(JSON.stringify(chrisSynch));
