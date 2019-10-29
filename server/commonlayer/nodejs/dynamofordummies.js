@@ -2,6 +2,16 @@ const { generateNewPair } = require('tokenutility')
 
 const AWS = require('aws-sdk');
 
+async function hasFlashGangPermissions(gangId, userId) {
+    let flashGang = await getFlashGang(gangId)
+    if (!flashGang){
+        return true
+    }
+    let permitted = await flashGang.members.filter(member => {
+        return member.id = userId && (member.rank == 'BOSS' || member.rank == 'LIEUTENANT') && (member.state != 'INVITED' && member.state != 'TO_INVITE')
+    })
+    return permitted.id
+}
 
 async function getFlashDecks(userId, lastModifiedDate) {
     const result = {};
@@ -47,19 +57,18 @@ async function getFlashDecks(userId, lastModifiedDate) {
     result.flashGangs = [];
     result.users = [];
     //push the current user into this list, and decorate the record with subscription information
-    let currentUser=await getItem(userId, process.env.USER_TABLE_NAME);
-    currentUser.isCurrentUser=true;
-    currentUser.profile=getProfile(currentUser.subscription);
+    let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
+    currentUser.isCurrentUser = true;
+    currentUser.profile = getProfile(currentUser.subscription);
     result.users.push(currentUser);
     for (var i in userGangs) {
         let userGang = userGangs[i];
         //let flashGang = await getItem(userGang.flashGangId, process.env.FLASHGANG_TABLE_NAME);
-        let flashGang=await getFlashGang(userGang.flashGangId);
-        flashGang.rank=userGang.rank;
-        flashGang.state=userGang.state;
-        console.log("INVITEDBY BUG", userGang);
+        let flashGang = await getFlashGang(userGang.flashGangId);
+        flashGang.rank = userGang.rank;
+        flashGang.state = userGang.state;
         if (userGang.invitedBy) {
-            flashGang.invitedBy=await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
+            flashGang.invitedBy = await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
         }
         result.flashGangs.push(flashGang);
         //put the decks of this gang into the list of gangs, if it's not already there
@@ -80,10 +89,10 @@ async function getFlashDecks(userId, lastModifiedDate) {
         //put the members of this gang into the list of users, if it's not already there
         if (flashGang.members) {
             for (var j in flashGang.members) {
-                let gangMember=flashGang.members[j]
+                let gangMember = flashGang.members[j]
                 let existing = result.users.filter(gm => gm.id == gangMember.id);
                 if (existing.length == 0) {
-                    let gangster=await getItem(gangMember.id, process.env.USER_TABLE_NAME);
+                    let gangster = await getItem(gangMember.id, process.env.USER_TABLE_NAME);
                     result.users.push(gangster);
                 }
             }
@@ -106,41 +115,45 @@ async function getFlashDecks(userId, lastModifiedDate) {
 
     return result;
 }
-const subscriptionLevels={
+const subscriptionLevels = {
     none: {
-        maxDecks:5,
-        maxCardsPerDeck:20,
-        maxGangs:2,
-        maxMembersPerGang:5
+        maxDecks: 5,
+        maxCardsPerDeck: 20,
+        maxGangs: 2,
+        maxMembersPerGang: 5
     },
     associate: {
-        maxDecks:15,
-        maxCardsPerDeck:99,
-        maxGangs:5,
-        maxMembersPerGang:10
+        maxDecks: 15,
+        maxCardsPerDeck: 99,
+        maxGangs: 5,
+        maxMembersPerGang: 10
     },
     admin: {
-        maxDecks:99,
-        maxCardsPerDeck:199,
-        maxGangs:30,
-        maxMembersPerGang:99
+        maxDecks: 99,
+        maxCardsPerDeck: 199,
+        maxGangs: 30,
+        maxMembersPerGang: 99
     },
     superadmin: {
-        maxDecks:-1,
-        maxCardsPerDeck:-1,
-        maxGangs:-1,
-        maxMembersPerGang:-1
+        maxDecks: -1,
+        maxCardsPerDeck: -1,
+        maxGangs: -1,
+        maxMembersPerGang: -1
     }
 }
 function getProfile(subscriptionLevel) {
-    let profile=subscriptionLevels[subscriptionLevel];
+    let profile = subscriptionLevels[subscriptionLevel];
     if (!profile) {
-        profile=subscriptionLevels.none;
+        profile = subscriptionLevels.none;
     }
     return profile;
 }
 async function getFlashGang(id) {
     let flashGang = await getItem(id, process.env.FLASHGANG_TABLE_NAME);
+    console.log('flashGang dynamofordummies', flashGang)
+    if (!flashGang){
+        return null
+    }
     //query the gang-member table for members
     const params = {
         TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
@@ -203,12 +216,12 @@ async function putFlashGang(flashGang, userId) {
     let now = new Date();
     flashGang.lastModified = now.getTime();
     if (!flashGang.members) {
-        flashGang.members=[]
+        flashGang.members = []
     }
-    let existing=flashGang.members.filter(member=>{
-        return member.id==userId;
+    let existing = flashGang.members.filter(member => {
+        return member.id == userId;
     })
-    if (existing.length==0) {
+    if (existing.length == 0) {
         flashGang.members.push({
             id: userId,
             rank: "BOSS"
@@ -221,8 +234,8 @@ async function putFlashGang(flashGang, userId) {
     }
     for (var i in flashGang.members) {
         let member = flashGang.members[i];
-        flashGangMember.id=member.id;
-        if (!flashGangMember.id || flashGangMember.id==''){
+        flashGangMember.id = member.id;
+        if (!flashGangMember.id || flashGangMember.id == '') {
             continue
         }
         flashGangMember.rank = member.rank;
@@ -318,5 +331,7 @@ module.exports = {
     getFlashDecks,
     putFlashDeck,
     putFlashGang,
-    removeFlashGangMember
+    removeFlashGangMember,
+    hasFlashGangPermissions,
+    getFlashGang
 }

@@ -19,21 +19,25 @@ exports.handler = async (event, context) => {
         if (event.body.flashGangs) {
             for (var i in event.body.flashGangs) {
                 flashGang = event.body.flashGangs[i]
+                let permitted = await dynamodbfordummies.hasFlashGangPermissions(flashGang.id, token.sub)
+                if (!permitted){
+                    continue
+                }
                 if (flashGang.members) {
                     for (var j in flashGang.members) {
                         let member = flashGang.members[j]
-                        if (!member.id){
+                        if (!member.id) {
                             continue
                         }
-                        if (member.state == 'TO_INVITE'){
+                        if (member.state == 'TO_INVITE') {
                             let user = await dynamodbfordummies.getItem(token.sub, process.env.USER_TABLE_NAME)
-                            let invitor=token.sub;
+                            let invitor = token.sub;
                             if (user.firstName || user.lastName) {
-                                invitor=`${user.firstName ? user.firstName: ''} ${user.lastName ? user.lastName : ''}`
+                                invitor = `${user.firstName ? user.firstName : ''} ${user.lastName ? user.lastName : ''}`
                             }
                             //await mailUtility.sendInvitationMail(invitor, member.email, flashGang.name)
                             member.state = 'INVITED'
-                            member.invitedBy=token.sub;
+                            member.invitedBy = token.sub;
                             console.log("INVITEDBY BUG SAVING MEMBER", member);
                         }
                     }
@@ -60,11 +64,11 @@ function validateToken(event) {
     if (!token || token == '') {
         return;
     }
-    if (token.toLowerCase().indexOf('bearer')==0) {
-        token=token.substr(7);
+    if (token.toLowerCase().indexOf('bearer') == 0) {
+        token = token.substr(7);
     }
     let splitted = token.split(".");
-    if (splitted.length<2){
+    if (splitted.length < 2) {
         return
     }
     let buff = new Buffer(splitted[1], 'base64');

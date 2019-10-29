@@ -10,11 +10,20 @@ exports.handler = async (event, context) => {
         if (event.body) {
             if (event.body.flashGangId && event.body.hasOwnProperty('acceptance')) {
                 if (event.body.acceptance) {
+                    let flashGang = await dynamodbfordummies.getFlashGang(event.body.flashGangId)
+                    let membership = await flashGang.members.filter(member=>
+                        member.id == token.sub
+                    )
+                    if (membership.length>0){
+                        membership = membership[0]
+                    }
+                    console.log('membership', membership)
                     dynamodbfordummies.putItem({
                         id: token.sub,
                         flashGangId: event.body.flashGangId,
                         lastModified: new Date().getTime(),
-                        state: 'ACCEPTED'
+                        state: 'ACCEPTED',
+                        rank: membership.rank
                     },
                         process.env.FLASHGANG_MEMBER_TABLE_NAME
                     )
