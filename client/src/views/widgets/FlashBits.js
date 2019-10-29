@@ -54,6 +54,9 @@ class FlashListItemStyled extends Component {
         } else if (this.props.buttonType==='action') {
             additionalStyle=this.props.theme.actionButton
         }
+        if (this.props.style) {
+            additionalStyle=Object.assign({}, additionalStyle, this.props.style);
+        }
         return (
             <ListItem {...this.props} style={this.props.theme.listItem} style={additionalStyle}>
             </ListItem>

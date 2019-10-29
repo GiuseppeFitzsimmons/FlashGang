@@ -198,11 +198,12 @@ class FlashDeckListItemStyled extends React.Component {
         return (
             <Grid container spacing={0} style={{ paddingTop: '4px' }}>
                 <FlashListItem alignItems="flex-start"
-                    buttonType='action'
+                    buttonType={this.props.buttonType ? this.props.buttonType : 'action'}
                     button
-                    style={{ paddingTop: '4px' }}
+                    style={{ ...this.props.style}}
                 >
-                    <ListItemAvatar>
+                    <ListItemAvatar
+                    >
                         <Icon style={{ fontSize: 30 }}>{this.props.flashDeck.icon}</Icon>
                     </ListItemAvatar>
                     <ListItemText

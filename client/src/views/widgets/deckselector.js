@@ -16,6 +16,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import { FlashListItem } from './FlashBits'
+import { FlashDeckListItem } from '../components/flashgangmemberlistitem';
 
 
 class DeckSelector extends React.Component {
@@ -30,7 +31,7 @@ class DeckSelector extends React.Component {
   }
   handleClose() {
     this.setState({ open: false })
-    if (this.props.onClose){
+    if (this.props.onClose) {
       this.props.onClose()
     }
   }
@@ -60,35 +61,16 @@ class DeckSelector extends React.Component {
       }
       var _display = this.props.flashDecks.map((flashDeck, i) => {
         let deckInGang = false
-        if (this.props.flashGang.flashDecks){
-          deckInGang = this.props.flashGang.flashDecks && this.props.flashGang.flashDecks.filter(deck=>deck.id == flashDeck.id)
-          deckInGang = deckInGang.length>0
+        if (this.props.flashGang.flashDecks) {
+          deckInGang = this.props.flashGang.flashDecks && this.props.flashGang.flashDecks.filter(deck => deck.id == flashDeck.id)
+          deckInGang = deckInGang.length > 0
         }
         return (
-          <>
-            <ListItem alignItems="flex-start"
-              button
-              onClick={() =>
-                this.putDeck(flashDeck)
-              }
-              style = {{
-                backgroundColor : deckInGang ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0)',
-                height:'50px',
-                marginBottom:'4px'
-              }}
-              >
-              <ListItemAvatar>
-                <Icon style={{ fontSize: 30 }}>{flashDeck.icon}</Icon>
-              </ListItemAvatar>
-              <ListItemText
-                primary={flashDeck.name}
-                secondary={flashDeck.description}
-              />
-            </ListItem>
-            {i < this.props.flashDecks.length - 1 &&
-              <Divider variant="inset" component="li" />
-            }
-          </>
+          <FlashDeckListItem flashDeck={flashDeck}
+            buttonType={deckInGang ? 'system':'action'}
+            onClick={() =>
+              this.putDeck(flashDeck)
+            } />
         )
       })
       return (
