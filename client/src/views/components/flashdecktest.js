@@ -30,13 +30,15 @@ class FlashDeckTest extends React.Component {
     }
     setTestType(event) {
         this.props.flashDeck.testType = event.target.value
-        if (this.props.flashDeck.testType && this.props.flashDeck.answerType) {
+        if (this.props.flashDeck.testType && this.props.flashDeck.answerType &&
+            this.props.flashDeck.flashCards && this.props.flashDeck.flashCards.length>0) {
             this.setState({ valid: true })
         }
     }
     setAnswerType(event) {
         this.props.flashDeck.answerType = event.target.value
-        if (this.props.flashDeck.testType && this.props.flashDeck.answerType) {
+        if (this.props.flashDeck.testType && this.props.flashDeck.answerType &&
+            this.props.flashDeck.flashCards && this.props.flashDeck.flashCards.length>0) {
             this.setState({ valid: true })
         }
     }
@@ -44,7 +46,6 @@ class FlashDeckTest extends React.Component {
         const flashDeck = this.props.flashDeck
         const editable=(this.props.flashDeck.rank == 'BOSS' || this.props.flashDeck.rank == 'LIEUTENANT') &&
                 (this.props.flashDeck.state!='TO_INVITE' && this.props.flashDeck.state!='INVITED')
-        console.log('flashDeck', flashDeck)
         return (
             <>
                 <Grid container

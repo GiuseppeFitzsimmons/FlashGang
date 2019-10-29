@@ -174,27 +174,27 @@ class FlashGangEditor extends React.Component {
                         />
                         {this.generateFlashDeckList()}
                     </Box>
-                <Grid container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="stretch"
-                    style={{
-                        height: '6%'
-                    }}
-                >
-                    <FlashButton
-                        buttonType='system'
-                        style={{width:'48%'}}
-                        onClick={() => { this.props.saveGang(flashGang) }} >
-                        Save
+                    <Grid container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="stretch"
+                        style={{
+                            height: '6%'
+                        }}
+                    >
+                        <FlashButton
+                            buttonType='system'
+                            style={{ width: '48%' }}
+                            onClick={() => { this.props.saveGang(flashGang) }} >
+                            Save
                         </FlashButton>
-                    <FlashButton
-                        buttonType='action'
-                        style={{width:'48%'}}
-                        onClick={() => { alert("to do") }} >
-                        Delete
+                        <FlashButton
+                            buttonType='action'
+                            style={{ width: '48%' }}
+                            onClick={() => { alert("to do") }} >
+                            Delete
                         </FlashButton>
-                </Grid>
+                    </Grid>
                 </Grid>
             </>
         )
@@ -236,7 +236,7 @@ class FlashGangEditor extends React.Component {
                 flashDeck.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
             }
             return (
-                <FlashDeckListItem flashDeck={flashDeck}/>
+                <FlashDeckListItem flashDeck={flashDeck} />
             )
         })
         return (
