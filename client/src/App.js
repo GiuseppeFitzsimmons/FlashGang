@@ -14,6 +14,9 @@ import { ThemeProvider } from '@material-ui/styles';
 import { Box } from '@material-ui/core';
 import { greenTheme } from './views/widgets/Themes'
 
+import { Grid } from '@material-ui/core';
+import FlashAppBar from './views/widgets/flashappbar'
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
@@ -99,14 +102,28 @@ export default class App extends React.Component {
         onLogOut={this.logOut}
       />
     }
+    //renderable=<TestGrid/>
     return (
       <Provider store={store}>
         <ThemeProvider theme={this.state.theme ? this.state.theme : greenTheme}>
-          <Box height="100%">
+          <Box height={'1'} style={{overflow:'hidden'}}>
             {renderable}
           </Box>
         </ThemeProvider>
       </Provider>
+    )
+  }
+}
+
+class TestGrid extends React.Component {
+  render() {
+    return (
+      <>
+      <FlashAppBar title='FlashGang!' station='GANGS'/>
+          <Grid style={{height:'100%', backgroundColor:'red'}}>
+
+          </Grid>
+      </>
     )
   }
 }

@@ -64,7 +64,6 @@ class DeckSelector extends React.Component {
           deckInGang = this.props.flashGang.flashDecks && this.props.flashGang.flashDecks.filter(deck=>deck.id == flashDeck.id)
           deckInGang = deckInGang.length>0
         }
-        console.log('deckInGang', deckInGang)
         return (
           <>
             <ListItem alignItems="flex-start"
@@ -73,7 +72,9 @@ class DeckSelector extends React.Component {
                 this.putDeck(flashDeck)
               }
               style = {{
-                backgroundColor : deckInGang ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0)'
+                backgroundColor : deckInGang ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0)',
+                height:'50px',
+                marginBottom:'4px'
               }}
               >
               <ListItemAvatar>

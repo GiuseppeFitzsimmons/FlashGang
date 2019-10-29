@@ -13,6 +13,8 @@ import { MdDelete, MdModeEdit } from 'react-icons/md';
 //https://react-icons.netlify.com/#/icons/gi
 import { GiSwordman, GiHoodedFigure, GiBrutalHelm } from 'react-icons/gi';
 import Paper from 'material-ui/Paper';
+import { FlashButton, FlashListItem } from '../widgets/FlashBits';
+
 
 const styles = theme => ({
     paper: {
@@ -190,7 +192,32 @@ class FlashGangMemberListItemStyled extends React.Component {
         )
     }
 }
+class FlashDeckListItemStyled extends React.Component {
+
+    render() {
+        return (
+            <Grid container spacing={0} style={{ paddingTop: '4px' }}>
+                <FlashListItem alignItems="flex-start"
+                    buttonType='action'
+                    button
+                    style={{ paddingTop: '4px' }}
+                >
+                    <ListItemAvatar>
+                        <Icon style={{ fontSize: 30 }}>{this.props.flashDeck.icon}</Icon>
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={this.props.flashDeck.name}
+                        secondary={this.props.flashDeck.description}
+                        onClick={this.props.onClick}
+                    />
+                </FlashListItem>
+            </Grid>
+        )
+    }
+}
 const FlashGangMemberListItem = withTheme(FlashGangMemberListItemStyled);
+const FlashDeckListItem = withTheme(FlashDeckListItemStyled);
 export {
-    FlashGangMemberListItem
+    FlashGangMemberListItem,
+    FlashDeckListItem
 }
