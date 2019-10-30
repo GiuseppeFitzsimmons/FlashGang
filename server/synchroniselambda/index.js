@@ -45,6 +45,14 @@ exports.handler = async (event, context) => {
                 await dynamodbfordummies.putFlashGang(flashGang, token.sub)
             }
         }
+        if (event.body.deletions){
+            if (event.body.deletions.flashDecks){
+                for (var i in event.body.deletions.flashDecks){
+                    let deckToDelete = event.body.deletions.flashDecks[i]
+                    dynamodbfordummies.deleteFlashDeck(deckToDelete.id)
+                }
+            }
+        }
         let lastModified = event.body.lastModified ? event.body.lastModified : 0;
         //return all the flashcards to which the user has access and which have a lastModified date
         //later than the date passed in the request

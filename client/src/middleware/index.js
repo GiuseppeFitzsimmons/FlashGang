@@ -26,6 +26,14 @@ async function synchronise() {
     }
     questObject.params.flashDecks = decks
     questObject.params.flashGangs = gangs
+    questObject.params.deletions = {}
+    questObject.params.deletions.flashDecks = []
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = keys[i];
+        if (key[0].indexOf('delete-flashDeck-') == 0) {
+            questObject.params.deletions.flashDecks.push(JSON.parse(localStorage.getItem(key[0])))
+        }
+    }
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
     if (postResult.flashDecks) {
@@ -359,7 +367,10 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware SCORE_CARD')
             } else if (action.type === DELETE_DECK) {
                 console.log('Middleware DELETE_DECK')
+                let deletedDeck = JSON.stringify({id: action.data.flashDeckId})
+                localStorage.setItem('delete-flashDeck-'+action.data.flashDeckId, deletedDeck)
                 localStorage.removeItem('flashDeck-' + action.data.flashDeckId)
+                synchronise()
             } else if (action.type === DELETE_CARD) {
                 console.log('Middleware DELETE_CARD')
                 action.data.flashDeck.flashCards.splice(action.data.flashDeck.currentIndex, 1)

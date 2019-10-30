@@ -24,6 +24,8 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-table
         FLASHGANG_MEMBER_TABLE_NAME:
           !Sub ${AWS::StackName}-flashgang-member-table
+        FLASHGANG_DECK_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-deck-table
         DYNAMODB_ENDPOINT: "http://localhost:8000"
         REGION: "eu-west-1"
         SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
@@ -234,6 +236,45 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  FlashGangDeckTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-flashgang-deck-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: flashGangId
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: flashGangId
+          AttributeType: S
+      GlobalSecondaryIndexes:
+        - IndexName: gang_index
+          KeySchema:
+            - AttributeName: flashGangId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: deck_index
+          KeySchema:
+            - AttributeName: id
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1

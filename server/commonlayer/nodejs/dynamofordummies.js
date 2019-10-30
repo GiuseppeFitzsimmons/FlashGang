@@ -4,7 +4,7 @@ const AWS = require('aws-sdk');
 
 async function hasFlashGangPermissions(gangId, userId) {
     let flashGang = await getFlashGang(gangId)
-    if (!flashGang){
+    if (!flashGang) {
         return true
     }
     let permitted = await flashGang.members.filter(member => {
@@ -151,11 +151,11 @@ function getProfile(subscriptionLevel) {
 async function getFlashGang(id) {
     let flashGang = await getItem(id, process.env.FLASHGANG_TABLE_NAME);
     console.log('flashGang dynamofordummies', flashGang)
-    if (!flashGang){
+    if (!flashGang) {
         return null
     }
     //query the gang-member table for members
-    const params = {
+    var params = {
         TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
         KeyConditionExpression: 'flashGangId = :id',
         IndexName: 'gang_index',
@@ -174,6 +174,30 @@ async function getFlashGang(id) {
             }
         });
     })
+
+    params = {
+        TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
+        KeyConditionExpression: 'flashGangId = :id',
+        IndexName: 'gang_index',
+        ExpressionAttributeValues: {
+            ':id': id
+        }
+    }
+    let theDecks = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log("Failed to get flashgang decks from DB", err);
+                resolve();
+            } else {
+                resolve(data.Items)
+            }
+        });
+    })
+    flashGang.flashDecks = []
+    for (var i in theDecks){
+        flashGang.flashDecks.push(theDecks[i].id)
+    }
+    console.log('flashGang.flashDecks', flashGang.flashDecks)
     return flashGang;
 }
 
@@ -200,6 +224,31 @@ async function removeFlashGangMember(id, flashGangId) {
     return result;
 
 }
+
+async function removeDeckFromGang(id) {
+    const params = {
+        TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
+        KeyConditionExpression: 'flashGangId NOT_NULL',
+        //IndexName: 'deck_index',
+        Key: {
+            'id': id
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.delete(params, function (err, data) {
+            if (err) {
+                console.log("Failed to delete flashgang deck", err);
+                resolve();
+            } else {
+                console.log("Deleted flashgang deck", err);
+                resolve(data)
+            }
+        });
+    })
+    return result;
+}
+
 async function putFlashDeck(flashDeck, userId) {
     let now = new Date();
     flashDeck.lastModified = now.getTime();
@@ -243,7 +292,19 @@ async function putFlashGang(flashGang, userId) {
         flashGangMember.invitedBy = member.invitedBy;
         await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
     }
+
+    const flashGangDeck = {
+        flashGangId: flashGang.id
+    }
+    if (flashGang.flashDecks) {
+        for (var i in flashGang.flashDecks) {
+            let deck = flashGang.flashDecks[i];
+            flashGangDeck.id = deck;
+            await putItem(flashGangDeck, process.env.FLASHGANG_DECK_TABLE_NAME)
+        }
+    }
     delete flashGang.members
+    delete flashGang.flashDecks
     await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
 }
 
@@ -310,7 +371,7 @@ async function removeItem(id, tableName) {
     };
     var documentClient = getDocumentDbClient();
     let item = await new Promise((resolve, reject) => {
-        documentClient.deleteItem(params, function (err, data) {
+        documentClient.delete(params, function (err, data) {
             if (err) {
                 console.log("Error", err);
                 reject(err);
@@ -323,6 +384,12 @@ async function removeItem(id, tableName) {
     return item;
 }
 
+async function deleteFlashDeck(id) {
+    await removeItem(id, process.env.FLASHDECK_TABLE_NAME)
+    await removeDeckFromGang(id)
+    //await removeItem(id, process.env.FLASHGANG_DECK_TABLE_NAME)
+}
+
 
 module.exports = {
     putItem,
@@ -333,5 +400,6 @@ module.exports = {
     putFlashGang,
     removeFlashGangMember,
     hasFlashGangPermissions,
-    getFlashGang
+    getFlashGang,
+    deleteFlashDeck
 }
