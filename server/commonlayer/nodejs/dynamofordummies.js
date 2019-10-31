@@ -4,13 +4,62 @@ const AWS = require('aws-sdk');
 
 async function hasFlashGangPermissions(gangId, userId) {
     let flashGang = await getFlashGang(gangId)
+    const permissions={create:false, update: false, delete: false};
     if (!flashGang) {
-        return true
+        permissions.create=true;
+        permissions.update=true;
+        permissions.delete=true;
+        return permissions;
     }
     let permitted = await flashGang.members.filter(member => {
-        return member.id = userId && (member.rank == 'BOSS' || member.rank == 'LIEUTENANT') && (member.state != 'INVITED' && member.state != 'TO_INVITE')
+        return member.id = userId && (member.rank == 'BOSS') && (member.state != 'INVITED' && member.state != 'TO_INVITE')
     })
-    return permitted.id
+    if (permitted.length>0) {
+        permissions.create=true;
+        permissions.update=true;
+        permissions.delete=true;
+    } else {
+        permitted = await flashGang.members.filter(member => {
+            return member.id = userId && (member.rank == 'LIEUTENANT') && (member.state != 'INVITED' && member.state != 'TO_INVITE')
+        })
+        if (permitted.length>0) {
+            permissions.create=true;
+            permissions.update=true;
+        }
+    }
+    return permissions;
+}
+async function hasFlashDeckPermissions(deckId, userId) {
+    const permissions={create:false, update: false, delete: false}
+    let flashDeck = await getFlashDeck(deckId);
+    //If there's no flashDeck with this ID then no problem - it's a new FlashDeck
+    if (!flashDeck) {
+        permissions.create=true;
+        permissions.update=true;
+    } else if (flashDeck.owner==userId) {
+        //If the flashDeck owner is the user, also no problem
+        permissions.create=true;
+        permissions.update=true;
+        permissions.delete=true;
+    } else if (!flashDeck.editable){
+        //all permissions are already false
+    } else {
+        //If the user is a BOSS or LIEUTENANT in any gang that contains this deck, and the deck is editable,
+        //then the user can edit this deck (but not delete it)
+        let gangs=await getGangsForDeck(deckId);
+        for (var i in gangs) {
+            let gang=gangs[i];
+            let gangPermissions=await hasFlashGangPermissions(gang.id, userId);
+            permissions.create ? permissions.create : gangPermissions.create;
+            permissions.update ? permissions.update : gangPermissions.update;
+            if (permissions.create && permissions.update) {
+                break;
+            }
+        }
+    }
+
+
+    return permissions
 }
 
 async function getFlashDecks(userId, lastModifiedDate) {
@@ -41,6 +90,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         //These decks belong to this user, so he's the boss
         userDecks[i].rank = 'BOSS';
     }
+    console.log("PHANTOMDECK BUG 1 ", userDecks);
     params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
     params.KeyConditionExpression = 'id = :uid and lastModified > :ldate';
     let userGangs = await new Promise((resolve, reject) => {
@@ -106,7 +156,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         let userDeck = userDecks[i];
         let exists = result.flashDecks.filter(deck => deck.id === userDeck.flashDeckId);
         if (exists.length == 0) {
-            let flashDeck = await getItem(userDeck.flashDeckId, process.env.FLASHDECK_TABLE_NAME);
+            let flashDeck = await getFlashDeck(userDeck.flashDeckId);
             flashDeck.rank = userDeck.rank;
             flashDeck.state = userDeck.state;
             result.flashDecks.push(flashDeck);
@@ -200,6 +250,10 @@ async function getFlashGang(id) {
     console.log('flashGang.flashDecks', flashGang.flashDecks)
     return flashGang;
 }
+async function getFlashDeck(id) {
+    let deck = await getItem(id, process.env.FLASHDECK_TABLE_NAME);
+    return deck;
+}
 
 async function removeFlashGangMember(id, flashGangId) {
     const params = {
@@ -224,27 +278,138 @@ async function removeFlashGangMember(id, flashGangId) {
     return result;
 
 }
-
-async function removeDeckFromGang(id) {
-    const params = {
+async function getGangsForDeck(id) {
+    var params = {
         TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
-        KeyConditionExpression: 'flashGangId NOT_NULL',
-        //IndexName: 'deck_index',
-        Key: {
-            'id': id
+        KeyConditionExpression: 'id = :id',
+        ExpressionAttributeValues: {
+            ':id': id
         }
     }
     var documentClient = getDocumentDbClient();
     let result = await new Promise((resolve, reject) => {
-        documentClient.delete(params, function (err, data) {
+        documentClient.query(params, function (err, data) {
             if (err) {
-                console.log("Failed to delete flashgang deck", err);
+                console.log("Failed to find flashgang deck", err);
                 resolve();
             } else {
-                console.log("Deleted flashgang deck", err);
-                resolve(data)
+                console.log("Found flashgang deck", data);
+                resolve(data.Items)
             }
         });
+    })
+    let gangs;
+    if (result && Array.isArray(result)) {
+        gangs=[];
+        for (var i in result) {
+            let gang=await getFlashGang(result[i].flashGangId);
+            gangs.push(gang);
+        }
+    }
+    return gangs;
+}
+async function removeDeckFromGangs(id) {
+    let gangs=await getGangsForDeck(id);
+    if (gangs) {
+        let params = {
+            TableName : process.env.FLASHGANG_DECK_TABLE_NAME,
+            Key: {
+              id: id
+            }
+          };
+        for (var i in gangs) {
+              params.Key.flashGangId=gangs[i].id;
+              let deleted=await deleteByParams(params)
+              console.log("deleted deck from gang", params, deleted);
+        }
+    }
+    return gangs ? gangs.length : 0;
+}
+
+async function removeDeckFromUsers(id) {
+    var params = {
+        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+        KeyConditionExpression: 'flashDeckId = :id',
+        IndexName: 'flashdeck_index',
+        ExpressionAttributeValues: {
+            ':id': id
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log("Failed to find user deck", err);
+                resolve();
+            } else {
+                console.log("Found user deck", data);
+                resolve(data.Items)
+            }
+        });
+    })
+    if (result && Array.isArray(result)) {
+        params = {
+            TableName : process.env.FLASHDECK_USER_TABLE_NAME,
+            Key: {
+              flashDeckId: id
+            }
+          };
+        for (var i in result) {
+              params.Key.userId=result[i].userId;
+              let deleted=await deleteByParams(params)
+              console.log("deleted deck from user", params, deleted);
+        }
+    }
+    return result;
+}
+
+async function removeDecksFromGang(id) {
+    var params = {
+        TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
+        KeyConditionExpression: 'flashGangId = :id',
+        IndexName: 'gang_index',
+        ExpressionAttributeValues: {
+            ':id': id
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log("Failed to find gang decks", err);
+                resolve();
+            } else {
+                console.log("Found gang decks", data);
+                resolve(data.Items)
+            }
+        });
+    })
+    if (result && Array.isArray(result)) {
+        params = {
+            TableName : process.env.FLASHGANG_DECK_TABLE_NAME,
+            Key: {
+                flashGangId: id
+            }
+          };
+        for (var i in result) {
+              params.Key.id=result[i].id;
+              let deleted=await deleteByParams(params)
+              console.log("deleted deck from gang", params, deleted);
+        }
+    }
+    return result;
+}
+async function deleteByParams(params) {
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.delete(params, function(err, data) {
+            if (err) {
+                reject(err)
+            }
+            else {
+                resolve(data);
+            }
+          });
     })
     return result;
 }
@@ -252,6 +417,21 @@ async function removeDeckFromGang(id) {
 async function putFlashDeck(flashDeck, userId) {
     let now = new Date();
     flashDeck.lastModified = now.getTime();
+    let currentFlashDeck=getFlashDeck(flashDeck.id);
+    if (currentFlashDeck) {
+        //The owner can't be changed
+        flashDeck.owner=currentFlashDeck.owner;
+        //Only the owner can change the editability
+        if (flashDeck.owner!=userId) {
+            flashDeck.editable=currentFlashDeck.editable
+        }
+    } else {
+        flashDeck.owner=userId;
+    }
+    //Just setting it explicitely, in case the user didn't set it.
+    if (!flashDeck.editable) {
+        flashDeck.editable=false;
+    }
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
     let flashDeckOwner = {
         userId: userId,
@@ -264,6 +444,14 @@ async function putFlashDeck(flashDeck, userId) {
 async function putFlashGang(flashGang, userId) {
     let now = new Date();
     flashGang.lastModified = now.getTime();
+    //Get the flashgang first, to make sure that the boss isn't being changed
+    let currentGang=await getFlashGang(flashGang.id);
+    if (currentGang) {
+        //TODO - compare the current gang members
+        //to the new list - delete all who aren't boss (they'll be re-inserted below)
+        //Don't add the boss record if it already exists (it must exist, in fact, if
+        //the gang exists)
+    }
     if (!flashGang.members) {
         flashGang.members = []
     }
@@ -292,7 +480,9 @@ async function putFlashGang(flashGang, userId) {
         flashGangMember.invitedBy = member.invitedBy;
         await putItem(flashGangMember, process.env.FLASHGANG_MEMBER_TABLE_NAME)
     }
-
+    //delete all existing relationships between gangs and decks
+    await removeDecksFromGang(flashGang.id)
+    //and then add them back in again.
     const flashGangDeck = {
         flashGangId: flashGang.id
     }
@@ -386,10 +576,19 @@ async function removeItem(id, tableName) {
 
 async function deleteFlashDeck(id) {
     await removeItem(id, process.env.FLASHDECK_TABLE_NAME)
-    await removeDeckFromGang(id)
-    //await removeItem(id, process.env.FLASHGANG_DECK_TABLE_NAME)
+    await removeDeckFromGangs(id)
+    await removeDeckFromUsers(id)
 }
-
+async function deleteFlashGang(id) {
+    await removeDeckFromUsers(id);
+    let currentGang=await getFlashGang(flashGang.id);
+    if (currentGang.members) {
+        for (var i in currentGang.members) {
+            await removeFlashGangMember(currentGang.members[i].id, id);
+        }
+    }
+    await removeItem(id, process.env.FLASHGANG_TABLE_NAME);
+}
 
 module.exports = {
     putItem,
@@ -401,5 +600,7 @@ module.exports = {
     removeFlashGangMember,
     hasFlashGangPermissions,
     getFlashGang,
-    deleteFlashDeck
+    deleteFlashDeck,
+    hasFlashDeckPermissions,
+    deleteFlashGang
 }

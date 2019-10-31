@@ -17,6 +17,7 @@ synchroniseTony = {
         {
             "id": "10",
             "name": "The name of the deck",
+            "editable":"true",
             "flashCards": [
                 {
                     "id": "11",
@@ -44,13 +45,43 @@ synchroniseTony = {
         }
     ]
 }
+
+deleteDeckTony = {
+    "deletions": {
+        "flashDecks": [
+            { "id": "10" }
+        ]
+    }
+}
 rsvpChris = {
     flashGangId: '11',
     acceptance: true
 }
 synchroniseChris = {
+        "flashDecks": [
+            {
+                "id": "10",
+                "name": "The name of the deck",
+                "flashCards": [
+                    {
+                        "id": "11",
+                        "question": "How much?",
+                        "correctAnswers": [
+                            "a lot"
+                        ]
+                    },
 
-}
+                    {
+                        "id": "12",
+                        "question": "Ow olda you boy?",
+                        "correctAnswers": [
+                            "aaaaaaa!"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 
 
 async function post(url, params, token) {
@@ -107,6 +138,9 @@ async function test() {
     console.log("SYNCHRONISING CHRIS");
     let chrisSynch=await post('http://localhost:8080/synchronise', synchroniseChris, chris.token);
     console.log(JSON.stringify(chrisSynch));
+    //console.log("DELETING A DECK TONY");
+    //let tonyDeleteDeck=await post('http://localhost:8080/synchronise', deleteDeckTony, tony.token);
+    //console.log(tonyDeleteDeck);
 }
 
 test();

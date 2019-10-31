@@ -8,10 +8,13 @@ exports.handler = async (event, context) => {
     var token = validateToken(event);
     if (event.httpMethod == 'post') {
         //store all the flashcards sent from the user
-        //TODO deletions
         if (event.body.flashDecks) {
             for (var i in event.body.flashDecks) {
                 flashDeck = event.body.flashDecks[i]
+                let permitted = await dynamodbfordummies.hasFlashDeckPermissions(flashDeck.id, token.sub)
+                if (!permitted.update){
+                    continue
+                }
                 await dynamodbfordummies.putFlashDeck(flashDeck, token.sub)
             }
         }
@@ -20,7 +23,7 @@ exports.handler = async (event, context) => {
             for (var i in event.body.flashGangs) {
                 flashGang = event.body.flashGangs[i]
                 let permitted = await dynamodbfordummies.hasFlashGangPermissions(flashGang.id, token.sub)
-                if (!permitted){
+                if (!permitted.update){
                     continue
                 }
                 if (flashGang.members) {
@@ -49,7 +52,10 @@ exports.handler = async (event, context) => {
             if (event.body.deletions.flashDecks){
                 for (var i in event.body.deletions.flashDecks){
                     let deckToDelete = event.body.deletions.flashDecks[i]
-                    dynamodbfordummies.deleteFlashDeck(deckToDelete.id)
+                    let permitted = await dynamodbfordummies.hasFlashDeckPermissions(deckToDelete.id, token.sub);
+                    if (permitted.delete) {
+                        await dynamodbfordummies.deleteFlashDeck(deckToDelete.id)
+                    }
                 }
             }
         }
