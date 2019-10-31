@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install:linux": "npm install ; cp dynamofordummies.js node_modules ",
+    "install:linux": "npm install ; cp *.js node_modules ",
     "install:windows": "npm install && copy *.js node_modules ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

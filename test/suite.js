@@ -1,4 +1,6 @@
 const fetch=require('node-fetch')
+//const domain='https://api.flashgang.io/v1'
+const domain='http://localhost:8080';
 
 const createAccountTony = {
     id: 'tony@soprano.id',
@@ -114,33 +116,34 @@ async function post(url, params, token) {
 
 async function test() {
     console.log("CREATING ACCOUNT TONY");
-    let tony=await post('http://localhost:8080/account', createAccountTony);
+    let tony=await post(domain+'/account', createAccountTony);
     console.log(tony);
     if (!tony || !tony.token) {
         createAccountTony.grant_type="password";
-        tony=await post('http://localhost:8080/login', createAccountTony);
+        tony=await post(domain+'/login', createAccountTony);
     }
     console.log(tony);
     console.log("SYNCHRONISING TONY");
-    let tonySynch=await post('http://localhost:8080/synchronise', synchroniseTony, tony.token);
+    let tonySynch=await post(domain+'/synchronise', synchroniseTony, tony.token);
     console.log(tonySynch);
     console.log("CREATING ACCOUNT CHRIS");
-    let chris=await post('http://localhost:8080/account', createAccountChris);
+    let chris=await post(domain+'/account', createAccountChris);
     console.log(chris);
     if (!chris || !chris.token) {
         createAccountChris.grant_type="password";
-        chris=await post('http://localhost:8080/login', createAccountChris);
+        chris=await post(domain+'/login', createAccountChris);
     }
     console.log(chris);;
-    //console.log("RSVP CHRIS");
-    //let chrisRsvp=await post('http://localhost:8080/rsvp', rsvpChris, chris.token);
-    //console.log(JSON.stringify(chrisRsvp));
+    console.log("RSVP CHRIS");
+    let chrisRsvp=await post(domain+'/rsvp', rsvpChris, chris.token);
+    console.log(JSON.stringify(chrisRsvp));
     console.log("SYNCHRONISING CHRIS");
-    let chrisSynch=await post('http://localhost:8080/synchronise', synchroniseChris, chris.token);
+    let chrisSynch=await post(domain+'/synchronise', synchroniseChris, chris.token);
     console.log(JSON.stringify(chrisSynch));
     //console.log("DELETING A DECK TONY");
-    //let tonyDeleteDeck=await post('http://localhost:8080/synchronise', deleteDeckTony, tony.token);
+    //let tonyDeleteDeck=await post(domain+'/synchronise', deleteDeckTony, tony.token);
     //console.log(tonyDeleteDeck);
+    
 }
 
 test();

@@ -1,4 +1,4 @@
-const { generateNewPair } = require('tokenutility')
+const { generateNewPair } = require('./tokenutility')
 
 const AWS = require('aws-sdk');
 
@@ -139,8 +139,11 @@ async function getFlashDecks(userId, lastModifiedDate) {
         //put the members of this gang into the list of users, if it's not already there
         if (flashGang.members) {
             for (var j in flashGang.members) {
-                let gangMember = flashGang.members[j]
-                let existing = result.users.filter(gm => gm.id == gangMember.id);
+                let gangMember = flashGang.members[j];
+                let existing = result.users.filter(gm => {
+                    //TODO somehow there's an undefined member in this array
+                    return gm && gm.id == gangMember.id
+                });
                 if (existing.length == 0) {
                     let gangster = await getItem(gangMember.id, process.env.USER_TABLE_NAME);
                     result.users.push(gangster);

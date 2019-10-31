@@ -16,8 +16,11 @@ exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
-    console.log('event.body', event.body)
-    if (event.httpMethod == 'post') {
+    console.log('event', event)
+    if (typeof event.body === 'string') {
+        event.body=JSON.parse(event.body)
+    }
+    if (event.httpMethod.toLowerCase() === 'post') {
         if (event.body.grant_type) {
             //Login sequence
             if (event.body.grant_type == 'password') {
@@ -92,15 +95,21 @@ exports.handler = async (event, context) => {
             }
         } else {
             //Account creation sequence
-            console.log("EVENT DOT BODY", event.body, event.body.id);
+            console.log("EVENT DOT BODY", event.body, event.body.id, typeof event.body);
             event.body.id = event.body.id.toLowerCase()
-            let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME)
+            console.log("TIMEOUTBUG 1");
+            let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME);
+            console.log("TIMEOUTBUG 2", user);
             if (!user) {
+                console.log("TIMEOUTBUG 3");
                 event.body.password = await hashAPass(event.body.password)
+                console.log("TIMEOUTBUG 4", event.body.password);
                 let dynamoItem = await dynamodbfordummies.putItem(event.body, process.env.USER_TABLE_NAME)
+                console.log("TIMEOUTBUG 5");
                 let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                 reply.token = tokenPair.signedJwt
                 reply.refresh = tokenPair.signedRefresh
+                console.log("TIMEOUTBUG 6", reply);
             } else {
                 reply.errors = { fields: [{ id: `${event.body.id} is already taken` }, { userName: `${event.body.id} is already taken` }] }
             }

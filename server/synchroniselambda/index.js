@@ -6,7 +6,10 @@ exports.handler = async (event, context) => {
     returnObject.statusCode = 200
     var reply = {}
     var token = validateToken(event);
-    if (event.httpMethod == 'post') {
+    if (typeof event.body === 'string') {
+        event.body=JSON.parse(event.body)
+    }
+    if (event.httpMethod.toLowerCase() === 'post') {
         //store all the flashcards sent from the user
         if (event.body.flashDecks) {
             for (var i in event.body.flashDecks) {
