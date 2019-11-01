@@ -13,6 +13,12 @@ Parameters:
   DynamoDbEndpoint:
     Type: String
     Default: 'http://localhost:8000'
+  RsvpUrl:
+    Type: String
+    Default: 'http://localhost:3000/rsvp'
+  PasswordResetUrl:
+    Type: String
+    Default: 'http://localhost:3000'
 
 Globals:
   Function:
@@ -42,13 +48,13 @@ Globals:
         SMTP_PASSWORD: 'BOkI1ZXCWOex5w7tDRtRLl3qA46N/QmJ8Ncu4sCWxMhl'
         MEMBERSHIP_SENDMAIL_ADDRESS: 'membership@flashgang.io'
         SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
-        RSVP_URL: 'http://localhost:3000/rsvp'
-        PASSWORD_RESET: 'http://localhost:3000/'
+        RSVP_URL: !Ref RsvpUrl
+        PASSWORD_RESET: !Ref PasswordResetUrl
 Resources:
   ApiGateway:
-    Type: 'AWS::Serverless::Api'
+    Type: AWS::Serverless::Api
     Properties:
-      Name: gateway
+      Name: FlashGangGateway
       StageName: prod
       Cors: 
         AllowOrigin: "'*'"

@@ -91,7 +91,12 @@ class Login extends React.Component {
                         buttonType='system'
                         style={{ width: '100%' }}
                         onClick={
-                            () => { this.setState({ mode: 'FORGOTTENPW' }) }
+                            () => { 
+                                if (this.props.errors) {
+                                    this.props.errors.fields = []
+                                }
+                                this.setState({ mode: 'FORGOTTENPW' }) 
+                            }
                         }
                     >
                         Forgotten password

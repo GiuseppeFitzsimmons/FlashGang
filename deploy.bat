@@ -3,7 +3,7 @@ setlocal EnableDelayedExpansion
 set "setting=NOTHING"
 set "install=false"
 set "buildfront=false"
-set "environment=dev"
+set "environment=prod"
 for %%x in (%*) do (
    IF "!setting!"=="INSTALL" (
        set "install=%%~x"
@@ -19,19 +19,22 @@ for %%x in (%*) do (
    IF "%%~x"=="--buildfront" (set "setting=BUILDFRONT")
    IF "%%~x"=="--environment" (set "setting=ENVIRONMENT")
 )
-echo deploying with parameters install=%install% buildfront=%buildfront% environment=%environment%
+set /p deploymentVars=< deployment_vars.prod
+
+echo deploying with parameters install=%install% buildfront=%buildfront% environment=%environment% deployment variables=%deploymentVars%
 
 if "%install%"=="true" (
     echo "npm installing"
-    CALL npm run install:windows --prefix server/commonlayer/nodejs/
-    CALL npm install --prefix server/accountlambda
-    CALL npm install --prefix server/rsvplambda
-    CALL npm install --prefix server/synchroniselambda
+    REM CALL npm run install:windows --prefix server/commonlayer/nodejs/
+    REM CALL npm install --prefix server/accountlambda
+    REM CALL npm install --prefix server/rsvplambda
+    REM CALL npm install --prefix server/synchroniselambda
 )
+
 
 CALL sam package --template-file server/template.yaml --output-template-file packaged.yaml --s3-bucket wwdd-build-bucket-us-east-1
 
-CALL sam deploy --template-file packaged.yaml --stack-name flashgang-dev  --capabilities CAPABILITY_NAMED_IAM --region us-east-1 --parameter-overrides 'DynamoDbEndpoint='
+CALL sam deploy --template-file packaged.yaml --stack-name flashgang-dev  --capabilities CAPABILITY_NAMED_IAM --region us-east-1 --parameter-overrides %deploymentVars%
 
 if "%buildfront%"=="true" (
     echo "building and deploying client application"
