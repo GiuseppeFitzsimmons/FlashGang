@@ -24,6 +24,9 @@ echo deploying with parameters install=%install% buildfront=%buildfront% environ
 if "%install%"=="true" (
     echo "npm installing"
     CALL npm run install:windows --prefix server/commonlayer/nodejs/
+    CALL npm install --prefix server/accountlambda
+    CALL npm install --prefix server/rsvplambda
+    CALL npm install --prefix server/synchroniselambda
 )
 
 CALL sam package --template-file server/template.yaml --output-template-file packaged.yaml --s3-bucket wwdd-build-bucket-us-east-1
@@ -32,5 +35,6 @@ CALL sam deploy --template-file packaged.yaml --stack-name flashgang-dev  --capa
 
 if "%buildfront%"=="true" (
     echo "building and deploying client application"
-    REM CALL client/deploy.bat
+    cd client
+    CALL deploy.bat
 )
