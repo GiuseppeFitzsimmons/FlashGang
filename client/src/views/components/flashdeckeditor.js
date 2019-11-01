@@ -6,7 +6,7 @@ import * as Actions from '../../action'
 import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { FlashButton, FlashListItem } from '../widgets/FlashBits';
+import { FlashButton, FlashListItem, FlashCheckBox } from '../widgets/FlashBits';
 import { IconSelector } from '../widgets/iconselector';
 import { FlashTypography } from '../widgets/FlashBits';
 import Slider from '@material-ui/core/Slider';
@@ -106,7 +106,16 @@ class FlashDeckEditor extends React.Component {
             input => input ? input.reset(flashDeck.description) : true
           }
         />
-        <label style={{ color: 'rgba(0,0,0,0.6)', marginTop:'18px' }}>Fuzziness</label>
+        <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Editable by others</label>
+        <FlashCheckBox
+          onChange={(event) => { flashDeck.editable = event.target.checked; flashDeck.dirty = true; this.forceUpdate() }}
+          ref={flashCheckBox=>{
+            if (flashCheckBox) {
+                flashCheckBox.reset(flashDeck.editable);
+            }
+        }}
+        />
+        <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Fuzziness</label>
         <Slider
           defaultValue={flashDeck.fuzziness ? flashDeck.fuzziness : 0}
           getAriaValueText={valuetext}

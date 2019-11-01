@@ -420,7 +420,7 @@ async function deleteByParams(params) {
 async function putFlashDeck(flashDeck, userId) {
     let now = new Date();
     flashDeck.lastModified = now.getTime();
-    let currentFlashDeck=getFlashDeck(flashDeck.id);
+    let currentFlashDeck = await getFlashDeck(flashDeck.id);
     if (currentFlashDeck) {
         //The owner can't be changed
         flashDeck.owner=currentFlashDeck.owner;

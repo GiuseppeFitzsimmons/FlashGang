@@ -1,4 +1,4 @@
-import { SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 
@@ -24,8 +24,16 @@ async function synchronise() {
             gangs.push(JSON.parse(localStorage.getItem(key[0])))
         }
     }
+    var scores = []
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = keys[i];
+        if (key[0].indexOf('score-') == 0) {
+            scores.push(JSON.parse(localStorage.getItem(key[0])))
+        }
+    }
     questObject.params.flashDecks = decks
     questObject.params.flashGangs = gangs
+    questObject.params.scores = scores
     questObject.params.deletions = {}
     questObject.params.deletions.flashDecks = []
     for (var i = 0; i < localStorage.length; i++) {
@@ -126,6 +134,37 @@ async function postToServer(questObject) {
     reply.responseCode = responseCode;
     console.log('server reply', reply)
     return reply
+}
+
+async function saveScore(flashDeck) {
+    let score = localStorage.getItem('score-' + flashDeck.id)
+    if (score){
+        score = JSON.parse(score)
+    }
+    let correctAnswers = 0
+    let incorrectAnswers = 0
+    let percentage = 0
+    for (var i in flashDeck.flashCards) {
+        let card = flashDeck.flashCards[i]
+        if (card.correct) {
+            correctAnswers++
+        } else {
+            incorrectAnswers++
+        }
+    }
+    if (correctAnswers > 0) {
+        percentage = (correctAnswers / flashDeck.flashCards.length) * 100
+    }
+    if (!score) {
+        score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
+    } else {
+        if (score.percentage<percentage){
+            score.highScore = percentage
+        }
+        score.score = percentage
+        score.time = flashDeck.time
+    }
+    localStorage.setItem('score-' + flashDeck.id, JSON.stringify(score))
 }
 
 async function getFromServer(questObject) {
@@ -290,6 +329,11 @@ function selectNextCard(deck) {
             })
         }
     }
+    if (deck.mode == 'COMPLETE'){
+        deck.time = new Date().getTime() - deck.startTime
+        console.log({deck})
+        saveScore(deck)
+    }
 }
 export function flashGangMiddleware({ dispatch }) {
     return function (next) {
@@ -367,8 +411,8 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware SCORE_CARD')
             } else if (action.type === DELETE_DECK) {
                 console.log('Middleware DELETE_DECK')
-                let deletedDeck = JSON.stringify({id: action.data.flashDeckId})
-                localStorage.setItem('delete-flashDeck-'+action.data.flashDeckId, deletedDeck)
+                let deletedDeck = JSON.stringify({ id: action.data.flashDeckId })
+                localStorage.setItem('delete-flashDeck-' + action.data.flashDeckId, deletedDeck)
                 localStorage.removeItem('flashDeck-' + action.data.flashDeckId)
                 synchronise()
             } else if (action.type === DELETE_CARD) {

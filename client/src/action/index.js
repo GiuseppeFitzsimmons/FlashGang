@@ -17,6 +17,7 @@ export const LOADING = 'LOADING';
 export const RSVP = 'RSVP';
 export const RESET_PASSWORD = 'RESET_PASSWORD';
 export const SET_PASSWORD = 'SET_PASSWORD';
+export const SAVE_SCORE = 'SAVE_SCORE';
 
 
 export function newDeck() {

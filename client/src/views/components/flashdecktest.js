@@ -83,23 +83,26 @@ class FlashDeckTest extends React.Component {
                             buttonType='system'
                             style={{ width: editable ? '49%': '100%' }}
                             disabled={!this.state.valid}
-                            onClick={() => { this.props.nextCard(this.props.flashDeck) }}
+                            onClick={() => { 
+                                this.props.flashDeck.startTime = new Date().getTime()
+                                this.props.nextCard(this.props.flashDeck);
+                            }}
                         >
                             Begin test
-                    </FlashButton>
-                            <FlashButton
-                                name='editTest'
-                                icon='edit'
-                                color='primary'
-                                variant='contained'
-                                buttonType='system'
-                                style={{ 
-                                    width: '49%', 
-                                    display: editable ? '': 'none' }}
-                                onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
-                            >
-                                Edit test
-                            </FlashButton>
+                        </FlashButton>
+                        <FlashButton
+                            name='editTest'
+                            icon='edit'
+                            color='primary'
+                            variant='contained'
+                            buttonType='system'
+                            style={{ 
+                                width: '49%', 
+                                display: editable ? '': 'none' }}
+                            onClick={() => { this.props.onEditButtonPress(this.props.flashDeck.id) }}
+                        >
+                            Edit test
+                        </FlashButton>
                     </Grid>
                 </Grid>
             </>

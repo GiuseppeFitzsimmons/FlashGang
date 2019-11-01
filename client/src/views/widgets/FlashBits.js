@@ -79,8 +79,8 @@ class FlashTypographyStyled extends Component {
 }
 class FlashCheckBoxStyled extends Component {
     state={on:false}
-    reset() {
-        this.setState({on:false});
+    reset(checked) {
+        this.setState({on:checked});
     }
     render() {
         return (
