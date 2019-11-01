@@ -40,7 +40,12 @@ exports.handler = async (event, context) => {
             }
         }
     }
-    returnObject.body = JSON.stringify(reply)
+    returnObject.body = JSON.stringify(reply);
+    returnObject.headers={
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
+    }
     return returnObject
 
 

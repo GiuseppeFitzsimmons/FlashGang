@@ -1,6 +1,6 @@
 module.exports={
     server:{
-        url: "https://www.google.com"
+        url: "https://api.flashgang.io/v1"
     },
     local: {
         url: "http://localhost:8080"

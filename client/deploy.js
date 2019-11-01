@@ -3,13 +3,13 @@ const {execSync} = require('child_process');
 const rimraf = require("rimraf");
 
 const bucketName='prod.flashgang.bucket';
-var buildResult=build()
+/*var buildResult=build()
 console.log(buildResult);
 if (buildResult.error) {
     console.log("build failed", JSON.stringify(buildResult.error,'  '));
     console.log("EXITING");
     process.exit();
-}
+}*/
 var files=fs.readdirSync('build');
 var precacheFile;
 var serviceWorkerFile='service-worker.js'
@@ -36,7 +36,7 @@ console.log("DONE");
 function build() {
     buildResult={};
     try {
-        buildResult.stdOut=execSync('npm run build').toString;
+        buildResult.stdOut=execSync('npm run build').toString().replace("\\n", '\n');
     } 
     catch (error) {
         buildResult.error={};
