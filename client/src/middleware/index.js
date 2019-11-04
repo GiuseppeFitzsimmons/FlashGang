@@ -6,28 +6,21 @@ const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
 
 async function synchronise() {
-    console.log('Synchronisation')
+    console.log('Synchronisation') 
     var questObject = {}
     questObject.params = {}
     var decks = []
+    var gangs = []
+    var scores = []
     var keys = Object.entries(localStorage)
+    console.log("synchronise ",keys);
     for (var i = 0; i < localStorage.length; i++) {
         var key = keys[i];
         if (key[0].indexOf('flashDeck-') == 0) {
             decks.push(JSON.parse(localStorage.getItem(key[0])))
-        }
-    }
-    var gangs = []
-    for (var i = 0; i < localStorage.length; i++) {
-        var key = keys[i];
-        if (key[0].indexOf('flashGang-') == 0) {
+        } else if (key[0].indexOf('flashGang-') == 0) {
             gangs.push(JSON.parse(localStorage.getItem(key[0])))
-        }
-    }
-    var scores = []
-    for (var i = 0; i < localStorage.length; i++) {
-        var key = keys[i];
-        if (key[0].indexOf('score-') == 0) {
+        } else if (key[0].indexOf('score-') == 0) {
             scores.push(JSON.parse(localStorage.getItem(key[0])))
         }
     }
@@ -332,7 +325,8 @@ function selectNextCard(deck) {
     if (deck.mode == 'COMPLETE'){
         deck.time = new Date().getTime() - deck.startTime
         console.log({deck})
-        saveScore(deck)
+        saveScore(deck);
+        synchronise();
     }
 }
 export function flashGangMiddleware({ dispatch }) {

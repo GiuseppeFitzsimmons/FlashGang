@@ -9,6 +9,7 @@ exports.handler = async (event, context) => {
     if (typeof event.body === 'string') {
         event.body=JSON.parse(event.body)
     }
+    console.log("SYNCHRONISE EVENT", event);
     if (event.httpMethod.toLowerCase() === 'post') {
         //store all the flashcards sent from the user
         if (event.body.flashDecks) {
@@ -50,6 +51,9 @@ exports.handler = async (event, context) => {
                 }
                 await dynamodbfordummies.putFlashGang(flashGang, token.sub)
             }
+        }
+        if (event.body.scores) {
+            dynamodbfordummies.saveScores(event.body.scores, token.sub);
         }
         if (event.body.deletions){
             if (event.body.deletions.flashDecks){
