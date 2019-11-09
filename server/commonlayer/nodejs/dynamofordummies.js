@@ -592,6 +592,14 @@ async function deleteFlashGang(id) {
     }
     await removeItem(id, process.env.FLASHGANG_TABLE_NAME);
 }
+async function getUser(id) {
+    let user = await getItem(id, process.env.USER_TABLE_NAME);
+    user.profile = getProfile(currentUser.subscription);
+    return user;
+}
+async function saveScores(scores, userId) {
+    
+}
 
 module.exports = {
     putItem,
@@ -605,5 +613,6 @@ module.exports = {
     getFlashGang,
     deleteFlashDeck,
     hasFlashDeckPermissions,
-    deleteFlashGang
+    deleteFlashGang,
+    getUser
 }
