@@ -1,10 +1,15 @@
 import { SET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD } from '../action';
 
 const initialState = {};
+var user
 
 function rootReducer(state = initialState, action) {
     console.log('Reducer', action);
     let flashDeck;
+    if (!user){
+        user = JSON.parse(localStorage.getItem('currentUser'))
+    }
+    state.user = user
     if (action && action.data && action.data.flashDeck) {
         //This is why flashdeck wasn't updating - redux insists that you exchange immutable objects
         //In practice this means that if your state contains the same objects when it's next seen by

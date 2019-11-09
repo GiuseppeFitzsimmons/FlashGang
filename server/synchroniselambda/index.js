@@ -66,7 +66,6 @@ exports.handler = async (event, context) => {
                 }
             }
         }
-        event.body.user=await dynamodbfordummies.getUser(token.sub);
         let lastModified = event.body.lastModified ? event.body.lastModified : 0;
         //return all the flashcards to which the user has access and which have a lastModified date
         //later than the date passed in the request

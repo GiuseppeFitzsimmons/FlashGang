@@ -66,7 +66,10 @@ class FlashDeckEditor extends React.Component {
   }
   render() {
     const flashDeck = this.props.flashDeck
+    var editable = this.props.user.id == flashDeck.owner
     const theme = this.theme;
+    console.log('user id', this.props.user.id,'owner', flashDeck.owner)
+    console.log('editable', editable)
     return (
       <Grid container
         direction="column"
@@ -106,15 +109,19 @@ class FlashDeckEditor extends React.Component {
             input => input ? input.reset(flashDeck.description) : true
           }
         />
-        <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Editable by others</label>
-        <FlashCheckBox
-          onChange={(event) => { flashDeck.editable = event.target.checked; flashDeck.dirty = true; this.forceUpdate() }}
-          ref={flashCheckBox=>{
-            if (flashCheckBox) {
+        <div style={{
+          display: editable ? '': 'none'
+        }}>
+          <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Editable by others</label>
+          <FlashCheckBox
+            onChange={(event) => { flashDeck.editable = event.target.checked; flashDeck.dirty = true; this.forceUpdate() }}
+            ref={flashCheckBox => {
+              if (flashCheckBox) {
                 flashCheckBox.reset(flashDeck.editable);
-            }
-        }}
-        />
+              }
+            }}
+          />
+        </div>
         <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Fuzziness</label>
         <Slider
           defaultValue={flashDeck.fuzziness ? flashDeck.fuzziness : 0}
@@ -180,7 +187,7 @@ class FlashDeckEditor extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-  return {}
+  return { user: state.user }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Actions, dispatch)

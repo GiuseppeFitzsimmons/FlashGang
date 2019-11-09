@@ -6,14 +6,14 @@ const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
 
 async function synchronise() {
-    console.log('Synchronisation') 
+    console.log('Synchronisation')
     var questObject = {}
     questObject.params = {}
     var decks = []
     var gangs = []
     var scores = []
     var keys = Object.entries(localStorage)
-    console.log("synchronise ",keys);
+    console.log("synchronise ", keys);
     for (var i = 0; i < localStorage.length; i++) {
         var key = keys[i];
         if (key[0].indexOf('flashDeck-') == 0) {
@@ -47,6 +47,15 @@ async function synchronise() {
         for (var i in postResult.flashGangs) {
             let _gang = postResult.flashGangs[i]
             localStorage.setItem('flashGang-' + _gang.id, JSON.stringify(_gang))
+        }
+    }
+    if (postResult.users) {
+        for (var i in postResult.users) {
+            let _user = postResult.users[i]
+            localStorage.setItem('user-' + _user.id, JSON.stringify(_user))
+            if (_user.isCurrentUser) {
+                localStorage.setItem('currentUser', JSON.stringify(_user))
+            }
         }
     }
     console.log('Synchronisation complete')
@@ -131,7 +140,7 @@ async function postToServer(questObject) {
 
 async function saveScore(flashDeck) {
     let score = localStorage.getItem('score-' + flashDeck.id)
-    if (score){
+    if (score) {
         score = JSON.parse(score)
     }
     let correctAnswers = 0
@@ -151,7 +160,7 @@ async function saveScore(flashDeck) {
     if (!score) {
         score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
     } else {
-        if (score.percentage<percentage){
+        if (score.percentage < percentage) {
             score.highScore = percentage
         }
         score.score = percentage
@@ -254,6 +263,7 @@ function selectNextCard(deck) {
     if (testType == 'EXAM') {
         if (!deck.hasOwnProperty('currentIndex')) {
             deck.currentIndex = -1;
+            deck.startTime = new Date().getTime()
         }
         if (deck.currentIndex + 1 >= deck.flashCards.length) {
             deck.mode = 'COMPLETE'
@@ -261,6 +271,9 @@ function selectNextCard(deck) {
             deck.currentIndex++
         }
     } else if (testType == 'REVISION') {
+        if (!deck.hasOwnProperty('currentIndex')) {
+            deck.startTime = new Date().getTime()
+        }
         let unansweredCards = []
         for (var i in deck.flashCards) {
             let card = deck.flashCards[i]
@@ -274,6 +287,9 @@ function selectNextCard(deck) {
             deck.currentIndex = unansweredCards[Math.floor(Math.random() * Math.floor(unansweredCards.length))]
         }
     } else if (testType == 'CRAM') {
+        if (!deck.hasOwnProperty('currentIndex')) {
+            deck.startTime = new Date().getTime()
+        }
         let unansweredCards = []
         for (var i in deck.flashCards) {
             let card = deck.flashCards[i]
@@ -322,9 +338,9 @@ function selectNextCard(deck) {
             })
         }
     }
-    if (deck.mode == 'COMPLETE'){
+    if (deck.mode == 'COMPLETE') {
         deck.time = new Date().getTime() - deck.startTime
-        console.log({deck})
+        console.log({ deck })
         saveScore(deck);
         synchronise();
     }

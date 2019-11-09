@@ -84,7 +84,6 @@ class FlashDeckTest extends React.Component {
                             style={{ width: editable ? '49%': '100%' }}
                             disabled={!this.state.valid}
                             onClick={() => { 
-                                this.props.flashDeck.startTime = new Date().getTime()
                                 this.props.nextCard(this.props.flashDeck);
                             }}
                         >
