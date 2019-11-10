@@ -146,7 +146,9 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 });
                 if (existing.length == 0) {
                     let gangster = await getItem(gangMember.id, process.env.USER_TABLE_NAME);
-                    result.users.push(gangster);
+                    if (gangster) {
+                        result.users.push(gangster);
+                    }
                 }
             }
         }
@@ -163,6 +165,17 @@ async function getFlashDecks(userId, lastModifiedDate) {
             flashDeck.rank = userDeck.rank;
             flashDeck.state = userDeck.state;
             result.flashDecks.push(flashDeck);
+        }
+    }
+    for (var i in result.users) {
+        var _user = result.users[i]
+        console.log('result.users', result.users)
+        _user.scores = []
+        for (var j in result.flashDecks) {
+            var _deck = result.flashDecks[j]
+            let _userDeck = await getUserDeck(_deck.id, _user.id)
+            console.log('_user', _user, '_deck', _deck, '_userDeck', _userDeck)
+            _user.scores.push(_userDeck)
         }
     }
 
@@ -603,25 +616,8 @@ async function saveScores(scores, userId) {
     var documentClient = getDocumentDbClient();
     for (var i in scores) {
         var _score = scores[i]
-        var params = {
-            TableName: process.env.FLASHDECK_USER_TABLE_NAME,
-            Key: {
-                'userId': userId,
-                'flashDeckId': _score.flashDeckId
-            }
-        };
-        let item = await new Promise((resolve, reject) => {
-            documentClient.get(params, function (err, data) {
-                if (err) {
-                    console.log("Error getting flashdeck/user table", err);
-                    reject(err);
-                } else {
-                    console.log("success getting flashdeck/user table");
-                    resolve(data);
-                }
-            });
-        });
-        if (!item.flashDeckId) {
+        let item = await getUserDeck(_score.flashDeckId, userId)
+        if (!item) {
             item = _score
             item.userId = userId
         } else {
@@ -633,6 +629,33 @@ async function saveScores(scores, userId) {
         }
         await putItem(item, process.env.FLASHDECK_USER_TABLE_NAME)
     }
+}
+
+async function getUserDeck(flashDeckId, userId) {
+    var documentClient = getDocumentDbClient();
+    var params = {
+        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+        Key: {
+            'userId': userId,
+            'flashDeckId': flashDeckId
+        }
+    };
+    let item = await new Promise((resolve, reject) => {
+        documentClient.get(params, function (err, data) {
+            if (err) {
+                console.log("Error getting flashdeck/user table", err);
+                reject(err);
+            } else {
+                console.log("success getting flashdeck/user table");
+                resolve(data.Item);
+            }
+        });
+    });
+    console.log('getUserDeck item', item)
+    if (item && item.flashDeckId) {
+        return item
+    } 
+    else return null
 }
 
 module.exports = {
