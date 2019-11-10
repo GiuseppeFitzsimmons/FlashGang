@@ -42,7 +42,7 @@ class Home extends React.Component {
         return (
           <FlashDeckListItem flashDeck={flashDeck}
             onClick={() =>
-              this.props.onFlashDeckSelected(flashDeck.id, 'TEST')
+              this.props.onFlashDeckSelected(flashDeck.id, 'TEST', 'DECKS')
             } />
         )
       })

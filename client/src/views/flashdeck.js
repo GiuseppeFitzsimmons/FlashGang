@@ -22,7 +22,7 @@ class FlashDeck extends React.Component {
     if (!this.props.flashDeckId) {
       this.props.newDeck()
     } else {
-      this.props.loadFlashDeck(this.props.flashDeckId, this.props.mode)
+      this.props.loadFlashDeck(this.props.flashDeckId, this.props.mode, null, null, this.props.source)
     }
   }
   editFlashDeck(id) {

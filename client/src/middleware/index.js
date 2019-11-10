@@ -1,6 +1,7 @@
 import { SET_SCORE, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
+import flashdeck from '../views/flashdeck';
 
 const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
@@ -403,6 +404,7 @@ export function flashGangMiddleware({ dispatch }) {
             } else if (action.type === LOAD_FLASHDECK) {
                 console.log('Middleware LOAD_FLASHDECK')
                 var flashDeck = JSON.parse(localStorage.getItem('flashDeck-' + action.data.flashDeckId))
+                flashDeck.source = action.data.source
                 action.data.flashDeck = flashDeck
                 flashDeck.dirty = false
                 delete flashDeck.currentIndex
@@ -412,6 +414,25 @@ export function flashGangMiddleware({ dispatch }) {
                     flashDeck.testType = action.data.testType
                     selectNextCard(flashDeck)
                 }
+                flashDeck.scores = []
+                var keys = Object.entries(localStorage)
+                for (var i = 0; i < localStorage.length; i++) {
+                    var key = keys[i];
+                    if (key[0].indexOf('user-') == 0) {
+                        let _user = JSON.parse(localStorage.getItem(key[0]))
+                        console.log('_user', _user)
+                        for (var j in _user.scores){
+                            let score = _user.scores[j]
+                            if (score && score.flashDeckId == flashDeck.id){
+                                score.firstName = _user.firstName
+                                score.lastName = _user.lastName
+                                score.userId = _user.id
+                                flashDeck.scores.push(score)
+                            }
+                        }
+                    }
+                }
+                console.log('flashDeck SCORES', flashDeck)
             }
             else if (action.type === SCORE_CARD) {
                 scoreCard(action.data.flashDeck);

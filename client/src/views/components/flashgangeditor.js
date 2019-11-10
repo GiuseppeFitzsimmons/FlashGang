@@ -238,7 +238,10 @@ class FlashGangEditor extends React.Component {
                 flashDeck.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
             }
             return (
-                <FlashDeckListItem flashDeck={flashDeck} />
+                <FlashDeckListItem flashDeck={flashDeck}
+                    onClick={() =>
+                        this.props.onFlashDeckSelected(flashDeck.id, 'TEST', 'GANGS')
+                    } />
             )
         })
         return (

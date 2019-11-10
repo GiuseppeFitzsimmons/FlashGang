@@ -38,8 +38,8 @@ export default class App extends React.Component {
   createFlashDeck() {
     this.setState({ mode: 'EDIT', flashDeckId: null })
   }
-  onFlashDeckSelected(flashDeckId, mode) {
-    this.setState({ flashDeckId: flashDeckId, mode: mode })
+  onFlashDeckSelected(flashDeckId, mode, source) {
+    this.setState({ flashDeckId: flashDeckId, mode: mode, source: source })
   }
   onFlashGangSelected(flashGangId) {
     this.setState({ flashGangId: flashGangId, mode: 'EDITGANG' })
@@ -84,6 +84,7 @@ export default class App extends React.Component {
       renderable = <FlashDeck
         goHome={this.goHome}
         flashDeckId={this.state.flashDeckId}
+        source={this.state.source}
         mode={this.state.mode}
         goGangs={this.goGangs}
         onLogOut={this.logOut}
@@ -97,6 +98,7 @@ export default class App extends React.Component {
       />
     } else if (this.state.mode == 'EDITGANG') {
       renderable = <FlashGangEditor
+        onFlashDeckSelected={this.onFlashDeckSelected}
         goHome={this.goHome}
         flashGangId={this.state.flashGangId}
         onLogOut={this.logOut}

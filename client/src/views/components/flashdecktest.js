@@ -18,6 +18,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { FlashTypography } from '../widgets/FlashBits';
 import Divider from '@material-ui/core/Divider';
+import HighScores from './highscores'
 
 
 
@@ -103,6 +104,9 @@ class FlashDeckTest extends React.Component {
                             Edit test
                         </FlashButton>
                     </Grid>
+                    <HighScores
+                        flashDeck = {this.props.flashDeck}
+                    />
                 </Grid>
             </>
         )
