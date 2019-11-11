@@ -108,6 +108,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
     result.users = [];
     //push the current user into this list, and decorate the record with subscription information
     let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
+    delete currentUser.password;
     currentUser.isCurrentUser = true;
     currentUser.profile = getProfile(currentUser.subscription);
     result.users.push(currentUser);
@@ -119,6 +120,9 @@ async function getFlashDecks(userId, lastModifiedDate) {
         flashGang.state = userGang.state;
         if (userGang.invitedBy) {
             flashGang.invitedBy = await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
+            if (flashGang.invitedBy) {
+                delete flashGang.invitedBy.password
+            }
         }
         result.flashGangs.push(flashGang);
         //put the decks of this gang into the list of gangs, if it's not already there
@@ -146,6 +150,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 });
                 if (existing.length == 0) {
                     let gangster = await getItem(gangMember.id, process.env.USER_TABLE_NAME);
+                    delete gangster.password;
                     if (gangster) {
                         result.users.push(gangster);
                     }
