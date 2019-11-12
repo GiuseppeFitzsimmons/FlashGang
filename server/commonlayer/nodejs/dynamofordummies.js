@@ -150,8 +150,8 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 });
                 if (existing.length == 0) {
                     let gangster = await getItem(gangMember.id, process.env.USER_TABLE_NAME);
-                    delete gangster.password;
                     if (gangster) {
+                        delete gangster.password;
                         result.users.push(gangster);
                     }
                 }
@@ -626,7 +626,7 @@ async function saveScores(scores, userId) {
             item = _score
             item.userId = userId
         } else {
-            if (item.highScore < _score.highScore) {
+            if (!item.highScore || item.highScore < _score.highScore) {
                 item.highScore = _score.highScore
             }
             item.score = _score.score

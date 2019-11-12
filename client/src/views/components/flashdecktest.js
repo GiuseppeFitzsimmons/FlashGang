@@ -106,6 +106,7 @@ class FlashDeckTest extends React.Component {
                     </Grid>
                     <HighScores
                         flashDeck = {this.props.flashDeck}
+                        user = {this.props.user}
                     />
                 </Grid>
             </>
@@ -114,7 +115,7 @@ class FlashDeckTest extends React.Component {
 }
 
 function mapStateToProps(state, props) {
-    return {}
+    return {user: state.user}
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

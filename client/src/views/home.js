@@ -18,6 +18,7 @@ import { FlashButton, FlashListItem } from './widgets/FlashBits'
 import FlashAppBar from './widgets/flashappbar'
 import { FlashDeckListItem } from './components/flashgangmemberlistitem';
 import Box from '@material-ui/core/Box';
+
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
 class Home extends React.Component {

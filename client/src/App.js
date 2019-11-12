@@ -16,11 +16,12 @@ import { greenTheme } from './views/widgets/Themes'
 
 import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
+import SplashScreen from './views/components/splashscreen';
 
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = { splashScreenShowing: true }
     this.createFlashDeck = this.createFlashDeck.bind(this)
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
     this.goHome = this.goHome.bind(this)
@@ -68,6 +69,11 @@ export default class App extends React.Component {
     }
     return this.loggedIn
   }
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ splashScreenShowing: false })
+    }, 2000)
+  }
   render() {
     const loggedIn = this.checkIfUserIsnScope()
     let renderable = <Home
@@ -108,7 +114,8 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <ThemeProvider theme={this.state.theme ? this.state.theme : greenTheme}>
-          <Box height={'1'} style={{overflow:'hidden'}}>
+          <Box height={'1'} style={{ overflow: 'hidden' }}>
+            <SplashScreen showing={this.state.splashScreenShowing} />
             {renderable}
           </Box>
         </ThemeProvider>
@@ -121,10 +128,10 @@ class TestGrid extends React.Component {
   render() {
     return (
       <>
-      <FlashAppBar title='FlashGang!' station='GANGS'/>
-          <Grid style={{height:'100%', backgroundColor:'red'}}>
+        <FlashAppBar title='FlashGang!' station='GANGS' />
+        <Grid style={{ height: '100%', backgroundColor: 'red' }}>
 
-          </Grid>
+        </Grid>
       </>
     )
   }
