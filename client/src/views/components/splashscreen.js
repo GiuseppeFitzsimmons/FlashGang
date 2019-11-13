@@ -1,5 +1,5 @@
 import React from 'react';
-import Zoom from '@material-ui/core/Zoom';
+import Zoom from 'react-reveal/Zoom';
 
 export default class SplashScreen extends React.Component {
     constructor(props) {
@@ -7,9 +7,9 @@ export default class SplashScreen extends React.Component {
     }
     render() {
         return (
-            <Zoom in={false} style={{ enter: 0, exit: 250}}>
+            <Zoom left when={this.props.showing}>
                 <div style={{
-                    zIndex: 99,
+                    zIndex: this.props.showing ? 99 : 0,
                     position: 'absolute',
                     left: 0,
                     top: 0,

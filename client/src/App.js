@@ -72,7 +72,7 @@ export default class App extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ splashScreenShowing: false })
-    }, 2000)
+    }, 150)
   }
   render() {
     const loggedIn = this.checkIfUserIsnScope()

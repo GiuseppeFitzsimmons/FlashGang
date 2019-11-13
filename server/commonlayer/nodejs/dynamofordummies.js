@@ -612,7 +612,9 @@ async function deleteFlashGang(id) {
 }
 async function getUser(id) {
     let user = await getItem(id, process.env.USER_TABLE_NAME);
-    user.profile = getProfile(user.subscription);
+    if (user) {
+        user.profile = getProfile(user.subscription);
+    }
     return user;
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
@@ -659,7 +661,7 @@ async function getUserDeck(flashDeckId, userId) {
     console.log('getUserDeck item', item)
     if (item && item.flashDeckId) {
         return item
-    } 
+    }
     else return null
 }
 

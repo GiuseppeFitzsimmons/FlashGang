@@ -123,6 +123,21 @@ Resources:
             Path: /rsvp
             Method: any
             RestApiId: !Ref ApiGateway
+    
+  GoogleLoginLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: googleloginlambda/
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      Events:
+        RsvpEventSource:
+          Type: Api
+          Properties:
+            Path: /googleauth
+            Method: any
+            RestApiId: !Ref ApiGateway
 
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
@@ -428,7 +443,6 @@ Resources:
                 Action:
                   - 'dynamodb:*'
                 Resource: '*'
-
 # bucket stuff
   S3Bucket:
     Type: AWS::S3::Bucket
