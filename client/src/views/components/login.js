@@ -8,10 +8,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button, Grid, GridList } from '@material-ui/core';
 import queryString, { parse } from 'query-string'
 
-var googleUrl = 'https://accounts.google.com/o/oauth2/v2/auth?';
-googleUrl += 'scope=profile email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&';
-googleUrl += 'redirect_uri=http://localhost:8080/googleauth';
-googleUrl += '&response_type=code&client_id=979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com'
+const env = require('../../middleware/environment.js');
+const environment = env.getEnvironment(window.location.origin);
+var googleUrl = environment.googleLogin;
 
 class Login extends React.Component {
     constructor(props) {
@@ -95,7 +94,8 @@ class Login extends React.Component {
                     buttonType='system'
                     style={{ width: '100%' }}
                     onClick={
-                        () => {window.location.href = googleUrl}
+                        
+                        () => {alert(googleUrl);window.location.href = googleUrl}
                     }
                     
                 >

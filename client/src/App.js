@@ -18,6 +18,7 @@ import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
 import SplashScreen from './views/components/splashscreen';
 
+
 export default class App extends React.Component {
   constructor(props) {
     super(props)
