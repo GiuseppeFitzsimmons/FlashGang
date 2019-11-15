@@ -18,6 +18,20 @@ import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
 import SplashScreen from './views/components/splashscreen';
 
+function Cookies() {
+  const split = document.cookie.split(';');
+  const cookie = {};
+  for (let index in split) {
+    let splitedValue = split[index].split('=');
+    if (splitedValue.length > 1) {
+      cookie[splitedValue[0].trim()] = splitedValue[1].trim();
+    }
+  }
+  return cookie;
+}
+
+function eraseCookie(name) { document.cookie = name + '=; Max-Age=-99999999;'; }
+
 
 export default class App extends React.Component {
   constructor(props) {
@@ -58,9 +72,17 @@ export default class App extends React.Component {
   onLoggedIn() {
     this.forceUpdate()
   }
-  checkIfUserIsnScope() {
+  checkIfUserIsInScope() {
     if (this.loggedIn) {
       //  return true
+    }
+    let cookie = Cookies()
+    if (cookie.socialLogin){
+      let parsedCookie = JSON.parse(cookie.socialLogin)
+      localStorage.setItem("flashJwt", JSON.stringify(parsedCookie.jwt))
+      localStorage.setItem("flashJwtRefresh", JSON.stringify(parsedCookie.refresh))
+      localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
+      eraseCookie('socialLogin')
     }
     var _jwt = localStorage.getItem("flashJwt");
     if (!_jwt) {
@@ -76,7 +98,7 @@ export default class App extends React.Component {
     }, 150)
   }
   render() {
-    const loggedIn = this.checkIfUserIsnScope()
+    const loggedIn = this.checkIfUserIsInScope()
     let renderable = <Home
       onNewButton={this.createFlashDeck}
       onFlashDeckSelected={this.onFlashDeckSelected}

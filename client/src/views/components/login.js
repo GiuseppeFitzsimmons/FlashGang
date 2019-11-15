@@ -95,7 +95,7 @@ class Login extends React.Component {
                     style={{ width: '100%' }}
                     onClick={
                         
-                        () => {alert(googleUrl);window.location.href = googleUrl}
+                        () => {window.location.href = googleUrl}
                     }
                     
                 >
