@@ -18,6 +18,7 @@ import { FlashButton, FlashListItem } from './widgets/FlashBits'
 import FlashAppBar from './widgets/flashappbar'
 import { FlashDeckListItem } from './components/flashgangmemberlistitem';
 import Box from '@material-ui/core/Box';
+import Upgrade from './components/upgrade';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
@@ -79,20 +80,33 @@ class Home extends React.Component {
           </FlashListItem>
           {generateFlashDeckList()}
         </Box>
-                <Grid container
-                    direction="column"
-                    justify="space-between"
-                    alignItems="stretch"
-                    style={{
-                        height: '6%'
-                    }}
-                >
-                    <FlashButton
-                        buttonType='action'
-                        onClick={this.props.onNewButton} >
-                        New FlashDeck
-                        </FlashButton>
-                </Grid>
+        <Grid container
+          direction="column"
+          justify="space-between"
+          alignItems="stretch"
+          style={{
+            height: '6%'
+          }}
+        >
+          <FlashButton
+            buttonType='action'
+            onClick={this.props.onNewButton} >
+            New FlashDeck
+          </FlashButton>
+        </Grid>
+        <Upgrade
+          ref= {
+            (upgrade) => {
+              this.upgrade = upgrade
+            }
+          }
+        >
+        </Upgrade>
+        <FlashButton
+            buttonType='action'
+            onClick={()=>{this.upgrade.open()}} >
+            The Button of Mystery
+          </FlashButton>
       </>
     )
   }

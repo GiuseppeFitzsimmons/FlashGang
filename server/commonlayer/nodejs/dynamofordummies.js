@@ -62,7 +62,75 @@ async function hasFlashDeckPermissions(deckId, userId) {
     return permissions
 }
 
+async function countFlashDecks(userId) {
+    const params = {
+        TableName: process.env.FLASHDECK_TABLE_NAME,
+        KeyConditionExpression: '#o = :uid',
+        ExpressionAttributeNames: {
+            '#o': 'owner'
+        },
+        IndexName: 'owner_index',
+        ExpressionAttributeValues: {
+            ':uid': userId
+        },
+        Select: 'COUNT'
+    }
+    console.log('countFlashDecks params', params)
+    var documentClient = getDocumentDbClient();
+    let count = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log('countFlashDecks err', err);
+                resolve();
+            } else {
+                console.log('countFlashDecks data', data);
+                resolve(data.Count)
+            }
+        });
+    })
+    console.log('countFlashDecks count', count)
+    return count
+}
+
+async function countFlashGangs(userId) {
+    const params = {
+        TableName: process.env.FLASHGANG_TABLE_NAME,
+        KeyConditionExpression: '#o = :uid',
+        ExpressionAttributeNames: {
+            '#o': 'owner'
+        },
+        IndexName: 'owner_index',
+        ExpressionAttributeValues: {
+            ':uid': userId
+        },
+        Select: 'COUNT'
+    }
+    console.log('countFlashGangs params', params)
+    var documentClient = getDocumentDbClient();
+    let count = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log('countFlashGangs err', err);
+                resolve();
+            } else {
+                console.log('countFlashGangs data', data);
+                resolve(data.Count)
+            }
+        });
+    })
+    console.log('countFlashGangs count', count)
+    return count
+}
+
 async function getFlashDecks(userId, lastModifiedDate) {
+    let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
+    delete currentUser.password;
+    currentUser.isCurrentUser = true;
+    currentUser.profile = getProfile(currentUser.subscription);
+    let totalDecks = await countFlashDecks(currentUser.id)
+    let totalGangs = await countFlashGangs(currentUser.id)
+    currentUser.remainingFlashDecksAllowed = currentUser.profile.maxDecks - totalDecks
+    currentUser.remainingFlashGangsAllowed = currentUser.profile.maxGangs - totalGangs
     const result = {};
     const params = {
         TableName: process.env.FLASHDECK_USER_TABLE_NAME,
@@ -86,10 +154,10 @@ async function getFlashDecks(userId, lastModifiedDate) {
             }
         });
     })
-    for (var i in userDecks) {
+    /*for (var i in userDecks) {
         //These decks belong to this user, so he's the boss
-        userDecks[i].rank = 'BOSS';
-    }
+        //userDecks[i].rank = 'BOSS';
+    }*/
     console.log("PHANTOMDECK BUG 1 ", userDecks);
     params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
     params.KeyConditionExpression = 'id = :uid and lastModified > :ldate';
@@ -107,10 +175,6 @@ async function getFlashDecks(userId, lastModifiedDate) {
     result.flashGangs = [];
     result.users = [];
     //push the current user into this list, and decorate the record with subscription information
-    let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
-    delete currentUser.password;
-    currentUser.isCurrentUser = true;
-    currentUser.profile = getProfile(currentUser.subscription);
     result.users.push(currentUser);
     for (var i in userGangs) {
         let userGang = userGangs[i];
@@ -118,6 +182,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         let flashGang = await getFlashGang(userGang.flashGangId);
         flashGang.rank = userGang.rank;
         flashGang.state = userGang.state;
+        
         if (userGang.invitedBy) {
             flashGang.invitedBy = await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
             if (flashGang.invitedBy) {
@@ -139,6 +204,9 @@ async function getFlashDecks(userId, lastModifiedDate) {
                     })
                 }
             }
+        }
+        if (flashGang.owner == currentUser.id){
+            flashGang.remainingMembersAllowed = currentUser.profile.maxMembersPerGang - flashGang.members.length
         }
         //put the members of this gang into the list of users, if it's not already there
         if (flashGang.members) {
@@ -169,6 +237,11 @@ async function getFlashDecks(userId, lastModifiedDate) {
             let flashDeck = await getFlashDeck(userDeck.flashDeckId);
             flashDeck.rank = userDeck.rank;
             flashDeck.state = userDeck.state;
+            let totalCards = 0
+            if (flashDeck.flashCards) {
+                totalCards = flashDeck.flashCards.length
+            }
+            flashDeck.remainingCardsAllowed = currentUser.profile.maxCardsPerDeck - totalCards
             result.flashDecks.push(flashDeck);
         }
     }
@@ -468,10 +541,13 @@ async function putFlashGang(flashGang, userId) {
     //Get the flashgang first, to make sure that the boss isn't being changed
     let currentGang = await getFlashGang(flashGang.id);
     if (currentGang) {
+        flashGang.owner = currentGang.owner
         //TODO - compare the current gang members
         //to the new list - delete all who aren't boss (they'll be re-inserted below)
         //Don't add the boss record if it already exists (it must exist, in fact, if
         //the gang exists)
+    } else {
+        flashGang.owner = userId
     }
     if (!flashGang.members) {
         flashGang.members = []
@@ -679,5 +755,7 @@ module.exports = {
     hasFlashDeckPermissions,
     deleteFlashGang,
     getUser,
-    saveScores
+    saveScores,
+    countFlashDecks,
+    countFlashGangs
 }
