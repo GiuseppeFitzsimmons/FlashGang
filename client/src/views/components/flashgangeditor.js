@@ -21,6 +21,7 @@ import { MdDelete } from 'react-icons/md';
 import DeckSelector from '../widgets/deckselector';
 import { IconSelector } from '../widgets/iconselector';
 import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlistitem';
+import Upgrade from '../components/upgrade';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
@@ -50,6 +51,7 @@ class FlashGangEditor extends React.Component {
         if (!this.props.flashGang.members) {
             this.props.flashGang.members = []
         }
+        this.props.flashGang.remainingMembersAllowed--
         this.props.flashGang.members.push({
             id: '',
             rank: 'MEMBER',
@@ -58,6 +60,7 @@ class FlashGangEditor extends React.Component {
         this.forceUpdate()
     }
     removeMember(index) {
+        this.props.flashGang.remainingMembersAllowed++
         this.props.flashGang.members.splice(index, 1)
         this.forceUpdate()
     }
@@ -146,7 +149,14 @@ class FlashGangEditor extends React.Component {
                         }}
                     >
                         <FlashListItem alignItems="flex-start"
-                            onClick={this.invite}
+                            onClick={
+                                () => {
+                                    if (this.props.flashGang.remainingMembersAllowed > 0) {
+                                        this.invite()
+                                    } else {
+                                        this.upgrade.open()
+                                    }
+                                }}
                             buttonType='action'
                             button
                         >
@@ -196,6 +206,10 @@ class FlashGangEditor extends React.Component {
                             onClick={() => { alert("to do") }} >
                             Delete
                         </FlashButton>
+                        <Upgrade
+                            parent={this}
+                        >
+                        </Upgrade>
                     </Grid>
                 </Grid>
             </>

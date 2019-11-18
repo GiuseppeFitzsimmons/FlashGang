@@ -1,4 +1,4 @@
-import { SET_SCORE, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -62,7 +62,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -359,7 +359,12 @@ export function flashGangMiddleware({ dispatch }) {
             else if (action.type === SAVE_DECK) {
                 console.log('Middleware SAVE_DECK')
                 if (!action.data.flashDeck.id) {
+                    let _user = JSON.parse(localStorage.getItem('currentUser'))
                     action.data.flashDeck.id = uuidv4()
+                    _user.remainingFlashDecksAllowed = _user.remainingFlashDecksAllowed - 1
+                    action.data.user = _user
+                    localStorage.setItem('currentUser', JSON.stringify(_user))
+                    console.log('Decrementing', _user)
                 }
                 var mode = action.data.flashDeck.mode
                 delete action.data.flashDeck.dirty
@@ -383,7 +388,9 @@ export function flashGangMiddleware({ dispatch }) {
                             action.data.flashDeck.currentIndex = 0
                         }
                         if (action.data.flashDeck.flashCards.length <= action.data.flashDeck.currentIndex && action.data.flashDeck.mode == 'EDIT') {
+                            action.data.flashDeck.remainingCardsAllowed--
                             action.data.flashDeck.flashCards.push({})
+                            console.log('flashDeck from middleware for remainingCards', action.data.flashDeck)
                         }
                         if (action.data.flashDeck.currentIndex < action.data.flashDeck.flashCards.length) {
                             delete action.data.flashDeck.flashCards[action.data.flashDeck.currentIndex].correct
@@ -421,9 +428,9 @@ export function flashGangMiddleware({ dispatch }) {
                     if (key[0].indexOf('user-') == 0) {
                         let _user = JSON.parse(localStorage.getItem(key[0]))
                         console.log('_user', _user)
-                        for (var j in _user.scores){
+                        for (var j in _user.scores) {
                             let score = _user.scores[j]
-                            if (score && score.flashDeckId == flashDeck.id){
+                            if (score && score.flashDeckId == flashDeck.id) {
                                 score.firstName = _user.firstName
                                 score.lastName = _user.lastName
                                 score.userId = _user.id
@@ -445,7 +452,11 @@ export function flashGangMiddleware({ dispatch }) {
                 let deletedDeck = JSON.stringify({ id: action.data.flashDeckId })
                 localStorage.setItem('delete-flashDeck-' + action.data.flashDeckId, deletedDeck)
                 localStorage.removeItem('flashDeck-' + action.data.flashDeckId)
+                let _user = JSON.parse(localStorage.getItem('currentUser'))
+                _user.remainingFlashDecksAllowed++
+                action.data.user = _user
                 synchronise()
+                localStorage.setItem('currentUser', JSON.stringify(_user))
             } else if (action.type === DELETE_CARD) {
                 console.log('Middleware DELETE_CARD')
                 action.data.flashDeck.flashCards.splice(action.data.flashDeck.currentIndex, 1)
@@ -455,6 +466,7 @@ export function flashGangMiddleware({ dispatch }) {
                         delete action.data.flashDeck.currentIndex
                     }
                 }
+                action.data.flashDeck.remainingCardsAllowed++
             } else if (action.type === PREV_CARD) {
                 console.log('Middleware PREV_CARD')
                 action.data.flashDeck.currentIndex = action.data.flashDeck.currentIndex - 1
@@ -474,9 +486,11 @@ export function flashGangMiddleware({ dispatch }) {
                 action.flashGangs = gangs
             } else if (action.type === SAVE_GANG) {
                 if (!action.data.flashGang.id) {
+                    let _user = JSON.parse(localStorage.getItem('currentUser'))
                     action.data.flashGang.id = uuidv4()
+                    _user.remainingFlashGangsAllowed--
+                    action.data.user = _user
                 }
-                //delete action.data.flashDeck.dirty
                 let cleanGang = Object.assign({}, action.data.flashGang)
                 cleanGang.flashDecks = []
                 if (action.data.flashGang.flashDecks) {
@@ -582,6 +596,12 @@ export function flashGangMiddleware({ dispatch }) {
                         action.errors = postResult.errors
                     }
                 }
+            } else if (action.type === POLL) {
+                console.log('Middleware POLL')
+                let questObject = {}
+                questObject.params = Object.assign({}, action.data)
+                questObject.resource = 'poll'
+                postToServer(questObject)
             }
             return next(action);
         }

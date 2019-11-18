@@ -22,6 +22,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import Upgrade from './components/upgrade';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -40,13 +41,13 @@ class FlashGangs extends React.Component {
     this.setState({ RSVPDialogOpen: true, flashGang: flashGang })
   }
   RSVPAnswer(acceptance) {
-    if (acceptance){
+    if (acceptance) {
       this.state.flashGang.state = 'ACCEPTED'
     } else {
       var i = 0
-      for (i in this.props.flashGangs){
+      for (i in this.props.flashGangs) {
         let gang = this.props.flashGangs[i]
-        if (gang.id == this.state.flashGang.id){
+        if (gang.id == this.state.flashGang.id) {
           break
         }
       }
@@ -88,8 +89,8 @@ class FlashGangs extends React.Component {
                 <Icon style={{ fontSize: 30 }}>{flashGang.icon}</Icon>
               </ListItemAvatar>
               <ListItemText
-                primary={flashGang.state}
-                secondary={flashGang.description}
+                primary={flashGang.name}
+                secondary={flashGang.state == 'TO_INVITE' || flashGang.state == 'INVITED' ? flashGang.state: flashGang.description}
               />
             </ListItem>
             {i < flashGangs.length - 1 &&
@@ -119,23 +120,34 @@ class FlashGangs extends React.Component {
             <ListItemText
               primary="New"
               secondary="Click here to create a new FlashGang"
-              onClick={this.props.createFlashGang}
+              onClick={
+                () => {
+                  if (this.props.user.remainingFlashGangsAllowed > 0) {
+                    this.props.createFlashGang()
+                  } else {
+                    this.upgrade.open()
+                  }
+                }}
             />
           </FlashListItem>
           {generateFlashGangList()}
         </List>
+        <Upgrade
+          parent={this}
+        >
+        </Upgrade>
       </>
     )
   }
   renderRSVPdialog() {
-    var message=<>You have been invited to join <b>{this.state.flashGang.name}</b> <i>({this.state.flashGang.description})</i>. Would you like to accept?</>;
+    var message = <>You have been invited to join <b>{this.state.flashGang.name}</b> <i>({this.state.flashGang.description})</i>. Would you like to accept?</>;
     if (this.state.flashGang.invitedBy) {
-      var invitor=this.state.flashGang.invitedBy.id;
+      var invitor = this.state.flashGang.invitedBy.id;
       if (this.state.flashGang.invitedBy.firstName || this.state.flashGang.invitedBy.lastName) {
-        invitor= (this.state.flashGang.invitedBy.firstName ? this.state.flashGang.invitedBy.firstName+' ' : '') +
-        (this.state.flashGang.invitedBy.lastName ? this.state.flashGang.invitedBy.lastName : '')
+        invitor = (this.state.flashGang.invitedBy.firstName ? this.state.flashGang.invitedBy.firstName + ' ' : '') +
+          (this.state.flashGang.invitedBy.lastName ? this.state.flashGang.invitedBy.lastName : '')
       }
-      message=<>You have been invited to join <b>{this.state.flashGang.name}</b> by {invitor}. Would you like to accept?</>;
+      message = <>You have been invited to join <b>{this.state.flashGang.name}</b> by {invitor}. Would you like to accept?</>;
     }
     return (
       <Dialog
@@ -165,7 +177,7 @@ class FlashGangs extends React.Component {
 }
 function mapStateToProps(state, props) {
   console.log('state', state)
-  return { flashGangs: state.flashGangs }
+  return { flashGangs: state.flashGangs, user: state.user }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Actions, dispatch)

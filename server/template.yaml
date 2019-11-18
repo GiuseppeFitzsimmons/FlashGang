@@ -41,6 +41,8 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-member-table
         FLASHGANG_DECK_TABLE_NAME:
           !Sub ${AWS::StackName}-flashgang-deck-table
+        POLL_TABLE_NAME:
+          !Sub ${AWS::StackName}-poll-table
         DYNAMODB_ENDPOINT: !Ref DynamoDbEndpoint
         REGION: "eu-west-1"
         SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
@@ -73,6 +75,21 @@ Resources:
           Type: Api
           Properties:
             Path: /synchronise
+            Method: any
+            RestApiId: !Ref ApiGateway
+
+  PollLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: polllambda/
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      Events:
+        ApiEventSource:
+          Type: Api
+          Properties:
+            Path: /poll
             Method: any
             RestApiId: !Ref ApiGateway
         
@@ -343,6 +360,26 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  PollTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-poll-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: date
+          KeyType: RANGE
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: date
+          AttributeType: N
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1

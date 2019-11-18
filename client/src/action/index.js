@@ -18,6 +18,7 @@ export const RSVP = 'RSVP';
 export const RESET_PASSWORD = 'RESET_PASSWORD';
 export const SET_PASSWORD = 'SET_PASSWORD';
 export const SAVE_SCORE = 'SAVE_SCORE';
+export const POLL = 'POLL';
 
 
 export function newDeck() {
@@ -102,5 +103,10 @@ export function resetPassword(user) {
 export function setPassword(user, token) {
     console.log("Action SET_PASSWORD")
     return { type: SET_PASSWORD, data: { user, token } }
+
+}
+export function poll(poll) {
+    console.log("Action POLL")
+    return { type: POLL, data: { poll } }
 
 }

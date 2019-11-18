@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashTypography, FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Icon from '@material-ui/core/Icon';
+import Upgrade from '../components/upgrade';
 
 
 class FlashCardEditor extends React.Component {
@@ -216,8 +217,14 @@ class FlashCardEditor extends React.Component {
                         style={{ width: '49%' }}
                         iconRight='navigate_next'
                         buttonType='system'
-                        disabled={(!flashCard.question || flashCard.question == '') || (!flashCard.correctAnswers || flashCard.correctAnswers.length == 0 || flashCard.correctAnswers[0]=='')}
-                        onClick={() => this.props.nextCard(this.props.flashDeck)}
+                        disabled={(!flashCard.question || flashCard.question == '') || (!flashCard.correctAnswers || flashCard.correctAnswers.length == 0 || flashCard.correctAnswers[0] == '')}
+                        onClick={() => {
+                            if (this.props.flashDeck.remainingCardsAllowed > 0 || this.props.flashDeck.currentIndex < this.props.flashDeck.flashCards.length-1) {
+                                this.props.nextCard(this.props.flashDeck)
+                            } else {
+                                this.upgrade.open()
+                            }
+                        }}
                     >
                         Next Card
                 </FlashButton>
@@ -229,6 +236,7 @@ class FlashCardEditor extends React.Component {
                     buttonType='system'
                     onClick={() => {
                         this.props.deleteCard(this.props.flashDeck)
+                        
                     }
                     }
                 >
@@ -256,7 +264,12 @@ class FlashCardEditor extends React.Component {
                 >
                     Home
                 </FlashButton>
+                <Upgrade
+                    parent={this}
+                >
+                </Upgrade>
             </Grid>
+
         )
     }
 }

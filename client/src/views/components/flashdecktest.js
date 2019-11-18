@@ -45,7 +45,7 @@ class FlashDeckTest extends React.Component {
     }
     render() {
         const flashDeck = this.props.flashDeck
-        const editable=(this.props.flashDeck.rank == 'BOSS' || this.props.flashDeck.rank == 'LIEUTENANT') &&
+        const editable=(this.props.flashDeck.rank == 'BOSS' || this.props.flashDeck.rank == 'LIEUTENANT' || this.props.flashDeck.owner == this.props.user.id) &&
                 (this.props.flashDeck.state!='TO_INVITE' && this.props.flashDeck.state!='INVITED')
         return (
             <>

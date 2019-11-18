@@ -30,6 +30,7 @@ class Home extends React.Component {
     this.props.loadDecks()
   }
   render() {
+    const home = this
     const flashDecks = this.props.flashDecks;
     const generateFlashDeckList = () => {
       if (!flashDecks) {
@@ -66,7 +67,14 @@ class Home extends React.Component {
           }}
         >
           <FlashListItem alignItems="flex-start"
-            onClick={this.props.onNewButton}
+            onClick={() => {
+              if (this.props.user.remainingFlashDecksAllowed > 0) {
+                this.props.onNewButton()
+              } else {
+                this.upgrade.open()
+              }
+            }
+            }
             buttonType='action'
             button
           >
@@ -80,39 +88,16 @@ class Home extends React.Component {
           </FlashListItem>
           {generateFlashDeckList()}
         </Box>
-        <Grid container
-          direction="column"
-          justify="space-between"
-          alignItems="stretch"
-          style={{
-            height: '6%'
-          }}
-        >
-          <FlashButton
-            buttonType='action'
-            onClick={this.props.onNewButton} >
-            New FlashDeck
-          </FlashButton>
-        </Grid>
         <Upgrade
-          ref= {
-            (upgrade) => {
-              this.upgrade = upgrade
-            }
-          }
+          parent={this}
         >
         </Upgrade>
-        <FlashButton
-            buttonType='action'
-            onClick={()=>{this.upgrade.open()}} >
-            The Button of Mystery
-          </FlashButton>
       </>
     )
   }
 }
 function mapStateToProps(state, props) {
-  return { flashDecks: state.flashDecks }
+  return { flashDecks: state.flashDecks, user: state.user }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Actions, dispatch)
