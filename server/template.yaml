@@ -7,6 +7,10 @@ Parameters:
     Description: The domain name
     Type: String
     Default: flashgang.io
+  ApiDomain:
+    Description: The domain name
+    Type: String
+    Default: api.flashgang.io
   ApiVersion:
     Type: String
     Default: 'v1'
@@ -23,7 +27,7 @@ Parameters:
 Globals:
   Function:
     Timeout: 18
-    Runtime: nodejs8.10
+    Runtime: nodejs12.x
     Handler: index.handler
     Layers:
       - !Ref CommonLayer
@@ -67,7 +71,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: synchroniselambda/
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
       Events:
@@ -82,7 +86,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: polllambda/
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
       Events:
@@ -97,7 +101,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: accountlambda/
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
       Events:
@@ -130,7 +134,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: rsvplambda/
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
       Events:
@@ -145,7 +149,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: googleloginlambda/
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
       Events:
@@ -163,7 +167,7 @@ Resources:
       Description: A few shareable code snippets that should work this time
       ContentUri: commonlayer
       CompatibleRuntimes:
-        - nodejs8.10
+        - nodejs12.x
       LicenseInfo: 'MIT'
       RetentionPolicy: Delete
 # Database stuff
@@ -395,7 +399,7 @@ Resources:
         Types:
           - REGIONAL
       RegionalCertificateArn: !Ref FlashCertificate
-      DomainName: api.flashgang.io
+      DomainName: !Ref ApiDomain
 
   ApiGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
@@ -426,7 +430,7 @@ Resources:
     Properties:
       HostedZoneName: flashgang.io.
       RecordSets:
-        - Name: api.flashgang.io
+        - Name: !Ref ApiDomain
           Type: A
           AliasTarget:
             EvaluateTargetHealth: false

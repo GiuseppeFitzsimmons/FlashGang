@@ -1,0 +1,10 @@
+{
+  "Parameters" : {
+    "DomainNameString" : "dev.flashgang.io",
+    "ApiDomain": "api-dev.flashgang.io",
+    "ApiVersion" : "v1",
+    "DynamoDbEndpoint" : "http://localhost:8000",
+    "RsvpUrl" : "https://dev.flashgang.io/rsvp",    
+    "PasswordResetUrl" : "https://dev.flashgang.io"
+  }
+}

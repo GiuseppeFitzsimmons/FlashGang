@@ -2,14 +2,14 @@ const fs=require('fs');
 const {execSync} = require('child_process');
 const rimraf = require("rimraf");
 
-const bucketName='prod.flashgang.bucket';
-/*var buildResult=build()
+var bucketName='prod.flashgang.bucket';
+var buildResult=build()
 console.log(buildResult);
 if (buildResult.error) {
     console.log("build failed", JSON.stringify(buildResult.error,'  '));
     console.log("EXITING");
     process.exit();
-}*/
+}
 var files=fs.readdirSync('build');
 var precacheFile;
 var serviceWorkerFile='service-worker.js'
@@ -22,6 +22,9 @@ profileArgument='';
 process.argv.forEach(function (val, index, array) {
     if (val=='--profile') {
         profileArgument='--profile '+array[index+1];
+    }
+    if (val=='--bucket') {
+        bucketName=array[index+1];
     }
   });
 console.log(profileArgument);
