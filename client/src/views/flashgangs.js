@@ -125,7 +125,7 @@ class FlashGangs extends React.Component {
                   if (this.props.user.remainingFlashGangsAllowed > 0) {
                     this.props.createFlashGang()
                   } else {
-                    this.upgrade.open()
+                    this.upgrade.open('GANGS')
                   }
                 }}
             />

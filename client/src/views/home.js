@@ -71,7 +71,7 @@ class Home extends React.Component {
               if (this.props.user.remainingFlashDecksAllowed > 0) {
                 this.props.onNewButton()
               } else {
-                this.upgrade.open()
+                this.upgrade.open('DECKS')
               }
             }
             }

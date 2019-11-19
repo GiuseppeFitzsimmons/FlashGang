@@ -154,7 +154,7 @@ class FlashGangEditor extends React.Component {
                                     if (this.props.flashGang.remainingMembersAllowed > 0) {
                                         this.invite()
                                     } else {
-                                        this.upgrade.open()
+                                        this.upgrade.open('GANG')
                                     }
                                 }}
                             buttonType='action'

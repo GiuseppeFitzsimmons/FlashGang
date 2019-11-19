@@ -222,7 +222,7 @@ class FlashCardEditor extends React.Component {
                             if (this.props.flashDeck.remainingCardsAllowed > 0 || this.props.flashDeck.currentIndex < this.props.flashDeck.flashCards.length-1) {
                                 this.props.nextCard(this.props.flashDeck)
                             } else {
-                                this.upgrade.open()
+                                this.upgrade.open('DECK')
                             }
                         }}
                     >

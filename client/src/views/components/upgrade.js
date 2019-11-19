@@ -21,7 +21,8 @@ class Upgrade extends React.Component {
             poll: 'upgrade'
         }
     }
-    open() {
+    open(station) {
+        this.poll.station=station;
         this.setState({ open: true })
     }
     handleClose() {
@@ -31,6 +32,16 @@ class Upgrade extends React.Component {
         this.props.parent.upgrade = this
     }
     render() {
+        let stationMessage='To perform this action, you need to upgrade your membership';
+        if (this.poll.station==='DECK') {
+            stationMessage='To add more cards, you need to upgrade your membership';
+        } else if (this.poll.station==='DECKS') {
+            stationMessage='To add another deck, you need to upgrade your membership';
+        } else if (this.poll.station==='GANG') {
+            stationMessage='To invite another member to your gang, you need to upgrade your membership';
+        } else if (this.poll.station==='GANGS') {
+            stationMessage='To create another gang, you need to upgrade your membership';
+        }
         return (
             <Dialog
                 disableBackdropClick
@@ -49,6 +60,22 @@ class Upgrade extends React.Component {
                             direction="column"
                             justify="space-between"
                             alignItems="flex-start">
+                            <Grid
+                                container
+                                direction="row"
+                            >
+                                <Grid
+                                    item xs={10} sm={10} md={10}
+                                >
+                                    <b>
+                                    {stationMessage}<br />
+                                    Upgrades are not yet available during the beta period, but you can express your interest now for a discount when the functionality is delivered in the near future.<br />
+                                    Please select a subscription that appeals to you.
+                                    </b>
+                                    <br /><br />
+                                    <Divider />
+                                </Grid>
+                            </Grid>
                             <Grid
                                 container
                                 direction="row"
