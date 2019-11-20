@@ -617,11 +617,3 @@ Resources:
         ViewerCertificate:
           AcmCertificateArn: !Ref FlashCertificate
           SslSupportMethod: sni-only
-  InfrastructureApplication:
-    Type: AWS::Serverless::Application
-    Condition: CreateInfrastructureStack
-    Properties:
-      Location: template-infra.yaml
-      Parameters:
-        TestValue: suppliedValue
-        WebAliasBase: !Ref WebAliasBase
