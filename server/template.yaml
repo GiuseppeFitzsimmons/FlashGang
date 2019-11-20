@@ -23,7 +23,20 @@ Parameters:
   PasswordResetUrl:
     Type: String
     Default: 'http://localhost:3000'
-
+  BucketName:
+    Type: String
+    Default: prod.flashgang.bucket
+  WebAliasWWW:
+    Type: String
+    Default: www.flashgang.io
+  WebAliasBase:
+    Type: String
+    Default: flashgang.io
+  InfrastructureNestedApp:
+    Type: String
+    Default: 'true'
+Conditions: 
+  CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
   Function:
     Timeout: 18
@@ -513,7 +526,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
-      BucketName: prod.flashgang.bucket
+      BucketName: !Ref BucketName
       WebsiteConfiguration:
         ErrorDocument: '404.htm'
         IndexDocument: 'index.html'
@@ -579,8 +592,8 @@ Resources:
         HttpVersion: 'http2'
         DefaultRootObject: ''
         Aliases:
-          - www.flashgang.io
-          - flashgang.io
+          - !Ref WebAliasWWW
+          - !Ref WebAliasBase
         DefaultCacheBehavior:
           AllowedMethods:
             - GET
@@ -604,3 +617,11 @@ Resources:
         ViewerCertificate:
           AcmCertificateArn: !Ref FlashCertificate
           SslSupportMethod: sni-only
+  InfrastructureApplication:
+    Type: AWS::Serverless::Application
+    Condition: CreateInfrastructureStack
+    Properties:
+      Location: template-infra.yaml
+      Parameters:
+        TestValue: suppliedValue
+        WebAliasBase: !Ref WebAliasBase

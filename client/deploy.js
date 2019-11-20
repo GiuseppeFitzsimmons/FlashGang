@@ -2,7 +2,7 @@ const fs=require('fs');
 const {execSync} = require('child_process');
 const rimraf = require("rimraf");
 
-var bucketName='prod.flashgang.bucket';
+var bucketName='dev.flashgang.bucket';
 var buildResult=build()
 console.log(buildResult);
 if (buildResult.error) {

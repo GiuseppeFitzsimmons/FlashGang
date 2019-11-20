@@ -6,6 +6,7 @@ let deployParameters='deploy-parameters-dev.json'
 let stackName='flashgang-dev'
 let environment='dev'
 let install='false'
+let installClient='true'
 process.argv.forEach(function (val, index, array) {
     if (val=='--profile') {
         profileArgument='--profile '+array[index+1];
@@ -15,6 +16,9 @@ process.argv.forEach(function (val, index, array) {
     }
     if (val=='--install') {
         install=array[index+1];
+    }
+    if (val=='--client') {
+        installClient=array[index+1];
     }
   });
   if (environment==='local') {
@@ -49,4 +53,10 @@ let deployed=execSync(`node deploy.js --stack-name ${stackName} --deploy-paramet
 console.log("done deploying server", deployed.toString());
 process.chdir('..');
 console.log(process.cwd())
+
+if (installClient==='true') {
+    const parameters=require(`./server/${deployParameters}`);
+    process.chdir('client');
+    deployed=execSync(`node deploy.js --bucket ${parameters.Parameters.BucketName} ${profileArgument}`);
+}
 

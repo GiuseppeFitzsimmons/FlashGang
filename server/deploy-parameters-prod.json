@@ -5,6 +5,9 @@
     "ApiVersion" : "v1",
     "DynamoDbEndpoint" : "",
     "RsvpUrl" : "https://www.flashgang.io/rsvp",    
-    "PasswordResetUrl" : "https://www.flashgang.io"
+    "PasswordResetUrl" : "https://www.flashgang.io",
+    "BucketName": "prod.flashgang.bucket",
+    "WebAliasWWW": "www.flashgang.io",
+    "WebAliasBase": "flashgang.io"
   }
 }
