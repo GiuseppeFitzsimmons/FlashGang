@@ -19,6 +19,7 @@ export const RESET_PASSWORD = 'RESET_PASSWORD';
 export const SET_PASSWORD = 'SET_PASSWORD';
 export const SAVE_SCORE = 'SAVE_SCORE';
 export const POLL = 'POLL';
+export const DELETE_GANG = 'DELETE_GANG';
 
 
 export function newDeck() {
@@ -55,6 +56,11 @@ export function scoreCard(flashDeck) {
 export function deleteDeck(flashDeckId) {
     console.log("Action DELETE_DECK")
     return { type: DELETE_DECK, data: { flashDeckId } }
+
+}
+export function deleteGang(flashGangId) {
+    console.log("Action DELETE_GANG")
+    return { type: DELETE_GANG, data: { flashGangId } }
 
 }
 export function deleteCard(flashDeck) {

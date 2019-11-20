@@ -22,6 +22,7 @@ import DeckSelector from '../widgets/deckselector';
 import { IconSelector } from '../widgets/iconselector';
 import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlistitem';
 import Upgrade from '../components/upgrade';
+import Confirmation from '../components/confirmation';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
@@ -67,6 +68,7 @@ class FlashGangEditor extends React.Component {
 
     render() {
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
+        const isOwner = this.props.user && this.props.user.id == flashGang.owner
         return (
             <>
                 <FlashAppBar title='FlashGang!' station='GANGS'
@@ -196,20 +198,24 @@ class FlashGangEditor extends React.Component {
                     >
                         <FlashButton
                             buttonType='system'
-                            style={{ width: '48%' }}
+                            style={{ width: isOwner ? '48%' : '100%' }}
                             onClick={() => { this.props.saveGang(flashGang) }} >
                             Save
                         </FlashButton>
                         <FlashButton
-                            buttonType='action'
-                            style={{ width: '48%' }}
-                            onClick={() => { alert("to do") }} >
+                            buttonType='system'
+                            style={{ width: '48%', display: isOwner ? '' : 'none' }}
+                            onClick={() => { this.confirmation.open('GANGS') }} >
                             Delete
                         </FlashButton>
                         <Upgrade
                             parent={this}
                         >
                         </Upgrade>
+                        <Confirmation
+                            parent={this}
+                            onConfirm={() => { this.props.deleteGang(flashGang.id) }}
+                        />
                     </Grid>
                 </Grid>
             </>
@@ -305,7 +311,8 @@ class FlashGangEditor extends React.Component {
 
 function mapStateToProps(state, props) {
     return {
-        flashGang: state.flashGang
+        flashGang: state.flashGang,
+        user: state.user
     }
 }
 function mapDispatchToProps(dispatch) {

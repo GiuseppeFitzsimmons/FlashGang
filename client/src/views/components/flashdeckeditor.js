@@ -168,6 +168,7 @@ class FlashDeckEditor extends React.Component {
           icon='delete'
           onClick={() => {
             this.props.deleteDeck(this.props.flashDeck.id)
+            this.props.goHome()
           }}
         >
           Delete Deck

@@ -1,4 +1,4 @@
-import { SET_SCORE, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -30,32 +30,48 @@ async function synchronise() {
     questObject.params.scores = scores
     questObject.params.deletions = {}
     questObject.params.deletions.flashDecks = []
+    questObject.params.deletions.flashGangs = []
     for (var i = 0; i < localStorage.length; i++) {
         var key = keys[i];
         if (key[0].indexOf('delete-flashDeck-') == 0) {
             questObject.params.deletions.flashDecks.push(JSON.parse(localStorage.getItem(key[0])))
         }
     }
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = keys[i];
+        if (key[0].indexOf('delete-flashGang-') == 0) {
+            questObject.params.deletions.flashGangs.push(JSON.parse(localStorage.getItem(key[0])))
+        }
+    }
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
-    if (postResult.flashDecks) {
-        for (var i in postResult.flashDecks) {
-            let _deck = postResult.flashDecks[i]
-            localStorage.setItem('flashDeck-' + _deck.id, JSON.stringify(_deck))
+    if (!postResult.errors) {
+        if (postResult.flashDecks) {
+            for (var i in postResult.flashDecks) {
+                let _deck = postResult.flashDecks[i]
+                localStorage.setItem('flashDeck-' + _deck.id, JSON.stringify(_deck))
+            }
         }
-    }
-    if (postResult.flashGangs) {
-        for (var i in postResult.flashGangs) {
-            let _gang = postResult.flashGangs[i]
-            localStorage.setItem('flashGang-' + _gang.id, JSON.stringify(_gang))
+        if (postResult.flashGangs) {
+            for (var i in postResult.flashGangs) {
+                let _gang = postResult.flashGangs[i]
+                localStorage.setItem('flashGang-' + _gang.id, JSON.stringify(_gang))
+            }
         }
-    }
-    if (postResult.users) {
-        for (var i in postResult.users) {
-            let _user = postResult.users[i]
-            localStorage.setItem('user-' + _user.id, JSON.stringify(_user))
-            if (_user.isCurrentUser) {
-                localStorage.setItem('currentUser', JSON.stringify(_user))
+        if (postResult.users) {
+            for (var i in postResult.users) {
+                let _user = postResult.users[i]
+                localStorage.setItem('user-' + _user.id, JSON.stringify(_user))
+                if (_user.isCurrentUser) {
+                    localStorage.setItem('currentUser', JSON.stringify(_user))
+                }
+            }
+        }
+        var keys = Object.entries(localStorage)
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = keys[i];
+            if (key[0].indexOf('delete-flashGang-') == 0 || key[0].indexOf('delete-flashDeck-') == 0) {
+                localStorage.removeItem(key[0])
             }
         }
     }
@@ -454,6 +470,16 @@ export function flashGangMiddleware({ dispatch }) {
                 localStorage.removeItem('flashDeck-' + action.data.flashDeckId)
                 let _user = JSON.parse(localStorage.getItem('currentUser'))
                 _user.remainingFlashDecksAllowed++
+                action.data.user = _user
+                synchronise()
+                localStorage.setItem('currentUser', JSON.stringify(_user))
+            } else if (action.type === DELETE_GANG) {
+                console.log('Middleware DELETE_GANG')
+                let deletedGang = JSON.stringify({ id: action.data.flashGangId })
+                localStorage.setItem('delete-flashGang-' + action.data.flashGangId, deletedGang)
+                localStorage.removeItem('flashGang-' + action.data.flashGangId)
+                let _user = JSON.parse(localStorage.getItem('currentUser'))
+                _user.remainingFlashGangsAllowed++
                 action.data.user = _user
                 synchronise()
                 localStorage.setItem('currentUser', JSON.stringify(_user))

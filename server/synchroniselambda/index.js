@@ -65,6 +65,15 @@ exports.handler = async (event, context) => {
                     }
                 }
             }
+            if (event.body.deletions.flashGangs){
+                for (var i in event.body.deletions.flashGangs){
+                    let gangToDelete = event.body.deletions.flashGangs[i]
+                    let permitted = await dynamodbfordummies.hasFlashGangPermissions(gangToDelete.id, token.sub);
+                    if (permitted.delete) {
+                        await dynamodbfordummies.deleteFlashGang(gangToDelete.id)
+                    }
+                }
+            }
         }
         let lastModified = event.body.lastModified ? event.body.lastModified : 0;
         //return all the flashcards to which the user has access and which have a lastModified date
