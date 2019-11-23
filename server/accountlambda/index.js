@@ -27,7 +27,6 @@ exports.handler = async (event, context) => {
                 let userId = event.body.id ? event.body.id.toLowerCase() : ''
                 if (userId != '') {
                     let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
-                    console.log('user', user)
                     let _compare = await new Promise((resolve, reject) => {
                         bcrypt.compare(event.body.password, user.password, function (err, res) {
                             if (err) {
@@ -72,8 +71,7 @@ exports.handler = async (event, context) => {
                 }
             }
         } else if (event.body.account_function) {
-            let userId = event.body.id ? event.body.id.toLowerCase() : ''
-            console.log('userId', userId)
+            let userId = event.body.id ? event.body.id.toLowerCase() : '';
             let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
             if (event.body.account_function == 'resetpw') {
                 let tokenPair = tokenUtility.generateNewPair(userId, 'resetpw')

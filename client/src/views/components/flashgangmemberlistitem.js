@@ -50,10 +50,17 @@ class FlashGangMemberListItemStyled extends React.Component {
             }
         }
         this.props.gangMember.profileImage = this.props.gangMember.profileImage ? this.props.gangMember.profileImage : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
-        const name = !this.props.gangMember.firstName && !this.props.gangMember.lastName ?
-            this.props.gangMember.id :
-            this.props.gangMember.firstName ? this.props.gangMember.firstName : '' +
-                this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
+        var name = this.props.gangMember.firstName;
+        if (name) {
+            if (this.props.gangMember.lastName) {
+                name+=' '+this.props.gangMember.lastName;
+            }
+        } else {
+            name=this.props.gangMember.lastName;
+        }
+        if (!name) {
+            name=this.props.gangMember.id;
+        }
         return (
             <Grid container spacing={0} style={{ paddingTop: '4px', height: '15%' }}>
 

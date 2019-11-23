@@ -2,6 +2,7 @@ const { generateNewPair } = require('./tokenutility')
 
 const AWS = require('aws-sdk');
 
+
 async function hasFlashGangPermissions(gangId, userId) {
     let flashGang = await getFlashGang(gangId)
     const permissions = { create: false, update: false, delete: false };
@@ -122,17 +123,20 @@ async function countFlashGangs(userId) {
     return count
 }
 
-async function getFlashDecks(userId, lastModifiedDate) {
-    let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
-    delete currentUser.password;
+async function getLastModifedObjects(userId, lastModifiedDate) {
+    var documentClient = getDocumentDbClient();
+    //let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
+    //delete currentUser.password;
+    let currentUser=await getUser(userId);
     currentUser.isCurrentUser = true;
-    currentUser.profile = getProfile(currentUser.subscription);
+    //currentUser.profile = getProfile(currentUser.subscription);
     let totalDecks = await countFlashDecks(currentUser.id)
     let totalGangs = await countFlashGangs(currentUser.id)
     currentUser.remainingFlashDecksAllowed = currentUser.profile.maxDecks - totalDecks
     currentUser.remainingFlashGangsAllowed = currentUser.profile.maxGangs - totalGangs
     const result = {};
-    const params = {
+    let userDecks = await getUserDecks(userId, lastModifiedDate);
+    /*const params = {
         TableName: process.env.FLASHDECK_USER_TABLE_NAME,
         KeyConditionExpression: 'userId = :uid and lastModified > :ldate',
         IndexName: 'last_modified_index',
@@ -142,7 +146,6 @@ async function getFlashDecks(userId, lastModifiedDate) {
         }
     }
 
-    var documentClient = getDocumentDbClient();
     let userDecks = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
             if (err) {
@@ -153,13 +156,8 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 resolve(data.Items)
             }
         });
-    })
-    /*for (var i in userDecks) {
-        //These decks belong to this user, so he's the boss
-        //userDecks[i].rank = 'BOSS';
-    }*/
-    console.log("PHANTOMDECK BUG 1 ", userDecks);
-    params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
+    })*/
+    /*params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
     params.KeyConditionExpression = 'id = :uid and lastModified > :ldate';
     let userGangs = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
@@ -171,7 +169,8 @@ async function getFlashDecks(userId, lastModifiedDate) {
                 resolve(data.Items)
             }
         });
-    })
+    })*/
+    let userGangs = await getUserGangs(userId, lastModifiedDate);
     result.flashGangs = [];
     result.users = [];
     //push the current user into this list, and decorate the record with subscription information
@@ -180,6 +179,7 @@ async function getFlashDecks(userId, lastModifiedDate) {
         let userGang = userGangs[i];
         //let flashGang = await getItem(userGang.flashGangId, process.env.FLASHGANG_TABLE_NAME);
         let flashGang = await getFlashGang(userGang.flashGangId);
+        console.log("FLASHGANGBUG AFTER", flashGang)
         flashGang.rank = userGang.rank;
         flashGang.state = userGang.state;
         
@@ -247,17 +247,65 @@ async function getFlashDecks(userId, lastModifiedDate) {
     }
     for (var i in result.users) {
         var _user = result.users[i]
-        console.log('result.users', result.users)
         _user.scores = []
         for (var j in result.flashDecks) {
             var _deck = result.flashDecks[j]
             let _userDeck = await getUserDeck(_deck.id, _user.id)
-            console.log('_user', _user, '_deck', _deck, '_userDeck', _userDeck)
             _user.scores.push(_userDeck)
         }
     }
-
+    cacheObject={};
     return result;
+}
+async function getUserDecks(userId, lastModified) {
+    const params = {
+        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+        KeyConditionExpression: 'userId = :uid and lastModified > :ldate',
+        IndexName: 'last_modified_index',
+        ExpressionAttributeValues: {
+            ':ldate': lastModified,
+            ':uid': userId
+        }
+    }
+
+    var documentClient = getDocumentDbClient();
+    let userDecks = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                resolve();
+            } else {
+                console.log(data);
+                resolve(data.Items)
+            }
+        });
+    })
+    return userDecks;
+}
+async function getUserGangs(userId, lastModified) {
+    const params = {
+        TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
+        KeyConditionExpression: 'id = :uid and lastModified > :ldate',
+        IndexName: 'last_modified_index',
+        ExpressionAttributeValues: {
+            ':ldate': lastModified,
+            ':uid': userId
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let userGangs = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log("Failed to get flashangs for user", userId, err);
+                resolve();
+            } else {
+                console.log("Getting flasghangs for user", userId, data);
+                resolve(data.Items)
+            }
+        });
+    })
+
+    return userGangs;
 }
 const subscriptionLevels = {
     none: {
@@ -293,6 +341,9 @@ function getProfile(subscriptionLevel) {
     return profile;
 }
 async function getFlashGang(id) {
+    if (cacheObject[id]) {
+        return cacheObject[id];
+    }
     let flashGang = await getItem(id, process.env.FLASHGANG_TABLE_NAME);
     console.log('flashGang dynamofordummies', flashGang)
     if (!flashGang) {
@@ -341,11 +392,16 @@ async function getFlashGang(id) {
     for (var i in theDecks) {
         flashGang.flashDecks.push(theDecks[i].id)
     }
-    console.log('flashGang.flashDecks', flashGang.flashDecks)
+    //cacheObject[id]=flashGang;
+    console.log("FLASHGANGBUG BEFORE", flashGang)
     return flashGang;
 }
 async function getFlashDeck(id) {
+    if (cacheObject[id]) {
+        return cacheObject[id];
+    }
     let deck = await getItem(id, process.env.FLASHDECK_TABLE_NAME);
+    cacheObject[id]=deck;
     return deck;
 }
 
@@ -616,6 +672,9 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
+    if (cacheObject.dynamoDBClient) {
+        return cacheObject.dynamoDBClient;
+    }
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '') {
             AWS.config.update({
@@ -625,6 +684,7 @@ function getDocumentDbClient() {
         }
     }
     var documentClient = new AWS.DynamoDB.DocumentClient();
+    cacheObject.dynamoDBClient=documentClient;
     return documentClient;
 }
 async function getItem(id, tableName) {
@@ -687,10 +747,15 @@ async function deleteFlashGang(id) {
     await removeItem(id, process.env.FLASHGANG_TABLE_NAME);
 }
 async function getUser(id) {
+    if (cacheObject[id]) {
+        return cacheObject[id];
+    }
     let user = await getItem(id, process.env.USER_TABLE_NAME);
     if (user) {
         user.profile = getProfile(user.subscription);
     }
+    delete user.password;
+    cacheObject[id]=user;
     return user;
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
@@ -745,7 +810,7 @@ module.exports = {
     putItem,
     removeItem,
     getItem,
-    getFlashDecks,
+    getLastModifedObjects,
     putFlashDeck,
     putFlashGang,
     removeFlashGangMember,

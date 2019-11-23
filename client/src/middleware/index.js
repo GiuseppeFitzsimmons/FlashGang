@@ -542,6 +542,17 @@ export function flashGangMiddleware({ dispatch }) {
                         gangDecks.push(deck)
                     }
                 }
+                if (flashGang.members) {
+                    for (var i in flashGang.members) {
+                        let _member=flashGang.members[i];
+                        let _user=localStorage.getItem('user-' + _member.id);
+                        if (_user) {
+                            _user=JSON.parse(_user);
+                            Object.assign(_member, _user);
+                            console.log("MEMBER", _member);
+                        }
+                    }
+                }
                 flashGang.flashDecks = gangDecks
             } else if (action.type === CREATE_ACCOUNT) {
                 dispatch({ type: LOADING, data: { loading: true } })
