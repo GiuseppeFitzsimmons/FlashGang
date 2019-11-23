@@ -49,7 +49,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                 editLevel = 0;
             }
         }
-        this.props.gangMember.profileImage = this.props.gangMember.profileImage ? this.props.gangMember.profileImage : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
+        this.props.gangMember.picture = this.props.gangMember.picture ? this.props.gangMember.picture : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
         var name = this.props.gangMember.firstName;
         if (name) {
             if (this.props.gangMember.lastName) {
@@ -88,7 +88,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                     </div>
                     <Container style={{
                         height: '100%',
-                        backgroundImage: `url('${this.props.gangMember.profileImage}')`,
+                        backgroundImage: `url('${this.props.gangMember.picture}')`,
                         backgroundSize: '100%',
                         backgroundRepeat: 'no-repeat'
                     }}

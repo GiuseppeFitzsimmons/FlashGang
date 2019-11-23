@@ -81,7 +81,7 @@ class Upgrade extends React.Component {
                                 direction="row"
                             >
                                 <Grid
-                                    item xs={1} sm={1} md={1}
+                                    item xs={2} sm={2} md={1}
                                 >
                                     <Radio
                                         onChange={(event) => { this.poll.pollAnswer = 'ASSOCIATE' }}
@@ -91,7 +91,7 @@ class Upgrade extends React.Component {
                                     />
                                 </Grid>
                                 <Grid
-                                    item xs={10} sm={10} md={10}
+                                    item xs={10} sm={10} md={11}
                                 >
                                     Associate $1.99/year <br />
                                     Up to 25 FlashDecks with 100 Cards per deck <br />
@@ -106,7 +106,7 @@ class Upgrade extends React.Component {
                                 direction="row"
                             >
                                 <Grid
-                                    item xs={1} sm={1} md={1}
+                                    item xs={2} sm={2} md={1}
                                 >
                                     <Radio
                                         onChange={(event) => { this.poll.pollAnswer = 'SOTTO_CAPO' }}
@@ -116,7 +116,7 @@ class Upgrade extends React.Component {
                                     />
                                 </Grid>
                                 <Grid
-                                    item xs={10} sm={10} md={10}
+                                    item xs={10} sm={10} md={11}
                                 >
                                     Sotto-capo $2.99/year<br />
                                     Up to 50 FlashDecks with 200 Cards per deck<br />
@@ -131,7 +131,7 @@ class Upgrade extends React.Component {
                                 direction="row"
                             >
                                 <Grid
-                                    item xs={1} sm={1} md={1}
+                                    item xs={2} sm={2} md={1}
                                 >
                                     <Radio
                                         onChange={(event) => { this.poll.pollAnswer = 'CAPO' }}
@@ -141,7 +141,7 @@ class Upgrade extends React.Component {
                                     />
                                 </Grid>
                                 <Grid
-                                    item xs={10} sm={10} md={10}
+                                    item xs={10} sm={10} md={11}
                                 >
                                     Capo $5.99/year<br />
                                     Up to 100 FlashDecks with 300 Cards per deck<br />
@@ -157,7 +157,7 @@ class Upgrade extends React.Component {
                                 direction="row"
                             >
                                 <Grid
-                                    item xs={1} sm={1} md={1}
+                                    item xs={2} sm={2} md={1}
                                 >
                                     <Radio
                                         onChange={(event) => { this.poll.pollAnswer = 'CHEAPER' }}
@@ -167,7 +167,7 @@ class Upgrade extends React.Component {
                                     />
                                 </Grid>
                                 <Grid
-                                    item xs={10} sm={10} md={10}
+                                    item xs={10} sm={10} md={11}
                                 >
                                     I’d prefer a cheaper option<br />
                                     <br />
@@ -179,7 +179,7 @@ class Upgrade extends React.Component {
                                 direction="row"
                             >
                                 <Grid
-                                    item xs={1} sm={1} md={1}
+                                    item xs={2} sm={2} md={1}
                                 >
                                     <Radio
                                         onChange={(event) => { this.poll.pollAnswer = 'COMPLETE' }}
@@ -189,7 +189,7 @@ class Upgrade extends React.Component {
                                     />
                                 </Grid>
                                 <Grid
-                                    item xs={10} sm={10} md={10}
+                                    item xs={10} sm={10} md={11}
                                 >
                                     I’d prefer a more complete option
                             </Grid>
