@@ -254,7 +254,6 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
             _user.scores.push(_userDeck)
         }
     }
-    cacheObject={};
     return result;
 }
 async function getUserDecks(userId, lastModified) {
@@ -341,9 +340,6 @@ function getProfile(subscriptionLevel) {
     return profile;
 }
 async function getFlashGang(id) {
-    if (cacheObject[id]) {
-        return cacheObject[id];
-    }
     let flashGang = await getItem(id, process.env.FLASHGANG_TABLE_NAME);
     console.log('flashGang dynamofordummies', flashGang)
     if (!flashGang) {
@@ -392,16 +388,10 @@ async function getFlashGang(id) {
     for (var i in theDecks) {
         flashGang.flashDecks.push(theDecks[i].id)
     }
-    //cacheObject[id]=flashGang;
-    console.log("FLASHGANGBUG BEFORE", flashGang)
     return flashGang;
 }
 async function getFlashDeck(id) {
-    if (cacheObject[id]) {
-        return cacheObject[id];
-    }
     let deck = await getItem(id, process.env.FLASHDECK_TABLE_NAME);
-    cacheObject[id]=deck;
     return deck;
 }
 
@@ -672,9 +662,6 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
-    if (cacheObject.dynamoDBClient) {
-        return cacheObject.dynamoDBClient;
-    }
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '') {
             AWS.config.update({
@@ -684,7 +671,6 @@ function getDocumentDbClient() {
         }
     }
     var documentClient = new AWS.DynamoDB.DocumentClient();
-    cacheObject.dynamoDBClient=documentClient;
     return documentClient;
 }
 async function getItem(id, tableName) {
@@ -747,15 +733,11 @@ async function deleteFlashGang(id) {
     await removeItem(id, process.env.FLASHGANG_TABLE_NAME);
 }
 async function getUser(id) {
-    if (cacheObject[id]) {
-        return cacheObject[id];
-    }
     let user = await getItem(id, process.env.USER_TABLE_NAME);
     if (user) {
         user.profile = getProfile(user.subscription);
+        delete user.password;
     }
-    delete user.password;
-    cacheObject[id]=user;
     return user;
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
