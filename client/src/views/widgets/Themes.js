@@ -94,6 +94,12 @@ const greenTheme = createMuiTheme({
         secondary: {
           color: lightGreen[500]
         }
+      },
+      MuiContainer: {
+        root: {
+          paddingLeft: '4px',
+          paddingRight: '4px'
+        }
       }
     },
     systemButton: {

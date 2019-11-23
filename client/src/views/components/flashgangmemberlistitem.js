@@ -11,9 +11,10 @@ import { withTheme } from '@material-ui/styles';
 //https://react-icons.netlify.com/#/icons/md
 import { MdDelete, MdModeEdit } from 'react-icons/md';
 //https://react-icons.netlify.com/#/icons/gi
-import { GiSwordman, GiHoodedFigure, GiBrutalHelm } from 'react-icons/gi';
+import { GiSwordman, GiHoodedFigure, GiBrutalHelm, GiImperialCrown, GiFedora, GiCaptainHatProfile, GiFloorHatch } from 'react-icons/gi';
 import Paper from 'material-ui/Paper';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
+import Popover from '@material-ui/core/Popover';
 
 
 const styles = theme => ({
@@ -37,7 +38,7 @@ const randomProfiles = [
 class FlashGangMemberListItemStyled extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { editing: false, rank: 'MEMBER' }
+        this.state = { editing: false, rank: 'MEMBER', editingRank: false }
     }
     render() {
         var editLevel = 2;
@@ -49,8 +50,12 @@ class FlashGangMemberListItemStyled extends React.Component {
             }
         }
         this.props.gangMember.profileImage = this.props.gangMember.profileImage ? this.props.gangMember.profileImage : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
+        const name = !this.props.gangMember.firstName && !this.props.gangMember.lastName ?
+            this.props.gangMember.id :
+            this.props.gangMember.firstName ? this.props.gangMember.firstName : '' +
+                this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
         return (
-            <Grid container spacing={0} style={{ paddingTop: '4px' }}>
+            <Grid container spacing={0} style={{ paddingTop: '4px', height: '15%' }}>
 
                 <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
                     <div style={{
@@ -71,8 +76,78 @@ class FlashGangMemberListItemStyled extends React.Component {
                                     }
                                 }
                             />
-                            <MdDelete
-                                style={{ display: this.state.editing ? '' : 'none' }}
+
+                        </div>
+                    </div>
+                    <Container style={{
+                        height: '100%',
+                        backgroundImage: `url('${this.props.gangMember.profileImage}')`,
+                        backgroundSize: '100%',
+                        backgroundRepeat: 'no-repeat'
+                    }}
+                        height={'20%'}>
+                    </Container>
+                </Grid>
+                <Grid item xs={10} sm={11} md={11} style={this.props.theme.actionListItem}>
+                    <div style={{
+                        position: 'relative',
+                        top: 0, right: '0',
+                        display: this.state.editing ? '' : 'none', zIndex: 99,
+                        bottomMargin: '18px'
+                    }}>
+                        <div
+                            id='rankEditorIcon'
+                            style={{
+                                position: 'absolute',
+                                top: 0, right: '28px',
+                                paddingLeft:'2px',
+                                paddingRight:'2px',
+                                ...this.props.theme.systemButton
+                            }}>
+                                {
+                                    this.props.gangMember.rank == 'BOSS' &&
+                                    <GiImperialCrown
+                                        onClick={
+                                            (event) => {
+                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
+                                            }
+                                        }
+                                    />
+                                }
+                                {
+                                    this.props.gangMember.rank == 'LIEUTENANT' &&
+                                    <GiFedora
+                                        onClick={
+                                            (event) => {
+                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
+                                            }
+                                        }
+                                    />
+                                }
+                                {
+                                    this.props.gangMember.rank == 'MEMBER' &&
+                                    <GiCaptainHatProfile
+                                        onClick={
+                                            (event) => {
+                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
+                                            }
+                                        }
+                                    />
+                                }
+
+                        </div>
+                        
+                        <div
+                            id='rankEditorIcon'
+                            style={{
+                                position: 'absolute',
+                                top: 0, right: 0,
+                                paddingLeft:'2px',
+                                paddingRight:'2px',
+                                ...this.props.theme.systemButton
+                            }}>
+                            <GiFloorHatch
+                                style={{ display: this.state.editing ? '' : 'none', }}
                                 onClick={
                                     () => {
                                         this.setState({ editing: false })
@@ -83,17 +158,7 @@ class FlashGangMemberListItemStyled extends React.Component {
 
                         </div>
                     </div>
-                    <Container style={{
-                        height: '100%',
-                        backgroundImage: `url('${this.props.gangMember.profileImage}')`,
-                        backgroundSize: '100%',
-                        backgroundRepeat: 'no-repeat'
-                    }}
-                        height={'10%'}>
-                    </Container>
-                </Grid>
-                <Grid item xs={8} sm={9} md={9} style={this.props.theme.actionListItem}>
-                    <Container height={'10%'} style={{ verticalAlign: 'middle' }}>
+                    <Container height={'20%'} style={{ verticalAlign: 'middle' }}>
 
                         <div
                             style={{
@@ -102,12 +167,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 paddingTop: '16px'
                             }}
                         >
-                            {
-                                !this.props.gangMember.firstName && !this.props.gangMember.lastName ?
-                                    this.props.gangMember.id :
-                                    this.props.gangMember.firstName ? this.props.gangMember.firstName : '' +
-                                        this.props.gangMember.lastName ? this.props.gangMember.lastName : ''
-                            }
+                            {name}
                         </div>
 
                         <div
@@ -127,65 +187,40 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 }
                             />
                         </div>
-                    </Container>
-                </Grid>
-                <Grid item xs={2} sm={2} md={2} style={this.props.theme.actionListItem}>
-                    <Container style={{ height: 60 }}>
-                        <div
-                            style={{
-                                display: !this.state.editing ? 'block' : 'none',
-                                paddingTop: '16px'
+                        <Popover
+                            id='rankEditorIcon'
+                            open={this.state.editingRank}
+                            anchorEl={this.state.anchorRankIcon}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
                             }}
                         >
-                            {
-                                this.props.gangMember.rank == 'BOSS' &&
-                                <GiBrutalHelm style={this.props.theme.icon} />
-                            }
-                            {
-                                this.props.gangMember.rank == 'LIEUTENANT' &&
-                                <GiSwordman style={this.props.theme.icon} />
-                            }
-                            {
-                                this.props.gangMember.rank == 'MEMBER' &&
-                                <GiHoodedFigure style={this.props.theme.icon} />
-                            }
-                        </div>
 
-                        <div
-                            style={{
-                                display:
-                                    this.state.editing &&
-                                        editLevel < 2 &&
-                                        (this.props.gangMember.rank != 'BOSS' || this.props.flashGang.rank == 'BOSS')
-                                        ? 'block' : 'none',
-                                paddingTop: '8px'
-                            }}
-                        >
                             <Select
                                 value={this.props.gangMember.rank}
                                 onChange={
                                     (event) => {
                                         this.props.gangMember.rank = event.target.value;
-                                        this.forceUpdate()
+                                        this.setState({editingRank:false})
+                                        // this.forceUpdate()
                                     }
                                 }
                             >
                                 {editLevel < 1 &&
-                                    <MenuItem value={'BOSS'}>
-                                        <GiBrutalHelm style={this.props.theme.icon} />
-                                    </MenuItem>
+                                    <MenuItem value={'BOSS'}>BOSS</MenuItem>
                                 }
                                 {editLevel < 2 &&
-                                    <MenuItem value={'LIEUTENANT'}>
-                                        <GiSwordman style={this.props.theme.icon} />
-                                    </MenuItem>
+                                    <MenuItem value={'LIEUTENANT'}>LIEUTENANT</MenuItem>
                                 }
-                                <MenuItem value={'MEMBER'}>
-                                    <GiHoodedFigure style={this.props.theme.icon} />
-                                </MenuItem>
+                                <MenuItem value={'MEMBER'}>MEMBER</MenuItem>
                             </Select>
 
-                        </div>
+                        </Popover>
                     </Container>
                 </Grid>
             </Grid>
@@ -200,7 +235,7 @@ class FlashDeckListItemStyled extends React.Component {
                 <FlashListItem alignItems="flex-start"
                     buttonType={this.props.buttonType ? this.props.buttonType : 'action'}
                     button
-                    style={{ ...this.props.style}}
+                    style={{ ...this.props.style }}
                 >
                     <ListItemAvatar
                     >

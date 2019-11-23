@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  FlashGang infrastructure resources
+Parameters:
+  DomainNameString:
+    Description: The domain name
+    Type: String
+    Default: flashgang.io
+  ApiDomain:
+    Description: The domain name
+    Type: String
+    Default: api.flashgang.io
+  WebAliasWWW:
+    Type: String
+    Default: www.flashgang.io
+  WebAliasBase:
+    Type: String
+    Default: xxx.flashgang.io
+  TestValue:
+    Type: String
+    Default: defaultValue
+
+Globals:
+  Function:
+    Timeout: 18
+    Runtime: nodejs12.x
+    Handler: index.handler
+    Layers:
+      - !Ref CommonLayer
+    Environment:  
+      Variables:
+        USER_TABLE_NAME:
+          !Sub ${AWS::StackName}-user-table
+        FLASHDECK_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashdeck-table
+        FLASHDECK_USER_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashdeck-user-table
+        FLASHGANG_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-table
+        FLASHGANG_MEMBER_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-member-table
+        FLASHGANG_DECK_TABLE_NAME:
+          !Sub ${AWS::StackName}-flashgang-deck-table
+        POLL_TABLE_NAME:
+          !Sub ${AWS::StackName}-poll-table
+        DYNAMODB_ENDPOINT: !Ref DynamoDbEndpoint
+        REGION: "eu-west-1"
+        SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
+        SMTP_USER_NAME: 'AKIATBSOR2QNIX5M4BMD'
+        SMTP_PASSWORD: 'BOkI1ZXCWOex5w7tDRtRLl3qA46N/QmJ8Ncu4sCWxMhl'
+        MEMBERSHIP_SENDMAIL_ADDRESS: 'membership@flashgang.io'
+        SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
+        RSVP_URL: !Ref RsvpUrl
+        PASSWORD_RESET: !Ref PasswordResetUrl
+Resources:
+  FlashDeckTableTest:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-flashdeck-table-test
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: owner
+          AttributeType: S
+      GlobalSecondaryIndexes:
+        - IndexName: owner_index
+          KeySchema:
+            - AttributeName: owner
+              KeyType: HASH
+          Projection:
+            ProjectionType: KEYS_ONLY
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+
+Outputs:
+  WebAliasBase:
+    Description: 'WebAliasBase test value passed from parent stack'
+    Value: !Ref WebAliasBase
+  TestValue:
+    Description: 'TestValue test value passed from parent stack'
+    Value: !Ref TestValue
