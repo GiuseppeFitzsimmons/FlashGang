@@ -1,4 +1,4 @@
-import { SET_SCORE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -78,7 +78,7 @@ async function synchronise() {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -367,10 +367,12 @@ export function flashGangMiddleware({ dispatch }) {
         return async function (action) {
             if (action.type === NEW_DECK) {
                 console.log('Middleware NEW_DECK')
-                action.data.flashDeck = { mode: 'EDIT' }
+                let _user = JSON.parse(localStorage.getItem('currentUser'))
+                action.data.flashDeck = { mode: 'EDIT', remainingCardsAllowed: _user.profile.maxCardsPerDeck }
             } else if (action.type === NEW_GANG) {
                 console.log('Middleware NEW_GANG')
-                action.flashGang = {}
+                let _user = JSON.parse(localStorage.getItem('currentUser'))
+                action.flashGang = {remainingMembersAllowed: _user.profile.maxMembersPerGang, owner:_user.id }
             }
             else if (action.type === SAVE_DECK) {
                 console.log('Middleware SAVE_DECK')
@@ -639,6 +641,16 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = Object.assign({}, action.data)
                 questObject.resource = 'poll'
                 postToServer(questObject)
+            } else if (action.type === SYNCHRONISE) {
+                console.log('Middleware SYNCHRONISE')
+                synchronise()
+            } else if (action.type === SET_SETTINGS) {
+                console.log('Middleware SET_SETTINGS')
+                let questObject = {}
+                questObject.params = Object.assign({}, action.data.user)
+                questObject.params.account_function = 'setsettings'
+                questObject.resource = 'setsettings'
+                let postResult = await postToServer(questObject)
             }
             return next(action);
         }

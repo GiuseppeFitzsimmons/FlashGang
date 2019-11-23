@@ -804,5 +804,6 @@ module.exports = {
     getUser,
     saveScores,
     countFlashDecks,
-    countFlashGangs
+    countFlashGangs,
+    getProfile
 }

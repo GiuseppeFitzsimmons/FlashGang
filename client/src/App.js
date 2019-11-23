@@ -17,6 +17,8 @@ import { greenTheme } from './views/widgets/Themes'
 import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
 import SplashScreen from './views/components/splashscreen';
+import SynchroniseComponent from './views/components/synchronisecomponent';
+import Settings from './views/components/settings';
 
 function Cookies() {
   const split = document.cookie.split(';');
@@ -45,6 +47,8 @@ export default class App extends React.Component {
     this.onFlashGangSelected = this.onFlashGangSelected.bind(this)
     this.onLoggedIn = this.onLoggedIn.bind(this)
     this.logOut = this.logOut.bind(this)
+    this.goSettings = this.goSettings.bind(this)
+    this.callSynchronise = false
   }
   logOut() {
     localStorage.clear();
@@ -69,6 +73,9 @@ export default class App extends React.Component {
   goGangs() {
     this.setState({ mode: 'GANGS' })
   }
+  goSettings() {
+    this.setState({ mode: 'SETTINGS' })
+  }
   onLoggedIn() {
     this.forceUpdate()
   }
@@ -83,6 +90,7 @@ export default class App extends React.Component {
       localStorage.setItem("flashJwtRefresh", JSON.stringify(parsedCookie.refresh))
       localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
       eraseCookie('socialLogin')
+      this.callSynchronise = true
     }
     var _jwt = localStorage.getItem("flashJwt");
     if (!_jwt) {
@@ -104,6 +112,7 @@ export default class App extends React.Component {
       onFlashDeckSelected={this.onFlashDeckSelected}
       goGangs={this.goGangs}
       onLogOut={this.logOut}
+      goSettings={this.goSettings}
     />
     if (!loggedIn) {
       renderable = <Login onLoggedIn={this.onLoggedIn}
@@ -117,6 +126,7 @@ export default class App extends React.Component {
         mode={this.state.mode}
         goGangs={this.goGangs}
         onLogOut={this.logOut}
+        goSettings={this.goSettings}
       />
     } else if (this.state.mode == 'GANGS') {
       renderable = <FlashGangs
@@ -124,6 +134,7 @@ export default class App extends React.Component {
         goHome={this.goHome}
         createFlashGang={this.createFlashGang}
         onLogOut={this.logOut}
+        goSettings={this.goSettings}
       />
     } else if (this.state.mode == 'EDITGANG') {
       renderable = <FlashGangEditor
@@ -131,6 +142,13 @@ export default class App extends React.Component {
         goHome={this.goHome}
         flashGangId={this.state.flashGangId}
         onLogOut={this.logOut}
+        goSettings={this.goSettings}
+      />
+    } else if (this.state.mode == 'SETTINGS') {
+      renderable = <Settings
+        onLogOut={this.logOut}
+        goHome={this.goHome}
+        goGangs={this.goGangs}
       />
     }
     //renderable=<TestGrid/>
@@ -138,24 +156,14 @@ export default class App extends React.Component {
       <Provider store={store}>
         <ThemeProvider theme={this.state.theme ? this.state.theme : greenTheme}>
           <Box height={'1'} style={{ overflow: 'hidden' }}>
+            <SynchroniseComponent
+              callSynchronise={this.callSynchronise}
+            />
             <SplashScreen showing={this.state.splashScreenShowing} />
             {renderable}
           </Box>
         </ThemeProvider>
       </Provider>
-    )
-  }
-}
-
-class TestGrid extends React.Component {
-  render() {
-    return (
-      <>
-        <FlashAppBar title='FlashGang!' station='GANGS' />
-        <Grid style={{ height: '100%', backgroundColor: 'red' }}>
-
-        </Grid>
-      </>
     )
   }
 }

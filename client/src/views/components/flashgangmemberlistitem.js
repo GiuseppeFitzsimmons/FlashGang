@@ -47,6 +47,8 @@ class FlashGangMemberListItemStyled extends React.Component {
                 editLevel = 1;
             } else if (this.props.flashGang.rank == 'BOSS') {
                 editLevel = 0;
+            } else if (this.props.user.id == this.props.flashGang.owner){
+                editLevel = 0;
             }
         }
         this.props.gangMember.picture = this.props.gangMember.picture ? this.props.gangMember.picture : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]

@@ -20,6 +20,8 @@ export const SET_PASSWORD = 'SET_PASSWORD';
 export const SAVE_SCORE = 'SAVE_SCORE';
 export const POLL = 'POLL';
 export const DELETE_GANG = 'DELETE_GANG';
+export const SYNCHRONISE = 'SYNCHRONISE';
+export const SET_SETTINGS = 'SET_SETTINGS';
 
 
 export function newDeck() {
@@ -114,5 +116,15 @@ export function setPassword(user, token) {
 export function poll(poll) {
     console.log("Action POLL")
     return { type: POLL, data: { poll } }
+
+}
+export function synchronise() {
+    console.log("Action SYNCHRONISE")
+    return { type: SYNCHRONISE}
+
+}
+export function setSettings(user) {
+    console.log("Action SET_SETTINGS")
+    return { type: SET_SETTINGS, data: {user}}
 
 }

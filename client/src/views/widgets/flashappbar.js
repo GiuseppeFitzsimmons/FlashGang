@@ -27,7 +27,7 @@ export default class FlashAppBar extends React.Component {
   render() {
     let renderable = <>
       <FlashListItem alignItems="flex-start"
-        onClick={this.props.onNewButton}
+        onClick={this.props.goSettings}
         button
       >
         <ListItemAvatar>

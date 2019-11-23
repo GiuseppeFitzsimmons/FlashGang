@@ -57,7 +57,7 @@ class Home extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title='FlashGang!' station='HOME' goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} />
+        <FlashAppBar title='FlashGang!' station='HOME' goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
         <Box
           style={{
             backgroundColor: 'rgba(255,255,255,0.4)',

@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
         });
         return hashed
     }
-
+    var token = validateToken(event);
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
@@ -90,6 +90,19 @@ exports.handler = async (event, context) => {
                     reply.errors = { fields: [{ id: `Bad request` }] }
                     returnObject.statusCode = 401
                 }
+            } else if (event.body.account_function == 'setsettings'){
+                let user = await dynamodbfordummies.getItem(token.sub, process.env.USER_TABLE_NAME)
+                user.id = token.sub
+                if (event.body.nickname){
+                    user.nickname = event.body.nickname
+                }
+                if (event.body.firstName){
+                    user.firstName = event.body.firstName
+                }
+                if (event.body.lastName){
+                    user.lastName = event.body.lastName
+                }
+                await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
             }
         } else {
             //Account creation sequence
@@ -114,4 +127,27 @@ exports.handler = async (event, context) => {
         "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
     }
     return returnObject
+}
+function validateToken(event) {
+    let token = event.authorizationToken;
+    if ((!token || token == '') && event.headers) {
+        token = event.headers.Authorization;
+        if (!token || token == '') {
+            token = event.headers.authorization;
+        }
+    }
+    if (!token || token == '') {
+        return;
+    }
+    if (token.toLowerCase().indexOf('bearer') == 0) {
+        token = token.substr(7);
+    }
+    let splitted = token.split(".");
+    if (splitted.length < 2) {
+        return
+    }
+    let buff = new Buffer(splitted[1], 'base64');
+    let decoded = buff.toString('ascii');
+    decoded = JSON.parse(decoded);
+    return decoded;
 }

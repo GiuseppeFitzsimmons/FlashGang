@@ -107,7 +107,7 @@ class FlashGangs extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut={this.props.onLogOut} />
+        <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings}/>
         <List>
           <FlashListItem alignItems="flex-start"
             onClick={this.props.onNewButton}

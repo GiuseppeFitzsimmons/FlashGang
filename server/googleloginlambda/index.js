@@ -65,6 +65,7 @@ exports.handler = async (event, context) => {
                     user.nickname = profileResult.data.name
                 }
                 await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
+                user = await dynamodbfordummies.getUser(user.id)
                 let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
                 const reply = {
                     statusCode: 302,

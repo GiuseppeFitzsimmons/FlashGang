@@ -72,7 +72,7 @@ class FlashGangEditor extends React.Component {
         return (
             <>
                 <FlashAppBar title='FlashGang!' station='GANGS'
-                    goHome={this.props.goHome} onLogOut={this.props.onLogOut} />
+                    goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
 
                 <Grid container
                     direction="column"
@@ -237,6 +237,7 @@ class FlashGangEditor extends React.Component {
                     <FlashGangMemberListItem
                         gangMember={member}
                         flashGang={flashGang}
+                        user={this.props.user}
                         onDelete={() => { this.removeMember(i) }}
                     />
                     {/*i < flashGang.members.length - 1 &&
