@@ -17,6 +17,9 @@ Parameters:
   DynamoDbEndpoint:
     Type: String
     Default: 'http://localhost:8000'
+  S3Endpoint:
+    Type: String
+    Default: 'https://s3.us-east-1.amazonaws.com'
   RsvpUrl:
     Type: String
     Default: 'http://localhost:3000/rsvp'
@@ -35,6 +38,9 @@ Parameters:
   InfrastructureNestedApp:
     Type: String
     Default: 'true'
+  S3ServerDomain:
+    Type: String
+    Default: www.flashgang.io
 Conditions: 
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
@@ -69,6 +75,10 @@ Globals:
         SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
         RSVP_URL: !Ref RsvpUrl
         PASSWORD_RESET: !Ref PasswordResetUrl
+        AVATAR_BUCKET: !Ref BucketName
+        AVATAR_PREFIX: flashgang
+        S3_ENDPOINT: !Ref S3Endpoint
+        S3_SERVER_DOMAIN: !Ref S3ServerDomain
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api

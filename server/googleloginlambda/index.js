@@ -59,10 +59,18 @@ exports.handler = async (event, context) => {
                         nickname: profileResult.data.name
                     }
                 } else {
-                    user.firstName = profileResult.data.given_name
-                    user.lastName = profileResult.data.family_name
-                    user.picture = profileResult.data.picture
-                    user.nickname = profileResult.data.name
+                    if (!user.firstName || user.firstName==='') {
+                        user.firstName = profileResult.data.given_name
+                    }
+                    if (!user.lastName || user.lastName==='') {
+                        user.lastName = profileResult.data.family_name
+                    }
+                    if (!user.picture || user.picture==='') {
+                        user.picture = profileResult.data.picture
+                    }
+                    if (!user.nickname || user.nickname==='') {
+                        user.nickname = profileResult.data.nickname
+                    }
                 }
                 await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
                 user = await dynamodbfordummies.getUser(user.id)

@@ -8,6 +8,7 @@
     "PasswordResetUrl" : "https://dev.flashgang.io",
     "BucketName": "dev.flashgang.bucket",
     "WebAliasWWW": "www-dev.flashgang.io",
-    "WebAliasBase": "dev.flashgang.io"
+    "WebAliasBase": "dev.flashgang.io",
+    "S3ServerDomain": "dev.flashgang.io"
   }
 }

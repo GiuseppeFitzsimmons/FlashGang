@@ -100,6 +100,13 @@ const greenTheme = createMuiTheme({
           paddingLeft: '4px',
           paddingRight: '4px'
         }
+      },
+      MuiAvatar: {
+        root: {
+          borderRadius: '0',
+          width: '20%',
+          height: 'auto'
+        }
       }
     },
     systemButton: {
