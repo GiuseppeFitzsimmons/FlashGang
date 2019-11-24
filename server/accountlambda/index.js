@@ -46,6 +46,7 @@ exports.handler = async (event, context) => {
                         let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                         reply.token = tokenPair.signedJwt
                         reply.refresh = tokenPair.signedRefresh
+                        reply.user = await dynamodbfordummies.getUser(event.body.id)
                     } else {
                         reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
                         returnObject.statusCode = 401
@@ -146,6 +147,7 @@ exports.handler = async (event, context) => {
                     }
                 }
                 await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
+                reply.user = await dynamodbfordummies.getUser(user.id)
             }
         } else {
             //Account creation sequence
@@ -158,6 +160,7 @@ exports.handler = async (event, context) => {
                 let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                 reply.token = tokenPair.signedJwt
                 reply.refresh = tokenPair.signedRefresh
+                reply.user = await dynamodbfordummies.getUser(event.body.id)
             } else {
                 reply.errors = { fields: [{ id: `${event.body.id} is already taken` }, { userName: `${event.body.id} is already taken` }] }
             }

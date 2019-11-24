@@ -68,6 +68,7 @@ class Home extends React.Component {
         >
           <FlashListItem alignItems="flex-start"
             onClick={() => {
+              console.log('this.props.user home.js', this.props.user)
               if (this.props.user.remainingFlashDecksAllowed > 0) {
                 this.props.onNewButton()
               } else {
@@ -97,6 +98,7 @@ class Home extends React.Component {
   }
 }
 function mapStateToProps(state, props) {
+  console.log('state.user home.js', state.user)
   return { flashDecks: state.flashDecks, user: state.user }
 }
 function mapDispatchToProps(dispatch) {

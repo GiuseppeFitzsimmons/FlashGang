@@ -22,6 +22,7 @@ export const POLL = 'POLL';
 export const DELETE_GANG = 'DELETE_GANG';
 export const SYNCHRONISE = 'SYNCHRONISE';
 export const SET_SETTINGS = 'SET_SETTINGS';
+export const ENDSYNCHRONISE = 'ENDSYNCHRONISE';
 
 
 export function newDeck() {

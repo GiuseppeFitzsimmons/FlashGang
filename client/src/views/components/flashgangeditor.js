@@ -214,7 +214,10 @@ class FlashGangEditor extends React.Component {
                         </Upgrade>
                         <Confirmation
                             parent={this}
-                            onConfirm={() => { this.props.deleteGang(flashGang.id) }}
+                            onConfirm={() => { 
+                                this.props.deleteGang(flashGang.id)
+                                this.props.goGangs()
+                            }}
                         />
                     </Grid>
                 </Grid>

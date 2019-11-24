@@ -131,8 +131,10 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
     currentUser.isCurrentUser = true;
     //currentUser.profile = getProfile(currentUser.subscription);
     let totalDecks = await countFlashDecks(currentUser.id)
+    console.log('totalDecks', totalDecks)
     let totalGangs = await countFlashGangs(currentUser.id)
     currentUser.remainingFlashDecksAllowed = currentUser.profile.maxDecks - totalDecks
+    console.log('currentUser', currentUser)
     currentUser.remainingFlashGangsAllowed = currentUser.profile.maxGangs - totalGangs
     const result = {};
     let userDecks = await getUserDecks(userId, lastModifiedDate);
@@ -736,6 +738,12 @@ async function getUser(id) {
     let user = await getItem(id, process.env.USER_TABLE_NAME);
     if (user) {
         user.profile = getProfile(user.subscription);
+        let totalDecks = await countFlashDecks(user.id)
+        console.log('totalDecks', totalDecks)
+        let totalGangs = await countFlashGangs(user.id)
+        user.remainingFlashDecksAllowed = user.profile.maxDecks - totalDecks
+        console.log('user', user)
+        user.remainingFlashGangsAllowed = user.profile.maxGangs - totalGangs
         delete user.password;
     }
     return user;

@@ -10,6 +10,7 @@ import { FlashButton, FlashListItem, FlashCheckBox } from '../widgets/FlashBits'
 import { IconSelector } from '../widgets/iconselector';
 import { FlashTypography } from '../widgets/FlashBits';
 import Slider from '@material-ui/core/Slider';
+import Confirmation from '../components/confirmation';
 
 const marks = [
   {
@@ -68,7 +69,7 @@ class FlashDeckEditor extends React.Component {
     const flashDeck = this.props.flashDeck
     var editable = this.props.user.id == flashDeck.owner
     const theme = this.theme;
-    console.log('user id', this.props.user.id,'owner', flashDeck.owner)
+    console.log('user id', this.props.user.id, 'owner', flashDeck.owner)
     console.log('editable', editable)
     return (
       <Grid container
@@ -110,7 +111,7 @@ class FlashDeckEditor extends React.Component {
           }
         />
         <div style={{
-          display: editable ? '': 'none'
+          display: editable ? '' : 'none'
         }}>
           <label style={{ color: 'rgba(0,0,0,0.6)', marginTop: '18px' }}>Editable by others</label>
           <FlashCheckBox
@@ -166,10 +167,8 @@ class FlashDeckEditor extends React.Component {
           variant='contained'
           buttonType='system'
           icon='delete'
-          onClick={() => {
-            this.props.deleteDeck(this.props.flashDeck.id)
-            this.props.goHome()
-          }}
+          disabled={!editable}
+          onClick={() => { this.confirmation.open('DECKS') }} 
         >
           Delete Deck
           </FlashButton>
@@ -182,6 +181,13 @@ class FlashDeckEditor extends React.Component {
         >
           Home
           </FlashButton>
+        <Confirmation
+          parent={this}
+          onConfirm={() => {
+            this.props.deleteDeck(flashDeck.id)
+            this.props.goHome()
+          }}
+        />
       </Grid>
     )
   }

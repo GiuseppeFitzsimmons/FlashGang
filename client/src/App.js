@@ -52,7 +52,7 @@ export default class App extends React.Component {
   }
   logOut() {
     localStorage.clear();
-    window.location.href = '/'
+    //window.location.href = '/'
     this.setState({ mode: '', flashDeckId: null })
   }
   createFlashDeck() {
@@ -103,7 +103,7 @@ export default class App extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ splashScreenShowing: false })
-    }, 150)
+    }, 1000)
   }
   render() {
     const loggedIn = this.checkIfUserIsInScope()
@@ -143,6 +143,7 @@ export default class App extends React.Component {
         flashGangId={this.state.flashGangId}
         onLogOut={this.logOut}
         goSettings={this.goSettings}
+        goGangs={this.goGangs}
       />
     } else if (this.state.mode == 'SETTINGS') {
       renderable = <Settings

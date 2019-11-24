@@ -14,7 +14,7 @@ function rootReducer(state = initialState, action) {
         user = JSON.parse(localStorage.getItem('currentUser'))
     }
     console.log('reducer user', user)
-    state.user = user
+    state.user = Object.assign({}, user) 
     if (action && action.data && action.data.flashDeck) {
         //This is why flashdeck wasn't updating - redux insists that you exchange immutable objects
         //In practice this means that if your state contains the same objects when it's next seen by
@@ -86,6 +86,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashGang: null })
             return state
         default:
+            console.log('state', state)
             return state
     }
 };

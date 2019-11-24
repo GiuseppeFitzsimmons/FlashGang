@@ -1,4 +1,4 @@
-import { SET_SCORE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -6,7 +6,7 @@ import flashdeck from '../views/flashdeck';
 const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
 
-async function synchronise() {
+async function synchronise(dispatch) {
     console.log('Synchronisation')
     var questObject = {}
     questObject.params = {}
@@ -18,9 +18,15 @@ async function synchronise() {
     for (var i = 0; i < localStorage.length; i++) {
         var key = keys[i];
         if (key[0].indexOf('flashDeck-') == 0) {
-            decks.push(JSON.parse(localStorage.getItem(key[0])))
+            let _deck = JSON.parse(localStorage.getItem(key[0]))
+            if (!_deck.lastModified) {
+                decks.push(JSON.parse(localStorage.getItem(key[0])))
+            }
         } else if (key[0].indexOf('flashGang-') == 0) {
-            gangs.push(JSON.parse(localStorage.getItem(key[0])))
+            let _gang = JSON.parse(localStorage.getItem(key[0]))
+            if (!_gang.lastModified) {
+                gangs.push(JSON.parse(localStorage.getItem(key[0])))
+            }
         } else if (key[0].indexOf('score-') == 0) {
             scores.push(JSON.parse(localStorage.getItem(key[0])))
         }
@@ -31,6 +37,7 @@ async function synchronise() {
     questObject.params.deletions = {}
     questObject.params.deletions.flashDecks = []
     questObject.params.deletions.flashGangs = []
+    console.log('questObject', questObject)
     for (var i = 0; i < localStorage.length; i++) {
         var key = keys[i];
         if (key[0].indexOf('delete-flashDeck-') == 0) {
@@ -58,11 +65,13 @@ async function synchronise() {
                 localStorage.setItem('flashGang-' + _gang.id, JSON.stringify(_gang))
             }
         }
+        let currentUser;
         if (postResult.users) {
             for (var i in postResult.users) {
                 let _user = postResult.users[i]
                 localStorage.setItem('user-' + _user.id, JSON.stringify(_user))
                 if (_user.isCurrentUser) {
+                    currentUser = _user
                     localStorage.setItem('currentUser', JSON.stringify(_user))
                 }
             }
@@ -73,6 +82,9 @@ async function synchronise() {
             if (key[0].indexOf('delete-flashGang-') == 0 || key[0].indexOf('delete-flashDeck-') == 0) {
                 localStorage.removeItem(key[0])
             }
+        }
+        if (dispatch) {
+            //dispatch({ type: ENDSYNCHRONISE, data: { user: currentUser } })
         }
     }
     console.log('Synchronisation complete')
@@ -368,11 +380,11 @@ export function flashGangMiddleware({ dispatch }) {
             if (action.type === NEW_DECK) {
                 console.log('Middleware NEW_DECK')
                 let _user = JSON.parse(localStorage.getItem('currentUser'))
-                action.data.flashDeck = { mode: 'EDIT', remainingCardsAllowed: _user.profile.maxCardsPerDeck }
+                action.data.flashDeck = { mode: 'EDIT', remainingCardsAllowed: _user.profile.maxCardsPerDeck, owner: _user.id }
             } else if (action.type === NEW_GANG) {
                 console.log('Middleware NEW_GANG')
                 let _user = JSON.parse(localStorage.getItem('currentUser'))
-                action.flashGang = {remainingMembersAllowed: _user.profile.maxMembersPerGang, owner:_user.id }
+                action.flashGang = { remainingMembersAllowed: _user.profile.maxMembersPerGang, owner: _user.id }
             }
             else if (action.type === SAVE_DECK) {
                 console.log('Middleware SAVE_DECK')
@@ -387,9 +399,10 @@ export function flashGangMiddleware({ dispatch }) {
                 var mode = action.data.flashDeck.mode
                 delete action.data.flashDeck.dirty
                 delete action.data.flashDeck.mode
+                delete action.data.flashDeck.lastModified
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
                 action.data.flashDeck.mode = mode
-                synchronise()
+                synchronise(dispatch)
             }
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
@@ -473,7 +486,7 @@ export function flashGangMiddleware({ dispatch }) {
                 let _user = JSON.parse(localStorage.getItem('currentUser'))
                 _user.remainingFlashDecksAllowed++
                 action.data.user = _user
-                synchronise()
+                synchronise(dispatch)
                 localStorage.setItem('currentUser', JSON.stringify(_user))
             } else if (action.type === DELETE_GANG) {
                 console.log('Middleware DELETE_GANG')
@@ -483,7 +496,7 @@ export function flashGangMiddleware({ dispatch }) {
                 let _user = JSON.parse(localStorage.getItem('currentUser'))
                 _user.remainingFlashGangsAllowed++
                 action.data.user = _user
-                synchronise()
+                synchronise(dispatch)
                 localStorage.setItem('currentUser', JSON.stringify(_user))
             } else if (action.type === DELETE_CARD) {
                 console.log('Middleware DELETE_CARD')
@@ -527,10 +540,11 @@ export function flashGangMiddleware({ dispatch }) {
                         cleanGang.flashDecks.push(gangDeck.id)
                     }
                 }
+                delete action.data.flashGang.lastModified
                 localStorage.setItem('flashGang-' + action.data.flashGang.id, JSON.stringify(cleanGang))
                 action.flashGang = action.data.flashGang;
                 delete action.data.flashGang;
-                synchronise()
+                synchronise(dispatch)
             } else if (action.type === LOAD_FLASHGANG) {
                 console.log('Middleware LOAD_FLASHGANG')
                 var flashGang = JSON.parse(localStorage.getItem('flashGang-' + action.data.flashGangId))
@@ -546,10 +560,10 @@ export function flashGangMiddleware({ dispatch }) {
                 }
                 if (flashGang.members) {
                     for (var i in flashGang.members) {
-                        let _member=flashGang.members[i];
-                        let _user=localStorage.getItem('user-' + _member.id);
+                        let _member = flashGang.members[i];
+                        let _user = localStorage.getItem('user-' + _member.id);
                         if (_user) {
-                            _user=JSON.parse(_user);
+                            _user = JSON.parse(_user);
                             Object.assign(_member, _user);
                             console.log("MEMBER", _member);
                         }
@@ -575,6 +589,9 @@ export function flashGangMiddleware({ dispatch }) {
                     questObject.params = Object.assign({}, action.data.user)
                     questObject.resource = 'account'
                     let postResult = await postToServer(questObject)
+                    if (postResult.user){
+                        localStorage.setItem('currentUser', JSON.stringify(postResult.user))
+                    }
                     if (postResult.token) {
                         localStorage.setItem('flashJwt', postResult.token)
                         localStorage.setItem('flashJwtRefresh', postResult.refresh)
@@ -591,10 +608,13 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
                 let postResult = await postToServer(questObject)
+                if (postResult.user){
+                    localStorage.setItem('currentUser', JSON.stringify(postResult.user))
+                }
                 if (postResult.token) {
                     localStorage.setItem('flashJwt', postResult.token)
                     localStorage.setItem('flashJwtRefresh', postResult.refresh)
-                    await synchronise()
+                    await synchronise(dispatch)
                 } else {
                     action.errors = postResult.errors
                 }
@@ -604,7 +624,7 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = Object.assign({}, action.data)
                 questObject.resource = 'rsvp'
                 let postResult = await postToServer(questObject)
-                synchronise()
+                synchronise(dispatch)
             } else if (action.type === RESET_PASSWORD) {
                 console.log('Middleware RESET_PASSWORD')
                 dispatch({ type: LOADING, data: { loading: true } })
@@ -630,7 +650,7 @@ export function flashGangMiddleware({ dispatch }) {
                     if (postResult.token) {
                         localStorage.setItem('flashJwt', postResult.token)
                         localStorage.setItem('flashJwtRefresh', postResult.refresh)
-                        await synchronise()
+                        await synchronise(dispatch)
                     } else {
                         action.errors = postResult.errors
                     }
@@ -643,7 +663,7 @@ export function flashGangMiddleware({ dispatch }) {
                 postToServer(questObject)
             } else if (action.type === SYNCHRONISE) {
                 console.log('Middleware SYNCHRONISE')
-                synchronise()
+                synchronise(dispatch)
             } else if (action.type === SET_SETTINGS) {
                 console.log('Middleware SET_SETTINGS')
                 let questObject = {}
@@ -651,6 +671,9 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params.account_function = 'setsettings'
                 questObject.resource = 'setsettings'
                 let postResult = await postToServer(questObject)
+                if (postResult.user){
+                    localStorage.setItem('currentUser', JSON.stringify(postResult.user))
+                }
             }
             return next(action);
         }
