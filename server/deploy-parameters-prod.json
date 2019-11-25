@@ -9,6 +9,6 @@
     "BucketName": "prod.flashgang.bucket",
     "WebAliasWWW": "www.flashgang.io",
     "WebAliasBase": "flashgang.io",
-    "S3ServerDomain": "www.flashgang.io"
+    "ImageServerDomain": "images.flashgang.io"
   }
 }

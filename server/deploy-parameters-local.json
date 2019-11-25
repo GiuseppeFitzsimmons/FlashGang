@@ -8,6 +8,6 @@
     "PasswordResetUrl" : "http://localhost:3000",
     "DynamoDbEndpoint" : "http://localhost:8000",
     "DYNAMODB_ENDPOINT": "http://localhost:8000",
-    "S3ServerDomain": "dev.flashgang.io"
+    "ImageServerDomain": "images-dev.flashgang.io"
   }
 }

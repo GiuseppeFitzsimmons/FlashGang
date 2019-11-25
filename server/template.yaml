@@ -38,9 +38,9 @@ Parameters:
   InfrastructureNestedApp:
     Type: String
     Default: 'true'
-  S3ServerDomain:
+  ImageServerDomain:
     Type: String
-    Default: www.flashgang.io
+    Default: images.flashgang.io
 Conditions: 
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
@@ -75,10 +75,10 @@ Globals:
         SMTP_SERVER: 'email-smtp.us-east-1.amazonaws.com'
         RSVP_URL: !Ref RsvpUrl
         PASSWORD_RESET: !Ref PasswordResetUrl
-        AVATAR_BUCKET: !Ref BucketName
+        AVATAR_BUCKET: !Ref S3ServerDomain
         AVATAR_PREFIX: flashgang
         S3_ENDPOINT: !Ref S3Endpoint
-        S3_SERVER_DOMAIN: !Ref S3ServerDomain
+        S3_SERVER_DOMAIN: !Ref ImageServerDomain
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
@@ -610,6 +610,90 @@ Resources:
         Aliases:
           - !Ref WebAliasWWW
           - !Ref WebAliasBase
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+            - PUT
+            - POST
+            - PATCH
+            - DELETE
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: all
+          ViewerProtocolPolicy: allow-all
+          MinTTL: '0'
+          MaxTTL: '0'
+          DefaultTTL: '0'
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref FlashCertificate
+          SslSupportMethod: sni-only
+
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref ImageServerDomain
+      WebsiteConfiguration:
+        ErrorDocument: '404.htm'
+        IndexDocument: 'index.html'
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            MaxAge: '300'
+            AllowedMethods:
+              - POST
+            AllowedOrigins:
+              - '*'
+
+  ImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn:
+      - ImageBucket
+    Properties:
+      Bucket: !Ref ImageBucket
+      PolicyDocument:
+        Statement:
+          - Sid: 'PublicReadForS3Website'
+            Action:
+              - 's3:GetObject'
+              - 's3:PutObject'
+            Effect: 'Allow'
+            Resource:
+              Fn::Join:
+                - ''
+                - - 'arn:aws:s3:::'
+                  - Ref: 'S3Bucket'
+                  - '/*'
+            Principal: '*'
+
+  ImageWebsiteCloudfront:
+    Type: AWS::CloudFront::Distribution
+    DependsOn:
+      - ImageBucket
+    Properties:
+      DistributionConfig:
+        Comment: Cloudfront Distribution pointing to S3 bucket
+        Origins:
+          - Id: S3Origin
+            OriginPath: /flashgang
+            DomainName:
+              !Select [2, !Split ['/', !GetAtt ImageBucket.WebsiteURL]]
+            CustomOriginConfig:
+              HTTPPort: '80'
+              HTTPSPort: '443'
+              OriginProtocolPolicy: http-only
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: ''
+        Aliases:
+          - !Ref ImageServerDomain
         DefaultCacheBehavior:
           AllowedMethods:
             - GET
