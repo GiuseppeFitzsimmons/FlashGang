@@ -33,7 +33,28 @@ function Cookies() {
 }
 
 function eraseCookie(name) { document.cookie = name + '=; Max-Age=-99999999;'; }
-
+class NavEvent {
+  push(title) {
+    window.history.pushState({page: window.history.length}, title, "")
+  }
+  onBackButtonEvent(e) {
+    //alert(window.history.length);
+    if (this.backButton) {
+      e.preventDefault();
+      this.backButton();
+    }
+  }
+  clear() {
+    var _len=window.history.length;
+    //while (_len-->2) {
+     // alert(_len);
+     // window.history.back();
+    //}
+    //alert(window.history.replaceState())
+    //window.history.clear();
+  }
+}
+const navEvent=new NavEvent();
 
 export default class App extends React.Component {
   constructor(props) {
@@ -49,6 +70,7 @@ export default class App extends React.Component {
     this.logOut = this.logOut.bind(this)
     this.goSettings = this.goSettings.bind(this)
     this.callSynchronise = false
+    this.navEvent=navEvent;
   }
   logOut() {
     localStorage.clear();
@@ -56,9 +78,11 @@ export default class App extends React.Component {
     this.setState({ mode: '', flashDeckId: null })
   }
   createFlashDeck() {
+    this.navEvent.push("DECK");
     this.setState({ mode: 'EDIT', flashDeckId: null })
   }
   onFlashDeckSelected(flashDeckId, mode, source) {
+    this.navEvent.push("DECK");
     this.setState({ flashDeckId: flashDeckId, mode: mode, source: source })
   }
   onFlashGangSelected(flashGangId) {
@@ -68,12 +92,15 @@ export default class App extends React.Component {
     this.setState({ mode: 'EDITGANG', flashGangId: null })
   }
   goHome() {
+    this.navEvent.clear();
     this.setState({ mode: '' })
   }
   goGangs() {
+    this.navEvent.push("GANGS");
     this.setState({ mode: 'GANGS' })
   }
   goSettings() {
+    this.navEvent.push("SETTINGS");
     this.setState({ mode: 'SETTINGS' })
   }
   onLoggedIn() {
@@ -103,7 +130,10 @@ export default class App extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ splashScreenShowing: false })
-    }, 1000)
+    }, 1000);
+    window.onpopstate = function (e) {
+      navEvent.onBackButtonEvent(e);
+    };
   }
   render() {
     const loggedIn = this.checkIfUserIsInScope()
@@ -127,6 +157,7 @@ export default class App extends React.Component {
         goGangs={this.goGangs}
         onLogOut={this.logOut}
         goSettings={this.goSettings}
+        navEvent={this.navEvent}
       />
     } else if (this.state.mode == 'GANGS') {
       renderable = <FlashGangs

@@ -22,9 +22,8 @@ class SplashScreenStyled extends React.Component {
         super(props)
         this.state = { frameIndex: 0, animationFinished: false, handPosition: 125, cardPosition: -25 }
     }
-    componentWillMount() {
+    componentDidMount() {
         const interval = setInterval(() => {
-            console.log('this.state SPLASH', this.state)
             if (this.state.frameIndex == frames.length - 1) {
                 clearInterval(interval)
                 this.setState({animationFinished:true})

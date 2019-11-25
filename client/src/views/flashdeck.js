@@ -24,6 +24,9 @@ class FlashDeck extends React.Component {
     } else {
       this.props.loadFlashDeck(this.props.flashDeckId, this.props.mode, null, null, this.props.source)
     }
+    if (this.props.navEvent) {
+      this.props.navEvent.backButton=this.props.goHome;
+    }
   }
   editFlashDeck(id) {
     this.props.loadFlashDeck(id, 'EDIT')
