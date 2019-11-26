@@ -27,7 +27,6 @@ process.argv.forEach(function (val, index, array) {
       console.log("EXITING");
       process.exit();
   }
-console.log("PROFILE", profileArgument)
 var packageCommand=`sam package --template-file ${templateFile} --output-template-file packaged.yaml ${profileArgument} --s3-bucket wwdd-build-bucket-us-east-1`
 var deployCommand=`sam deploy --template-file packaged.yaml --stack-name ${stackName}  ${profileArgument} --region us-east-1 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND ${deployParameters}`
 
