@@ -28,10 +28,12 @@ process.argv.forEach(function (val, index, array) {
     deployParameters='deploy-parameters-prod.json'
     stackName='flashgang-prod'
   }
+if (process.platform==='darwin') {
+    profileArgument='--profile phillip'
+}
 if (install!='false') {
     if (process.platform==='darwin') {
         installed=execSync('npm run install:linux --prefix server/commonlayer/nodejs');
-        profileArgument='--profile phillip'
     } else {
         installed=execSync('npm run install:windows --prefix server/commonlayer/nodejs');
     }
@@ -47,9 +49,8 @@ if (install!='false') {
     installed=execSync('npm run install:all --prefix server/synchroniselambda');
     console.log("done installing synchroniselambda", installed.toString());
 }
-
 process.chdir('server');
-let deployed=execSync(`node deploy.js --stack-name ${stackName} --deploy-parameters ${deployParameters} ${profileArgument}`);
+let deployed=execSync(`node server-deploy.js --stack-name ${stackName} --deploy-parameters ${deployParameters} ${profileArgument}`);
 console.log("done deploying server", deployed.toString());
 process.chdir('..');
 console.log(process.cwd())

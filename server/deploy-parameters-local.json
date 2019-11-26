@@ -8,6 +8,9 @@
     "PasswordResetUrl" : "http://localhost:3000",
     "DynamoDbEndpoint" : "http://localhost:8000",
     "DYNAMODB_ENDPOINT": "http://localhost:8000",
-    "ImageServerDomain": "images-dev.flashgang.io"
+    "ImageServerDomain": "images-dev.flashgang.io",
+    "GoogleRedirectUri": "http://localhost:8080/googleauth",
+    "Home": "http://localhost:3000",
+    "CookieHome": ""
   }
 }

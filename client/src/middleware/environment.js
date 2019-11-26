@@ -1,11 +1,11 @@
 module.exports={
     server:{
         url: "https://api.flashgang.io/v1",
-        googleLogin: 'https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=http://api.flashgang.io/googleauth&response_type=code&client_id=979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com'
+        googleLogin: 'https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=https://api.flashgang.io/v1/googleauth&response_type=code&client_id=979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com'
     },
     devServer:{
         url: "https://api-dev.flashgang.io/v1",
-        googleLogin: 'https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=http://api-dev.flashgang.io/googleauth&response_type=code&client_id=979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com'
+        googleLogin: 'https://accounts.google.com/o/oauth2/v2/auth?scope=profile email&access_type=offline&include_granted_scopes=true&state=state_parameter_passthrough_value&redirect_uri=https://api-dev.flashgang.io/v1/googleauth&response_type=code&client_id=979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com'
     },
     local: {
         url: "http://localhost:8080",

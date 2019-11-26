@@ -665,7 +665,7 @@ async function putItem(item, tableName) {
 
 function getDocumentDbClient() {
     if (process.env.REGION) {
-        if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '') {
+        if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
             AWS.config.update({
                 region: process.env.REGION,
                 endpoint: process.env.DYNAMODB_ENDPOINT

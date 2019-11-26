@@ -112,7 +112,8 @@ export default class App extends React.Component {
     if (this.loggedIn) {
       //  return true
     }
-    let cookie = Cookies()
+    let cookie = Cookies();
+    console.log("COOKIES", cookie);
     if (cookie.socialLogin) {
       let parsedCookie = JSON.parse(cookie.socialLogin)
       localStorage.setItem("flashJwt", JSON.stringify(parsedCookie.jwt))

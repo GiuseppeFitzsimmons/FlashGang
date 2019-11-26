@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
                 client_id: '979434939914-mmo8birn7i0okdb888crfjej7mpj1q66.apps.googleusercontent.com',
                 client_secret: 'Hlo9f_fz4OEvvifG3WOWvonF',
                 grant_type: 'authorization_code',
-                redirect_uri: 'http://localhost:8080/googleauth'
+                redirect_uri: process.env.GOOGLE_REDIRECT_URI
             }
             const options = {
                 method: 'POST',
@@ -41,7 +41,6 @@ exports.handler = async (event, context) => {
                     url: 'https://www.googleapis.com/oauth2/v3/userinfo'
                 }
                 axios(profileOptions).then(response => {
-                    console.log('response', response)
                     resolve(response)
                 }).catch(error => {
                     console.log('error', error)
@@ -72,20 +71,38 @@ exports.handler = async (event, context) => {
                         user.nickname = profileResult.data.nickname
                     }
                 }
-                await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
-                user = await dynamodbfordummies.getUser(user.id)
+                await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME);
+                user = await dynamodbfordummies.getUser(user.id);
                 let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
+                let cookie='socialLogin='+JSON.stringify({
+                    jwt: tokenPair.signedJwt,
+                    refresh: tokenPair.signedRefresh,
+                    user: user
+                })+'; ; path=/'
+                if (process.env.COOKIE_HOME && process.env.COOKIE_HOME!='') {
+                    cookie+='; Domain='+process.env.COOKIE_HOME
+                }
                 const reply = {
                     statusCode: 302,
                     headers: {
-                        location: 'http://localhost:3000',
-                        'set-cookie': 'socialLogin='+JSON.stringify({
+                        location: process.env.HOME,
+                        /*Cookie: 'socialLogin='+JSON.stringify({
                             jwt: tokenPair.signedJwt,
                             refresh: tokenPair.signedRefresh,
                             user: user
-                        })
+                        }),*/
+                        'set-cookie': cookie,
+                        /*'Set-Cookie': 'socialLogin='+JSON.stringify({
+                            jwt: tokenPair.signedJwt,
+                            refresh: tokenPair.signedRefresh,
+                            user: user
+                        })+'; Domain=.flashgang.io',*/
+                        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
                     }
                 }
+                console.log("REPLY", reply);
                 reply.body = '{}'
                 return reply
             }

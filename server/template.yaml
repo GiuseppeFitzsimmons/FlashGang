@@ -14,7 +14,7 @@ Parameters:
   ApiVersion:
     Type: String
     Default: 'v1'
-  DynamoDbEndpoint:
+  DynamoDBEndpoint:
     Type: String
     Default: 'http://localhost:8000'
   S3Endpoint:
@@ -41,6 +41,16 @@ Parameters:
   ImageServerDomain:
     Type: String
     Default: images.flashgang.io
+  GoogleRedirectUri:
+    Type: String
+    Default: 'https://api.flashgang.io/v1/googleauth'
+  Home:
+    Type: String
+    Default: https://www.flashgang.io
+  CookieHome:
+    Type: String
+    Default: .flashgang.io
+
 Conditions: 
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
@@ -66,7 +76,7 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-deck-table
         POLL_TABLE_NAME:
           !Sub ${AWS::StackName}-poll-table
-        DYNAMODB_ENDPOINT: !Ref DynamoDbEndpoint
+        DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
         REGION: "eu-west-1"
         SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
         SMTP_USER_NAME: 'AKIATBSOR2QNIX5M4BMD'
@@ -79,6 +89,9 @@ Globals:
         AVATAR_PREFIX: flashgang
         S3_ENDPOINT: !Ref S3Endpoint
         S3_SERVER_DOMAIN: !Ref ImageServerDomain
+        GOOGLE_REDIRECT_URI: !Ref GoogleRedirectUri
+        HOME: !Ref Home
+        COOKIE_HOME: !Ref CookieHome
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
@@ -669,7 +682,7 @@ Resources:
               Fn::Join:
                 - ''
                 - - 'arn:aws:s3:::'
-                  - Ref: 'S3Bucket'
+                  - Ref: ImageBucket
                   - '/*'
             Principal: '*'
 
