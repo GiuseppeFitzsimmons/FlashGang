@@ -36,6 +36,9 @@ class FlashGangs extends React.Component {
   }
   componentDidMount() {
     this.props.loadGangs()
+    if (this.props.navEvent) {
+      this.props.navEvent.backButton=this.props.goHome;
+    }
   }
   openModal(flashGang) {
     this.setState({ RSVPDialogOpen: true, flashGang: flashGang })

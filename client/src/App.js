@@ -86,9 +86,11 @@ export default class App extends React.Component {
     this.setState({ flashDeckId: flashDeckId, mode: mode, source: source })
   }
   onFlashGangSelected(flashGangId) {
+    this.navEvent.push("GANG");
     this.setState({ flashGangId: flashGangId, mode: 'EDITGANG' })
   }
   createFlashGang() {
+    this.navEvent.push("GANG");
     this.setState({ mode: 'EDITGANG', flashGangId: null })
   }
   goHome() {
@@ -151,6 +153,7 @@ export default class App extends React.Component {
     } else if (this.state.mode == 'EDIT' || this.state.mode == 'TEST') {
       renderable = <FlashDeck
         goHome={this.goHome}
+        onFlashDeckSelected={this.onFlashDeckSelected}
         flashDeckId={this.state.flashDeckId}
         source={this.state.source}
         mode={this.state.mode}
@@ -166,6 +169,7 @@ export default class App extends React.Component {
         createFlashGang={this.createFlashGang}
         onLogOut={this.logOut}
         goSettings={this.goSettings}
+        navEvent={this.navEvent}
       />
     } else if (this.state.mode == 'EDITGANG') {
       renderable = <FlashGangEditor
@@ -175,12 +179,14 @@ export default class App extends React.Component {
         onLogOut={this.logOut}
         goSettings={this.goSettings}
         goGangs={this.goGangs}
+        navEvent={this.navEvent}
       />
     } else if (this.state.mode == 'SETTINGS') {
       renderable = <Settings
         onLogOut={this.logOut}
         goHome={this.goHome}
         goGangs={this.goGangs}
+        navEvent={this.navEvent}
       />
     }
     //renderable=<TestGrid/>

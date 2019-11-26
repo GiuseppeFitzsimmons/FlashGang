@@ -42,6 +42,9 @@ class FlashGangEditor extends React.Component {
         } else {
             this.props.loadFlashGang(this.props.flashGangId)
         }
+        if (this.props.navEvent) {
+            this.props.navEvent.backButton=this.props.goGangs;
+          }
     }
     componentDidUpdate() {
     }

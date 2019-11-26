@@ -168,7 +168,7 @@ class FlashDeckEditor extends React.Component {
           buttonType='system'
           icon='delete'
           disabled={!editable}
-          onClick={() => { this.confirmation.open('DECKS') }} 
+          onClick={() => { this.confirmation.open('DECKS') }}
         >
           Delete Deck
           </FlashButton>

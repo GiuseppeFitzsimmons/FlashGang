@@ -25,7 +25,20 @@ class FlashDeck extends React.Component {
       this.props.loadFlashDeck(this.props.flashDeckId, this.props.mode, null, null, this.props.source)
     }
     if (this.props.navEvent) {
-      this.props.navEvent.backButton=this.props.goHome;
+      this.props.navEvent.backButton = () => {
+        if (this.props.flashDeck && this.props.flashDeck.mode == "EDIT") {
+          if (!this.props.flashDeck.hasOwnProperty('currentIndex') || this.props.flashDeck.currentIndex === 0) {
+            this.props.flashDeck.mode = 'TEST'
+            delete this.props.flashDeck.currentIndex
+            this.forceUpdate()
+          } else {
+            this.props.prevCard(this.props.flashDeck)
+            console.log('this.props.flashDeck.currentIndex', this.props.flashDeck.currentIndex)
+          }
+        } else {
+          this.props.goHome()
+        }
+      };
     }
   }
   editFlashDeck(id) {
@@ -34,17 +47,17 @@ class FlashDeck extends React.Component {
   render() {
     let renderable = <></>
     if (this.props.flashDeck && this.props.flashDeck.mode === 'COMPLETE') {
-      renderable = <FlashDeckScore 
-        flashDeck={this.props.flashDeck} 
-        onStartOver={()=>{this.props.loadFlashDeck(this.props.flashDeck.id, 'TEST', this.props.flashDeck.answerType, this.props.flashDeck.testType)}}
-        goHome = {this.props.goHome}
-        />
+      renderable = <FlashDeckScore
+        flashDeck={this.props.flashDeck}
+        onStartOver={() => { this.props.loadFlashDeck(this.props.flashDeck.id, 'TEST', this.props.flashDeck.answerType, this.props.flashDeck.testType) }}
+        goHome={this.props.goHome}
+      />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
-      renderable = <FlashCardEditor flashDeck={this.props.flashDeck} goHome = {this.props.goHome} />
+      renderable = <FlashCardEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
-      renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} goHome = {this.props.goHome} />
+      renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} onFlashDeckSelected={this.props.onFlashDeckSelected} />
     } else if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex') && this.props.flashDeck.mode == 'TEST') {
-      if (this.props.flashDeck.answerType == 'SINGLE'){
+      if (this.props.flashDeck.answerType == 'SINGLE') {
         renderable = <FlashTestSingleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
       } else {
         renderable = <FlashTestMultipleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
@@ -52,14 +65,14 @@ class FlashDeck extends React.Component {
       if (this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].hasOwnProperty('correct')) {
         if (this.props.flashDeck.testType === 'REVISION' || this.props.flashDeck.testType === 'CRAM') {
           renderable = <FlashCardScore flashDeck={this.props.flashDeck} onNextCard={this.props.nextCard} />
-        } 
+        }
       }
     } else if (this.props.flashDeck && this.props.flashDeck.mode == 'TEST') {
-      renderable = <FlashDeckTest flashDeck={this.props.flashDeck} onEditButtonPress={this.editFlashDeck}/>
+      renderable = <FlashDeckTest flashDeck={this.props.flashDeck} onEditButtonPress={this.editFlashDeck} />
     }
     return (
       <>
-        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name: null} station='DECK' goHome = {this.props.goHome} goGangs = {this.props.goGangs} onLogOut = {this.props.onLogOut} goSettings={this.props.goSettings}/>
+        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name : null} station='DECK' goHome={this.props.goHome} goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
         {renderable}
       </>
     )

@@ -20,6 +20,9 @@ class Settings extends React.Component {
     }
     componentDidMount() {
         this.setState({ user: this.state.user })
+        if (this.props.navEvent) {
+            this.props.navEvent.backButton=this.props.goHome;
+          }
     }
     handleFileChange(e) {
         let file = e.target.files; // FileList

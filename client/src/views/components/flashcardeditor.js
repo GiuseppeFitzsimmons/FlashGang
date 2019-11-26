@@ -25,6 +25,11 @@ class FlashCardEditor extends React.Component {
         this.removeCorrectAnswer = this.removeCorrectAnswer.bind(this)
         this.removeIncorrectAnswer = this.removeIncorrectAnswer.bind(this)
     }
+    componentDidMount(){
+        if (this.props.navEvent) {
+            this.props.navEvent.backButton=this.props.goHome;
+          }
+    }
     addCorrectAnswer() {
         this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].correctAnswers.push('')
         this.forceUpdate()
