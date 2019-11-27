@@ -58,51 +58,59 @@ exports.handler = async (event, context) => {
                         nickname: profileResult.data.name
                     }
                 } else {
-                    if (!user.firstName || user.firstName==='') {
+                    if (!user.firstName || user.firstName === '') {
                         user.firstName = profileResult.data.given_name
                     }
-                    if (!user.lastName || user.lastName==='') {
+                    if (!user.lastName || user.lastName === '') {
                         user.lastName = profileResult.data.family_name
                     }
-                    if (!user.picture || user.picture==='') {
+                    if (!user.picture || user.picture === '') {
                         user.picture = profileResult.data.picture
                     }
-                    if (!user.nickname || user.nickname==='') {
+                    if (!user.nickname || user.nickname === '') {
                         user.nickname = profileResult.data.nickname
                     }
                 }
                 await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME);
                 user = await dynamodbfordummies.getUser(user.id);
-                let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
-                let cookie='socialLogin='+JSON.stringify({
+                let tokenPair = tokenUtility.generateNewPair(user.id, 'all');
+                let cookie = 'socialLogin=' + JSON.stringify({
                     jwt: tokenPair.signedJwt,
                     refresh: tokenPair.signedRefresh,
                     user: user
-                })+'; ; path=/'
-                if (process.env.COOKIE_HOME && process.env.COOKIE_HOME!='') {
-                    cookie+='; Domain='+process.env.COOKIE_HOME
+                }) + '; ; path=/'
+                if (process.env.COOKIE_HOME && process.env.COOKIE_HOME != '') {
+                    cookie += '; Domain=' + process.env.COOKIE_HOME
                 }
                 const reply = {
                     statusCode: 302,
                     headers: {
                         location: process.env.HOME,
-                        /*Cookie: 'socialLogin='+JSON.stringify({
-                            jwt: tokenPair.signedJwt,
-                            refresh: tokenPair.signedRefresh,
-                            user: user
-                        }),*/
                         'set-cookie': cookie,
-                        /*'Set-Cookie': 'socialLogin='+JSON.stringify({
-                            jwt: tokenPair.signedJwt,
-                            refresh: tokenPair.signedRefresh,
-                            user: user
-                        })+'; Domain=.flashgang.io',*/
                         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
+                        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
                     }
                 }
                 console.log("REPLY", reply);
+                reply.body = '{}'
+                return reply
+            } else {
+                let cookie = 'socialLoginError=' + JSON.stringify({
+                    error: 'unknown error'}) + '; ; path=/'
+                if (process.env.COOKIE_HOME && process.env.COOKIE_HOME != '') {
+                    cookie += '; Domain=' + process.env.COOKIE_HOME
+                }
+                const reply = {
+                    statusCode: 302,
+                    headers: {
+                        location: process.env.HOME,
+                        'set-cookie': cookie,
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
+                    }
+                }
                 reply.body = '{}'
                 return reply
             }

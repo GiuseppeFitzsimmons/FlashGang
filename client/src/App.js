@@ -73,7 +73,9 @@ export default class App extends React.Component {
     this.navEvent=navEvent;
   }
   logOut() {
+    console.log("Logging out bug before", Object.entries(localStorage).length);
     localStorage.clear();
+    console.log("Logging out bug after", Object.entries(localStorage).length);
     //window.location.href = '/'
     this.setState({ mode: '', flashDeckId: null })
   }
