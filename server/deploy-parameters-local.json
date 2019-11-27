@@ -11,8 +11,6 @@
     "ImageServerDomain": "images-dev.flashgang.io",
     "GoogleRedirectUri": "http://localhost:8080/googleauth",
     "Home": "http://localhost:3000",
-    "CookieHome": "::",
-    "AccessKeyId":"::",
-    "SecretAccessKey":"::"
+    "CookieHome": "::"
   }
 }

@@ -69,3 +69,4 @@ typings/
 
 */shared-local-instance.db
 .db
+server/deploy-parameters-secrets.json

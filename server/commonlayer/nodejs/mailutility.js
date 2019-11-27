@@ -61,13 +61,3 @@ module.exports = {
     sendInvitationMail,
     sendResetEmail
 };
-
-async function test() {
-    process.env.SMTP_USER_NAME ='AKIATBSOR2QNIX5M4BMD';
-    process.env.SMTP_PASSWORD ='BOkI1ZXCWOex5w7tDRtRLl3qA46N/QmJ8Ncu4sCWxMhl';
-    process.env.MEMBERSHIP_SENDMAIL_ADDRESS='membership@flashgang.io';
-    process.env.SMTP_SERVER='email-smtp.us-east-1.amazonaws.com'
-    process.env.RSVP_URL='https://www.flashgang.io/rsvp'
-    await sendInvitationMail('phillip.fitzsimmons@gmail.com','fitzsimmonsgiuseppe@gmail.com','test gag');
-}
-//test();
