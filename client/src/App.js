@@ -17,6 +17,7 @@ import { greenTheme } from './views/widgets/Themes'
 import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
 import SplashScreen from './views/components/splashscreen';
+import ErrorDialog from './views/components/errordialog';
 import SynchroniseComponent from './views/components/synchronisecomponent';
 import Settings from './views/components/settings';
 
@@ -32,10 +33,25 @@ function Cookies() {
   return cookie;
 }
 
-function eraseCookie(name) { document.cookie = name + '=; Max-Age=-99999999;'; }
+function eraseCookie(name) {
+  let _cookies = Cookies();
+  let _cookie = _cookies[name];
+  if (_cookie) {
+    let _deleted = name + '=; Max-Age=-99999999'
+    _cookie = JSON.parse(_cookie)
+    if (_cookie.path) {
+      _deleted += '; path=' + _cookie.path;
+    }
+    if (_cookie.domain) {
+      _deleted += '; domain=' + _cookie.domain;
+    }
+    console.log("eraseCookie", _deleted);
+    document.cookie = _deleted;
+  }
+}
 class NavEvent {
   push(title) {
-    window.history.pushState({page: window.history.length}, title, "")
+    window.history.pushState({ page: window.history.length }, title, "")
   }
   onBackButtonEvent(e) {
     //alert(window.history.length);
@@ -45,16 +61,16 @@ class NavEvent {
     }
   }
   clear() {
-    var _len=window.history.length;
+    var _len = window.history.length;
     //while (_len-->2) {
-     // alert(_len);
-     // window.history.back();
+    // alert(_len);
+    // window.history.back();
     //}
     //alert(window.history.replaceState())
     //window.history.clear();
   }
 }
-const navEvent=new NavEvent();
+const navEvent = new NavEvent();
 
 export default class App extends React.Component {
   constructor(props) {
@@ -70,7 +86,7 @@ export default class App extends React.Component {
     this.logOut = this.logOut.bind(this)
     this.goSettings = this.goSettings.bind(this)
     this.callSynchronise = false
-    this.navEvent=navEvent;
+    this.navEvent = navEvent;
   }
   logOut() {
     localStorage.clear();
@@ -116,11 +132,16 @@ export default class App extends React.Component {
     console.log("COOKIES", cookie);
     if (cookie.socialLogin) {
       let parsedCookie = JSON.parse(cookie.socialLogin)
-      localStorage.setItem("flashJwt", JSON.stringify(parsedCookie.jwt))
-      localStorage.setItem("flashJwtRefresh", JSON.stringify(parsedCookie.refresh))
-      localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
+      console.log('parsedCookie', parsedCookie)
+      if (parsedCookie.error) {
+        this.setState({error: parsedCookie.error})
+      } else {
+        localStorage.setItem("flashJwt", JSON.stringify(parsedCookie.jwt))
+        localStorage.setItem("flashJwtRefresh", JSON.stringify(parsedCookie.refresh))
+        localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
+        this.callSynchronise = true
+      }
       eraseCookie('socialLogin')
-      this.callSynchronise = true
     }
     var _jwt = localStorage.getItem("flashJwt");
     if (!_jwt) {
@@ -199,6 +220,7 @@ export default class App extends React.Component {
               callSynchronise={this.callSynchronise}
             />
             <SplashScreen showing={this.state.splashScreenShowing} />
+            <ErrorDialog error={this.state.error} onClose={()=>{this.setState({error: null})}}/>
             {renderable}
           </Box>
         </ThemeProvider>
