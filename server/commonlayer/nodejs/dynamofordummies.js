@@ -89,8 +89,7 @@ async function countFlashDecks(userId) {
             }
         });
     })
-    console.log('countFlashDecks count', count)
-    return count
+    return count ? count : 0;
 }
 
 async function countFlashGangs(userId) {
@@ -119,8 +118,7 @@ async function countFlashGangs(userId) {
             }
         });
     })
-    console.log('countFlashGangs count', count)
-    return count
+    return count ? count : 0;
 }
 
 async function getLastModifedObjects(userId, lastModifiedDate) {
@@ -666,10 +664,15 @@ async function putItem(item, tableName) {
 function getDocumentDbClient() {
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
-            AWS.config.update({
+            const _config={
                 region: process.env.REGION,
                 endpoint: process.env.DYNAMODB_ENDPOINT
-            });
+            }
+            if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID!='' && process.env.ACCESS_KEY_ID!='::'){
+                _config.accessKeyId=process.env.ACCESS_KEY_ID,
+                _config.secretAccessKey=process.env.SECRET_ACCESS_KEY
+            }
+            AWS.config.update(_config);
         }
     }
     var documentClient = new AWS.DynamoDB.DocumentClient();
@@ -748,6 +751,12 @@ async function getUser(id) {
     }
     return user;
 }
+async function putUser(user) {
+    delete user.remainingFlashDecksAllowed;
+    delete user.remainingFlashGangsAllowed;
+    delete user.profile;
+    await putItem(user, process.env.USER_TABLE_NAME);
+}
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
 async function saveScores(scores, userId) {
     console.log('DDB4Dummies saveScores', scores, 'UserID', userId)
@@ -810,6 +819,7 @@ module.exports = {
     hasFlashDeckPermissions,
     deleteFlashGang,
     getUser,
+    putUser,
     saveScores,
     countFlashDecks,
     countFlashGangs,

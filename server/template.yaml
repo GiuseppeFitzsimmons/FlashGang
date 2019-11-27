@@ -50,6 +50,12 @@ Parameters:
   CookieHome:
     Type: String
     Default: .flashgang.io
+  AccessKeyId:
+    Type: String
+    Default: '::'
+  SecretAccessKey:
+    Type: String
+    Default: '::'
 
 Conditions: 
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
@@ -92,6 +98,8 @@ Globals:
         GOOGLE_REDIRECT_URI: !Ref GoogleRedirectUri
         HOME: !Ref Home
         COOKIE_HOME: !Ref CookieHome
+        ACCESS_KEY_ID: !Ref AccessKeyId
+        SECRET_ACCESS_KEY: !Ref SecretAccessKey
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
