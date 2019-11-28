@@ -35,7 +35,7 @@ if (deployParametersFile) {
 }
 if (local) {
     killOldProccesses();
-    startDb(function(err, started){
+    startDb(function(){
         console.log("DB started, starting server...");
         startServer(deployParameters);
     });
