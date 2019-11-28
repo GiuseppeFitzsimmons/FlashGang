@@ -9,5 +9,8 @@
     "start": "node server-deploy.js --local true --deploy-parameters deploy-parameters-local.json"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
 }

@@ -34,7 +34,7 @@ if (deployParametersFile) {
     process.exit();
 }
 if (local) {
-    killOldProccesses();
+    //killOldProccesses();
     startDb(function(){
         console.log("DB started, starting server...");
         startServer(deployParameters);
@@ -72,6 +72,7 @@ async function startServer(deployParameters) {
     if (deployParameters.indexOf('--parameter-overrides ')==0) {
         deployParameters=deployParameters.replace('--parameter-overrides ','');
     }
+    execSync('crockstack --parameter-overrides '+deployParameters)/*
     const child = spawn(crockCommand, ['--parameter-overrides',deployParameters]);
     child.on('exit', (code) => {
         console.log(`Child process exited with code ${code}`);
@@ -81,7 +82,7 @@ async function startServer(deployParameters) {
     });
     child.stderr.on('data', (data) => {
         console.log(`Crockstack error: ${data}`);
-    });
+    });*/
 }
 function killOldProccesses() {
     if (process.platform === 'darwin') {
