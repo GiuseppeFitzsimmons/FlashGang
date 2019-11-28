@@ -62,6 +62,9 @@ Parameters:
   SecretAccessKey:
     Type: String
     Default: '::'
+  SigningSecret:
+    Type: String
+    Default: '::'
 
 Conditions: 
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
@@ -90,7 +93,7 @@ Globals:
           !Sub ${AWS::StackName}-poll-table
         DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
         REGION: "eu-west-1"
-        SIGNING_SECRET: "x!A%D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r"
+        SIGNING_SECRET: !Ref SigningSecret
         SMTP_USER_NAME: !Ref SmtpUserName
         SMTP_PASSWORD: !Ref SmtpPassword
         MEMBERSHIP_SENDMAIL_ADDRESS: 'membership@flashgang.io'
