@@ -50,12 +50,6 @@ Parameters:
   CookieHome:
     Type: String
     Default: .flashgang.io
-  AccessKeyId:
-    Type: String
-    Default: '::'
-  SecretAccessKey:
-    Type: String
-    Default: '::'
   SmtpUserName:
     Type: String
     Default: '::'
