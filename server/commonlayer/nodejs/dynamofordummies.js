@@ -668,6 +668,7 @@ function getDocumentDbClient() {
                 region: process.env.REGION,
                 endpoint: process.env.DYNAMODB_ENDPOINT
             }
+            console.log("secrets", process.env.SECRET_ACCESS_KEY);
             if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID!='' && process.env.ACCESS_KEY_ID!='::'){
                 _config.accessKeyId=process.env.ACCESS_KEY_ID,
                 _config.secretAccessKey=process.env.SECRET_ACCESS_KEY

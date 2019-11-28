@@ -56,11 +56,11 @@ async function startDb(callback) {
             console.log(`Child process exited with code ${code}`);
         });
         child.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
+            console.log(`Dynamo: ${data}`);
             callback();
         });
         child.stderr.on('data', (data) => {
-            console.log(`stderr: ${data}`);
+            console.log(`Dynamo error: ${data}`);
         });
     })
 }
@@ -69,15 +69,18 @@ async function startServer(deployParameters) {
     if (process.platform === 'darwin') {
         crockCommand = '../node_modules/crockstack/cli.js';
     }
-    const child = spawn(crockCommand, [deployParameters]);
+    if (deployParameters.indexOf('--parameter-overrides ')==0) {
+        deployParameters=deployParameters.replace('--parameter-overrides ','');
+    }
+    const child = spawn(crockCommand, ['--parameter-overrides',deployParameters]);
     child.on('exit', (code) => {
         console.log(`Child process exited with code ${code}`);
     });
     child.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+        console.log(`Crockstack: ${data}`);
     });
     child.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
+        console.log(`Crockstack error: ${data}`);
     });
 }
 function killOldProccesses() {
