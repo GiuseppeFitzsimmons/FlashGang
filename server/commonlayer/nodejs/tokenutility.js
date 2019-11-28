@@ -7,6 +7,7 @@ function getSigningSecret() {
     return process.env.SIGNING_SECRET
 }
 function validateToken(event, ignoreExpiration) {
+    console.log("event", event);
     signingSecret=getSigningSecret();
     var token = event.authorizationToken;
     if ((!token || token == '') && event.headers) {

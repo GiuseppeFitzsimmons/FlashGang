@@ -15,7 +15,7 @@ exports.handler = async (event, context) => {
         });
         return hashed
     }
-    var token = validateToken(event);
+    //var token = tokenUtility.validateToken(event);
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
@@ -93,7 +93,8 @@ exports.handler = async (event, context) => {
                     reply.errors = { fields: [{ id: `Bad request` }] }
                     returnObject.statusCode = 401
                 }
-            } else if (event.body.account_function == 'setsettings'){
+            } else if (event.body.account_function == 'setsettings') {
+                var token = tokenUtility.validateToken(event);
                 let user = await dynamodbfordummies.getItem(token.sub, process.env.USER_TABLE_NAME)
                 user.id = token.sub
                 if (event.body.nickname){
@@ -174,6 +175,7 @@ exports.handler = async (event, context) => {
     }
     return returnObject
 }
+/*
 function validateToken(event) {
     let token = event.authorizationToken;
     if ((!token || token == '') && event.headers) {
@@ -197,3 +199,4 @@ function validateToken(event) {
     decoded = JSON.parse(decoded);
     return decoded;
 }
+*/

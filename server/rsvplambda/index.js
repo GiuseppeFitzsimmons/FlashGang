@@ -1,10 +1,11 @@
-const dynamodbfordummies = require('dynamofordummies')
+const dynamodbfordummies = require('dynamofordummies');
+const tokenUtility = require('tokenutility');
 
 exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
-    var token = validateToken(event);
+    var token = tokenUtility.validateToken(event);
     console.log("RSVP", event.body);
     if (typeof event.body === 'string') {
         event.body=JSON.parse(event.body)
@@ -53,6 +54,7 @@ exports.handler = async (event, context) => {
 
 
 }
+/*
 function validateToken(event) {
     let token = event.authorizationToken;
     if ((!token || token == '') && event.headers) {
@@ -75,4 +77,4 @@ function validateToken(event) {
     let decoded = buff.toString('ascii');
     decoded = JSON.parse(decoded);
     return decoded;
-}
+}*/
