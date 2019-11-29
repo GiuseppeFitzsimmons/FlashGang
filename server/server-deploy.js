@@ -72,7 +72,7 @@ async function startServer(deployParameters) {
     if (deployParameters.indexOf('--parameter-overrides ')==0) {
         deployParameters=deployParameters.replace('--parameter-overrides ','');
     }
-    execSync('crockstack --parameter-overrides '+deployParameters)/*
+    execSync(crockCommand+' --parameter-overrides '+deployParameters, {stdio: 'inherit'})/*
     const child = spawn(crockCommand, ['--parameter-overrides',deployParameters]);
     child.on('exit', (code) => {
         console.log(`Child process exited with code ${code}`);

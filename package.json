@@ -19,7 +19,7 @@
   "dependencies": {
     "axios": "^0.19.0",
     "browser-database": "^1.0.5",
-    "crockstack": "^1.0.12",
+    "crockstack": "^1.1.4",
     "nodemailer": "^6.3.1",
     "react-bootstrap": "^1.0.0-beta.14",
     "react-icons": "^3.7.0",

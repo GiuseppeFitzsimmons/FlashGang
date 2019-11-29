@@ -6,12 +6,17 @@ exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
-    var token = tokenUtility.validateToken(event);
+    var token;
+    try {
+        token = tokenUtility.validateToken(event);
+    } catch(badtoken) {
+        returnObject.statusCode=badtoken.statusCode;
+        reply=badtoken;
+    }
     if (typeof event.body === 'string') {
         event.body=JSON.parse(event.body)
     }
-    console.log("SYNCHRONISE EVENT", event);
-    if (event.httpMethod.toLowerCase() === 'post') {
+    if (token && event.httpMethod.toLowerCase() === 'post') {
         //store all the flashcards sent from the user
         if (event.body.flashDecks) {
             for (var i in event.body.flashDecks) {

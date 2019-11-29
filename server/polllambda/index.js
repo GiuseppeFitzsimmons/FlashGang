@@ -5,12 +5,17 @@ exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
-    var token = tokenUtility.validateToken(event)
-    console.log("POLL", event.body);
+    var token;
+    try {
+        token = tokenUtility.validateToken(event)
+    } catch (badtoken) {
+        reply=badtoken;
+        returnObject.statusCode=badtoken.statusCode;
+    }
     if (typeof event.body === 'string') {
         event.body=JSON.parse(event.body)
     }
-    if (event.httpMethod.toLowerCase() === 'post') {
+    if (token && event.httpMethod.toLowerCase() === 'post') {
         if (event.body && event.body.poll) {
             event.body.poll.id = token.sub
             event.body.poll.date = new Date().getTime()

@@ -5,12 +5,18 @@ exports.handler = async (event, context) => {
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
-    var token = tokenUtility.validateToken(event);
+    var token
+    try {
+        token = tokenUtility.validateToken(event);
+    } catch (badtoken) {
+        reply=badtoken;
+        returnObject.statusCode=badtoken.statusCode;
+    }
     console.log("RSVP", event.body);
     if (typeof event.body === 'string') {
         event.body=JSON.parse(event.body)
     }
-    if (event.httpMethod.toLowerCase() === 'post') {
+    if (token && event.httpMethod.toLowerCase() === 'post') {
         if (event.body) {
             if (event.body.flashGangId && event.body.hasOwnProperty('acceptance')) {
                 if (event.body.acceptance) {
