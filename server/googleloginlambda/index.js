@@ -10,6 +10,7 @@ exports.handler = async (event, context) => {
     const scope = event.queryStringParameters.scope
     try {
         if (code) {
+            console.log('process.env.GOOGLE_REDIRECT_URI', process.env.GOOGLE_REDIRECT_URI)
             let result = await new Promise((resolve, reject) => {
                 const data = {
                     code: code,

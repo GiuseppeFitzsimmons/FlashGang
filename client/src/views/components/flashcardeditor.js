@@ -15,6 +15,7 @@ import { spacing } from '@material-ui/system';
 import { FlashTypography, FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Icon from '@material-ui/core/Icon';
 import Upgrade from '../components/upgrade';
+import { Gallery } from '../components/gallery';
 
 
 class FlashCardEditor extends React.Component {
@@ -25,10 +26,10 @@ class FlashCardEditor extends React.Component {
         this.removeCorrectAnswer = this.removeCorrectAnswer.bind(this)
         this.removeIncorrectAnswer = this.removeIncorrectAnswer.bind(this)
     }
-    componentDidMount(){
+    componentDidMount() {
         if (this.props.navEvent) {
-            this.props.navEvent.backButton=this.props.goHome;
-          }
+            this.props.navEvent.backButton = this.props.goHome;
+        }
     }
     addCorrectAnswer() {
         this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].correctAnswers.push('')
@@ -188,6 +189,7 @@ class FlashCardEditor extends React.Component {
                 >
                     Add correct answer
                 </FlashButton>
+                <Gallery />
                 {generateIncorrectAnswerList()}
                 <FlashButton
                     color='secondary'
@@ -224,7 +226,7 @@ class FlashCardEditor extends React.Component {
                         buttonType='system'
                         disabled={(!flashCard.question || flashCard.question == '') || (!flashCard.correctAnswers || flashCard.correctAnswers.length == 0 || flashCard.correctAnswers[0] == '')}
                         onClick={() => {
-                            if (this.props.flashDeck.remainingCardsAllowed > 0 || this.props.flashDeck.currentIndex < this.props.flashDeck.flashCards.length-1) {
+                            if (this.props.flashDeck.remainingCardsAllowed > 0 || this.props.flashDeck.currentIndex < this.props.flashDeck.flashCards.length - 1) {
                                 this.props.nextCard(this.props.flashDeck)
                             } else {
                                 this.upgrade.open('DECK')
@@ -241,7 +243,7 @@ class FlashCardEditor extends React.Component {
                     buttonType='system'
                     onClick={() => {
                         this.props.deleteCard(this.props.flashDeck)
-                        
+
                     }
                     }
                 >
