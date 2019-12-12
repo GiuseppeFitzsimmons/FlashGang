@@ -33,16 +33,19 @@ class GalleryStyled extends React.Component {
             var loadingImage = loadImage(
                 file[0],
                 function (img, data) {
-                    let context = img.getContext('2d')
+                    let binaryData=img.toDataURL();
+                    //binaryData is all we need to send back to the server
+                    console.log("dataUrl", binaryData);
+                    /*let context = img.getContext('2d')
                     let imageData = context.getImageData(0, 0, img.width, img.height).data
                     let blob = new Blob(imageData)
                     var reader = new FileReader();
                     reader.readAsDataURL(blob);
                     reader.onload = function () { var base64data = reader.result; console.log('base64data', base64data);
-                    }
+                    }*/
                 },
                 {
-                    maxWidth: 3,
+                    maxWidth: 320,
                     canvas: true
 
                 }
