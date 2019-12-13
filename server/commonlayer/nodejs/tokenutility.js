@@ -62,6 +62,7 @@ function fourOhOne(message, code) {
 
 function generateNewPair(userId, scope, duration) {
     signingSecret=getSigningSecret();
+    console.log("generateNewPair SIGNING SECRET", signingSecret);
     tokenPayload = {};
     tokenPayload.iss = 'flashgang';
     tokenPayload.sub = userId;
@@ -88,3 +89,12 @@ module.exports = {
     validateToken,
     generateNewPair
 };
+/*
+function test() {
+    process.env.SIGNING_SECRET='Q1fdqsfez1qLqLqV@&5YRv3duJtAtJi3MSpXI4R]XqiI]ckCorSSOZ35V38p@&5Yqsfz14CmMTxldkeSSc12SCOieD8è7èdfkmBnx';
+    let pair=generateNewPair('phillip@flashgang.io', 'all', 1000000);
+    let jwt=validateToken({authorizationToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmbGFzaGdhbmciLCJzdWIiOiJwaGlsbGlwLmZpdHpzaW1tb25zQGdtYWlsLmNvbSIsInV1aWQiOiI2NDJlYzUxMS04ZDkzLTRjODctOWQ2NS05MWMxNGRkMDZhMzMiLCJzY29wZSI6ImFsbCIsImV4cCI6MTU3NjI1NDYwOTI5NiwiaWF0IjoxNTc2MjUzODg5fQ.ZJ2Rfw7YuCADwWHeiI3VnKBzCQ8Dxl3Bu0CHdA1VpE8'});
+    console.log(jwt);
+}
+test();
+*/

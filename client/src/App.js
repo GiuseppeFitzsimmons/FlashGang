@@ -138,8 +138,8 @@ export default class App extends React.Component {
       if (parsedCookie.error) {
         this.setState({error: parsedCookie.error})
       } else {
-        localStorage.setItem("flashJwt", JSON.stringify(parsedCookie.jwt))
-        localStorage.setItem("flashJwtRefresh", JSON.stringify(parsedCookie.refresh))
+        localStorage.setItem("flashJwt", parsedCookie.jwt)
+        localStorage.setItem("flashJwtRefresh", parsedCookie.refresh)
         localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
         this.callSynchronise = true
       }

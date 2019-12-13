@@ -10,6 +10,7 @@ exports.handler = async (event, context) => {
     try {
         token = tokenUtility.validateToken(event);
     } catch(badtoken) {
+        console.log('badtoken', badtoken, event);
         returnObject.statusCode=badtoken.statusCode;
         reply=badtoken;
     }
