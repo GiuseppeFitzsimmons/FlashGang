@@ -1,4 +1,4 @@
-import { SET_PASSWORD, DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD, POLL } from '../action';
+import { UPLOAD_IMAGE, SET_PASSWORD, DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD, POLL } from '../action';
 
 const initialState = {};
 var user
@@ -14,7 +14,7 @@ function rootReducer(state = initialState, action) {
         user = JSON.parse(localStorage.getItem('currentUser'))
     }
     console.log('reducer user', user)
-    state.user = Object.assign({}, user) 
+    state.user = Object.assign({}, user)
     if (action && action.data && action.data.flashDeck) {
         //This is why flashdeck wasn't updating - redux insists that you exchange immutable objects
         //In practice this means that if your state contains the same objects when it's next seen by
@@ -84,6 +84,9 @@ function rootReducer(state = initialState, action) {
             return state
         case DELETE_GANG:
             state = Object.assign({}, state, { flashGang: null })
+            return state
+        case UPLOAD_IMAGE:
+            state = Object.assign({}, state, { loading: false, url: action.url })
             return state
         default:
             console.log('state', state)

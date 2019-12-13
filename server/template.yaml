@@ -102,6 +102,8 @@ Globals:
         PASSWORD_RESET: !Ref PasswordResetUrl
         AVATAR_BUCKET: !Ref ImageServerDomain
         AVATAR_PREFIX: flashgang
+        IMAGE_BUCKET: !Ref ImageServerDomain
+        IMAGE_PREFIX: flashgang
         S3_ENDPOINT: !Ref S3Endpoint
         S3_SERVER_DOMAIN: !Ref ImageServerDomain
         GOOGLE_REDIRECT_URI: !Ref GoogleRedirectUri
@@ -216,6 +218,21 @@ Resources:
           Type: Api
           Properties:
             Path: /googleauth
+            Method: any
+            RestApiId: !Ref ApiGateway
+
+  GalleryLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: gallerylambda/
+      Runtime: nodejs12.x
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      Events:
+        RsvpEventSource:
+          Type: Api
+          Properties:
+            Path: /gallery
             Method: any
             RestApiId: !Ref ApiGateway
 

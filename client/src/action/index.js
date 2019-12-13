@@ -23,6 +23,7 @@ export const DELETE_GANG = 'DELETE_GANG';
 export const SYNCHRONISE = 'SYNCHRONISE';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const ENDSYNCHRONISE = 'ENDSYNCHRONISE';
+export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 
 
 export function newDeck() {
@@ -127,5 +128,10 @@ export function synchronise() {
 export function setSettings(user) {
     console.log("Action SET_SETTINGS")
     return { type: SET_SETTINGS, data: {user}}
+
+}
+export function uploadImage(source) {
+    console.log("Action UPLOAD_IMAGE")
+    return { type: UPLOAD_IMAGE, data: {source}}
 
 }

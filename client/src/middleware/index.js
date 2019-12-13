@@ -1,4 +1,4 @@
-import { SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN } from '../action'
+import { SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -90,7 +90,7 @@ async function synchronise(dispatch) {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings', gallery: '/gallery' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -674,6 +674,17 @@ export function flashGangMiddleware({ dispatch }) {
                 if (postResult.user){
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
+            } else if (action.type === UPLOAD_IMAGE) {
+                console.log('Middleware UPLOAD_IMAGE')
+                dispatch({ type: LOADING, data: { loading: true } })
+                let questObject = {}
+                questObject.params = {source: action.data.source}
+                questObject.resource = 'gallery'
+                let postResult = await postToServer(questObject)
+                if (postResult.url){
+                    action.url = postResult.url
+                }
+                //else in case error
             }
             return next(action);
         }

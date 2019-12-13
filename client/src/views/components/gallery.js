@@ -8,18 +8,26 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import { ActionYoutubeSearchedFor } from 'material-ui/svg-icons';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as Actions from '../../action'
+
 const loadImage = require('blueimp-load-image');
 
-const allImages=['/random_profile_male_1.png','/random_profile_male_1.png',
-'/random_profile_male_1.png','/random_profile_male_1.png',
-'/random_profile_male_1.png','/random_profile_male_1.png',
-'/random_profile_male_1.png'];
+const allImages = ['/random_profile_male_1.png', '/random_profile_male_1.png',
+    '/random_profile_male_1.png', '/random_profile_male_1.png',
+    '/random_profile_male_1.png', '/random_profile_male_1.png',
+    '/random_profile_male_1.png'];
+
+const holder = {}
 
 class GalleryStyled extends React.Component {
     constructor(props) {
         super(props);
         this.state = { open: false }
         this.handleCancel = this.handleCancel.bind(this)
+        holder.gallery = this
     }
     handleEntering() {
     }
@@ -37,7 +45,9 @@ class GalleryStyled extends React.Component {
             var loadingImage = loadImage(
                 file[0],
                 function (img, data) {
-                    let binaryData=img.toDataURL();
+                    let binaryData = img.toDataURL();
+                    allImages.push(binaryData)
+                    holder.gallery.forceUpdate()
                     //binaryData is all we need to send back to the server
                     console.log("dataUrl", binaryData);
                     /*let context = img.getContext('2d')
@@ -76,7 +86,7 @@ class GalleryStyled extends React.Component {
                     disableBackdropClick
                     disableEscapeKeyDown
                     onEntering={this.handleEntering}
-                    contentStyle={{width: "100%", maxWidth: "none"}}
+                    contentStyle={{ width: "100%", maxWidth: "none" }}
                     aria-labelledby="confirmation-dialog-title"
                     open={this.state.open}
                 >
@@ -90,9 +100,11 @@ class GalleryStyled extends React.Component {
                         <GridList cellHeight={60} cols={4}>
                             {allImages.map(image => (
                                 <GridListTile key={image} cols={1}>
-                                    <img src={image}/>
+                                    <ImageUploadComponentRedux
+                                        source={image}
+                                    />
                                 </GridListTile>
-                                    ))}
+                            ))}
                         </GridList>
                     </DialogContent>
 
@@ -106,6 +118,33 @@ class GalleryStyled extends React.Component {
         )
     }
 }
+
+class ImageUploadComponent extends React.Component {
+    constructor(props) {
+        super(props)
+    }
+    componentDidMount() {
+        let isBinary = this.props.source.indexOf('data:image') == 0
+        if (isBinary) {
+            this.props.uploadImage(this.props.source)
+        }
+    }
+    render() {
+        return (
+            <img
+                src={this.props.url ? this.props.url : this.props.source }
+            />
+        )
+    }
+
+}
+function mapStateToProps(state, props) {
+    return { loading: state.loading, url: state.url }
+}
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(Actions, dispatch)
+}
+const ImageUploadComponentRedux = connect(mapStateToProps, mapDispatchToProps)(ImageUploadComponent)
 
 const Gallery = withTheme(GalleryStyled);
 export {
