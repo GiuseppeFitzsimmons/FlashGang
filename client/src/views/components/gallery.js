@@ -10,6 +10,10 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 const loadImage = require('blueimp-load-image');
 
+const allImages=['/random_profile_male_1.png','/random_profile_male_1.png',
+'/random_profile_male_1.png','/random_profile_male_1.png',
+'/random_profile_male_1.png','/random_profile_male_1.png',
+'/random_profile_male_1.png'];
 
 class GalleryStyled extends React.Component {
     constructor(props) {
@@ -55,6 +59,7 @@ class GalleryStyled extends React.Component {
         }
         document.getElementById("file-upload").reset();
     }
+
     render() {
         return (
             <>
@@ -70,12 +75,12 @@ class GalleryStyled extends React.Component {
                 <Dialog
                     disableBackdropClick
                     disableEscapeKeyDown
-                    maxWidth="xs"
                     onEntering={this.handleEntering}
+                    contentStyle={{width: "100%", maxWidth: "none"}}
                     aria-labelledby="confirmation-dialog-title"
                     open={this.state.open}
                 >
-                    <DialogTitle id="confirmation-dialog-title">Upload image</DialogTitle>
+                    <DialogTitle id="confirmation-dialog-title">Gallery</DialogTitle>
                     <FlashButton square buttonType='system'
                         onClick={() => document.getElementById("input-file-upload").click()}
                     >
@@ -83,16 +88,11 @@ class GalleryStyled extends React.Component {
                 </FlashButton>
                     <DialogContent dividers>
                         <GridList cellHeight={60} cols={4}>
-                            {/*all_icons.map(icon => (
-                                <GridListTile key={icon} cols={1}>
-                                    <FlashButton square buttonType={icon == this.props.icon ? 'system' : 'action'}
-                                        onClick={
-                                            () => this.setImage(icon)
-                                        }>
-                                        <Icon style={{ fontSize: 20 }}>{icon}</Icon>
-                                    </FlashButton>
+                            {allImages.map(image => (
+                                <GridListTile key={image} cols={1}>
+                                    <img src={image}/>
                                 </GridListTile>
-                                    ))*/}
+                                    ))}
                         </GridList>
                     </DialogContent>
 
