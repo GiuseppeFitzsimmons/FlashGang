@@ -69,7 +69,8 @@ function generateNewPair(userId, scope, duration) {
     tokenPayload.uuid=uuidv4();
     tokenPayload.scope=scope;
     var now = new Date();
-    now.setMinutes(now.getMinutes() + duration ? duration : process.env.TOKEN_DURATION ? (process.env.TOKEN_DURATION*1) : 30);
+    let expiry=duration ? duration : process.env.TOKEN_DURATION ? (process.env.TOKEN_DURATION*1) : 30;
+    now.setMinutes(now.getMinutes() + expiry);
     now = new Date(now);
     tokenPayload.exp = now.getTime();
     var signedJwt = jwt.sign(tokenPayload, signingSecret);
