@@ -70,7 +70,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
             return state
         case LOADING:
-            state = Object.assign({}, state, { loading: action.data.loading })
+            state = Object.assign({}, state, { loading: action.data.loading, id: action.id })
             return state
         case RSVP:
             return state
@@ -86,7 +86,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashGang: null })
             return state
         case UPLOAD_IMAGE:
-            state = Object.assign({}, state, { loading: false, url: action.url })
+            state = Object.assign({}, state, { loading: false, url: action.url, id: action.id })
             return state
         default:
             console.log('state', state)

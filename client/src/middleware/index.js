@@ -158,6 +158,7 @@ async function postToServer(questObject) {
         })
     if (responseCode == 401 && reply.code === 'exp' && !questObject.retry) {
         //the token expired, refresh it and try again
+        console.log("POSTTOSERVER EXPIRED TOKEN RETRYING");
         await refreshToken();
         questObject.retry = true;
         return await postToServer(questObject);
@@ -676,15 +677,17 @@ export function flashGangMiddleware({ dispatch }) {
                 }
             } else if (action.type === UPLOAD_IMAGE) {
                 console.log('Middleware UPLOAD_IMAGE')
-                dispatch({ type: LOADING, data: { loading: true } })
+                dispatch({ type: LOADING, data: { loading: true, id: action.data.id } })
                 let questObject = {}
                 questObject.params = {source: action.data.source}
                 questObject.resource = 'gallery'
-                let postResult = await postToServer(questObject)
+                let postResult = await postToServer(questObject);
+                action.id=action.data.id;
                 if (postResult.url){
                     action.url = postResult.url
+                } else {
+                    console.log("There's been an error uploading the image", postResult);
                 }
-                //else in case error
             }
             return next(action);
         }

@@ -98,10 +98,11 @@ class GalleryStyled extends React.Component {
                 </FlashButton>
                     <DialogContent dividers>
                         <GridList cellHeight={60} cols={4}>
-                            {allImages.map(image => (
-                                <GridListTile key={image} cols={1}>
+                            {allImages.map( (image, index) => (
+                                <GridListTile key={image} id={index} cols={1}>
                                     <ImageUploadComponentRedux
                                         source={image}
+                                        id={index}
                                     />
                                 </GridListTile>
                             ))}
@@ -126,7 +127,7 @@ class ImageUploadComponent extends React.Component {
     componentDidMount() {
         let isBinary = this.props.source.indexOf('data:image') == 0
         if (isBinary) {
-            this.props.uploadImage(this.props.source)
+            this.props.uploadImage(this.props.source, this.props.id)
         }
     }
     render() {
@@ -139,7 +140,10 @@ class ImageUploadComponent extends React.Component {
 
 }
 function mapStateToProps(state, props) {
-    return { loading: state.loading, url: state.url }
+    if (state.id==props.id) {
+        return { loading: state.loading, url: state.url }
+    }
+    return {};
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

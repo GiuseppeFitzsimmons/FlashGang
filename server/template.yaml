@@ -3,6 +3,10 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   FlashGang infrastructure as code template
 Parameters:
+  PointlessParam:
+    Description: A pointless param
+    Type: String
+    Default: pointless
   DomainNameString:
     Description: The domain name
     Type: String
@@ -70,7 +74,7 @@ Conditions:
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
   Function:
-    Timeout: 18
+    Timeout: 30
     Runtime: nodejs12.x
     Handler: index.handler
     Layers:

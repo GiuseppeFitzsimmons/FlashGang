@@ -130,8 +130,8 @@ export function setSettings(user) {
     return { type: SET_SETTINGS, data: {user}}
 
 }
-export function uploadImage(source) {
+export function uploadImage(source, id) {
     console.log("Action UPLOAD_IMAGE")
-    return { type: UPLOAD_IMAGE, data: {source}}
+    return { type: UPLOAD_IMAGE, data: {source, id}}
 
 }

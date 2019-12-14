@@ -7,6 +7,7 @@ let deployParametersFile;
 let deployParameters = '';
 let stackName;
 let local;
+let environment;
 process.argv.forEach(function (val, index, array) {
     if (val == '--profile') {
         profileArgument = '--profile ' + array[index + 1];
@@ -16,8 +17,26 @@ process.argv.forEach(function (val, index, array) {
         stackName = array[index + 1];
     } else if (val == '--local') {
         local = array[index + 1];
+    } else if (val == '--env' || val == '--environment') {
+        environment = array[index + 1];
     }
 });
+if (!deployParametersFile && environment) {
+    if (environment==='dev') {
+        deployParametersFile='deploy-parameters-dev.json';
+    } else if (environment==='prod') {
+        deployParametersFile='deploy-parameters-prod.json';
+    } else if (environment==='local' || local) {
+        deployParametersFile='deploy-parameters-local.json';
+    }
+}
+if (!stackName && environment) {
+    if (environment==='dev') {
+        stackName='flashgang-dev';
+    } else if (environment==='prod') {
+        stackName='flashgang-prod';
+    }
+}
 if (deployParametersFile) {
     let _json = JSON.parse(fs.readFileSync(deployParametersFile))
     let _secrets = JSON.parse(fs.readFileSync('deploy-parameters-secrets.json'));
@@ -26,7 +45,7 @@ if (deployParametersFile) {
         _secrets = Object.assign({}, _secrets.Parameters, _json.Parameters);
     }
     deployParameters = Object.keys(_secrets).map(key => key + '=' + _secrets[key]).join(' ');
-    deployParameters = `--parameter-overrides ${deployParameters}`;
+    deployParameters = `--parameter-overrides "PointlessParam=pointess ${deployParameters}"`;
     console.log("deployParameters", deployParameters)
 } else {
     console.log("--deploy-parameters is a required argument");
@@ -72,7 +91,7 @@ async function startServer(deployParameters) {
     if (deployParameters.indexOf('--parameter-overrides ')==0) {
         deployParameters=deployParameters.replace('--parameter-overrides ','');
     }
-    execSync(crockCommand+' --parameter-overrides \"'+deployParameters+'\"', {stdio: 'inherit'})
+    execSync(crockCommand+' --parameter-overrides '+deployParameters, {stdio: 'inherit'})
 }
 function killOldProccesses() {
     if (process.platform === 'darwin') {
