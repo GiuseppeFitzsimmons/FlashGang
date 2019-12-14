@@ -74,7 +74,7 @@ Conditions:
   CreateInfrastructureStack: !Equals [ !Ref InfrastructureNestedApp, 'true' ]
 Globals:
   Function:
-    Timeout: 30
+    Timeout: 18
     Runtime: nodejs12.x
     Handler: index.handler
     Layers:
@@ -95,10 +95,8 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-deck-table
         POLL_TABLE_NAME:
           !Sub ${AWS::StackName}-poll-table
-        IMAGE_TABLE_NAME:
-          !Sub ${AWS::StackName}-image-table
         DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
-        REGION: "us-east-1"
+        REGION: "eu-west-1"
         SIGNING_SECRET: !Ref SigningSecret
         SMTP_USER_NAME: !Ref SmtpUserName
         SMTP_PASSWORD: !Ref SmtpPassword
@@ -117,6 +115,7 @@ Globals:
         COOKIE_HOME: !Ref CookieHome
         ACCESS_KEY_ID: !Ref AccessKeyId
         SECRET_ACCESS_KEY: !Ref SecretAccessKey
+        POINTLESS: !Ref PointlessParam
 Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
@@ -401,22 +400,6 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${AWS::StackName}-user-table
-      KeySchema:
-        - AttributeName: id
-          KeyType: HASH
-      AttributeDefinitions:
-        - AttributeName: id
-          AttributeType: S
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-      BillingMode: PROVISIONED
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
-  ImageTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Sub ${AWS::StackName}-image-table
       KeySchema:
         - AttributeName: id
           KeyType: HASH
@@ -742,6 +725,18 @@ Resources:
                   - '/*'
             Principal: '*'
 
+  ImageWebsiteDNSName:
+    Type: AWS::Route53::RecordSet
+    DependsOn:
+      - ImageWebsiteCloudfront
+    Properties:
+      HostedZoneName: flashgang.io.
+      Name: !Ref ImageServerDomain
+      Type: A
+      AliasTarget:
+        EvaluateTargetHealth: false
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt ImageWebsiteCloudfront.DomainName
   ImageWebsiteCloudfront:
     Type: AWS::CloudFront::Distribution
     DependsOn:
@@ -750,7 +745,7 @@ Resources:
       DistributionConfig:
         Comment: Cloudfront Distribution pointing to S3 bucket
         Origins:
-          - Id: S3Origin
+          - Id: S3ImageOrigin
             OriginPath: /flashgang
             DomainName:
               !Select [2, !Split ['/', !GetAtt ImageBucket.WebsiteURL]]
@@ -773,7 +768,7 @@ Resources:
             - PATCH
             - DELETE
           Compress: true
-          TargetOriginId: S3Origin
+          TargetOriginId: S3ImageOrigin
           ForwardedValues:
             QueryString: true
             Cookies:
