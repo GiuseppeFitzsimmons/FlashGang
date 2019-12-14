@@ -95,8 +95,10 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-deck-table
         POLL_TABLE_NAME:
           !Sub ${AWS::StackName}-poll-table
+        IMAGE_TABLE_NAME:
+          !Sub ${AWS::StackName}-image-table
         DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
-        REGION: "eu-west-1"
+        REGION: "us-east-1"
         SIGNING_SECRET: !Ref SigningSecret
         SMTP_USER_NAME: !Ref SmtpUserName
         SMTP_PASSWORD: !Ref SmtpPassword
@@ -399,6 +401,22 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${AWS::StackName}-user-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  ImageTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-image-table
       KeySchema:
         - AttributeName: id
           KeyType: HASH

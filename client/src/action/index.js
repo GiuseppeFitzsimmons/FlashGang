@@ -24,6 +24,7 @@ export const SYNCHRONISE = 'SYNCHRONISE';
 export const SET_SETTINGS = 'SET_SETTINGS';
 export const ENDSYNCHRONISE = 'ENDSYNCHRONISE';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
+export const GET_IMAGES = 'GET_IMAGES';
 
 
 export function newDeck() {
@@ -133,5 +134,10 @@ export function setSettings(user) {
 export function uploadImage(source, id) {
     console.log("Action UPLOAD_IMAGE")
     return { type: UPLOAD_IMAGE, data: {source, id}}
+
+}
+export function getImages() {
+    console.log("Action GET_IMAGES")
+    return { type: GET_IMAGES }
 
 }

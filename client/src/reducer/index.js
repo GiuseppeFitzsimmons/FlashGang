@@ -1,4 +1,4 @@
-import { UPLOAD_IMAGE, SET_PASSWORD, DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD, POLL } from '../action';
+import { UPLOAD_IMAGE, SET_PASSWORD, DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD, POLL, GET_IMAGES } from '../action';
 
 const initialState = {};
 var user
@@ -70,7 +70,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
             return state
         case LOADING:
-            state = Object.assign({}, state, { loading: action.data.loading, id: action.id })
+            state = Object.assign({}, state, { loading: action.data.loading, id: action.data.id })
             return state
         case RSVP:
             return state
@@ -87,6 +87,9 @@ function rootReducer(state = initialState, action) {
             return state
         case UPLOAD_IMAGE:
             state = Object.assign({}, state, { loading: false, url: action.url, id: action.id })
+            return state
+        case GET_IMAGES:
+            state = Object.assign({}, state, {images: action.images})
             return state
         default:
             console.log('state', state)

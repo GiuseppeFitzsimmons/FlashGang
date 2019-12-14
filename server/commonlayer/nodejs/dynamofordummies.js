@@ -125,7 +125,7 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
     var documentClient = getDocumentDbClient();
     //let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
     //delete currentUser.password;
-    let currentUser=await getUser(userId);
+    let currentUser = await getUser(userId);
     currentUser.isCurrentUser = true;
     //currentUser.profile = getProfile(currentUser.subscription);
     let totalDecks = await countFlashDecks(currentUser.id)
@@ -182,7 +182,7 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
         console.log("FLASHGANGBUG AFTER", flashGang)
         flashGang.rank = userGang.rank;
         flashGang.state = userGang.state;
-        
+
         if (userGang.invitedBy) {
             flashGang.invitedBy = await getItem(userGang.invitedBy, process.env.USER_TABLE_NAME);
             if (flashGang.invitedBy) {
@@ -205,7 +205,7 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
                 }
             }
         }
-        if (flashGang.owner == currentUser.id){
+        if (flashGang.owner == currentUser.id) {
             flashGang.remainingMembersAllowed = currentUser.profile.maxMembersPerGang - flashGang.members.length
         }
         //put the members of this gang into the list of users, if it's not already there
@@ -664,13 +664,13 @@ async function putItem(item, tableName) {
 function getDocumentDbClient() {
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
-            const _config={
+            const _config = {
                 region: process.env.REGION,
                 endpoint: process.env.DYNAMODB_ENDPOINT
             }
-            if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID!='' && process.env.ACCESS_KEY_ID!='::'){
-                _config.accessKeyId=process.env.ACCESS_KEY_ID,
-                _config.secretAccessKey=process.env.SECRET_ACCESS_KEY
+            if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
+                _config.accessKeyId = process.env.ACCESS_KEY_ID,
+                    _config.secretAccessKey = process.env.SECRET_ACCESS_KEY
             }
             AWS.config.update(_config);
         }
@@ -805,6 +805,35 @@ async function getUserDeck(flashDeckId, userId) {
     else return null
 }
 
+async function putImage(id, url) {
+    let item = { id, url }
+    let result = await putItem(item, process.env.IMAGE_TABLE_NAME)
+}
+
+async function getImages(id) {
+    const params = {
+        TableName: process.env.IMAGE_TABLE_NAME,
+        KeyConditionExpression: 'id = :uid',
+        ExpressionAttributeValues: {
+            ':uid': id
+        }
+    }
+
+    var documentClient = getDocumentDbClient();
+    let images = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                resolve();
+            } else {
+                console.log(data);
+                resolve(data.Items)
+            }
+        });
+    })
+    return images;
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -823,5 +852,7 @@ module.exports = {
     saveScores,
     countFlashDecks,
     countFlashGangs,
-    getProfile
+    getProfile,
+    putImage,
+    getImages
 }

@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
         returnObject.statusCode=badtoken.statusCode;
     }
     if (token) {
-
+        console.log('GalleryLambda line 25 called')
         if (event.httpMethod.toLowerCase() === 'post') {
             {
                 if (event.body.source) {
@@ -43,6 +43,7 @@ exports.handler = async (event, context) => {
                             s3Config.accessKeyId = process.env.ACCESS_KEY_ID,
                                 s3Config.secretAccessKey = process.env.SECRET_ACCESS_KEY
                         }
+                        console.log('s3Config', s3Config)
                         var s3 = new AWS.S3(s3Config);
                         var bucketParams = {
                             Body: new Buffer(base64Data, 'base64'),
@@ -58,7 +59,7 @@ exports.handler = async (event, context) => {
                                     console.log("Error uploading IMAGE", err, err.stack);
                                     reject(err);
                                 } else {
-                                    console.log("success uploading IMAGE", data);
+                                    console.log("Success uploading IMAGE", data);
                                     resolve(data);
                                 }
                             });
@@ -66,6 +67,7 @@ exports.handler = async (event, context) => {
                         if (s3result.ETag) {
                             //TODO at some point in the future we should have a way that cleans up unused images.
                             reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
+                            await dynamodbfordummies.putImage(token.sub, reply.url)
                         }
                         console.log("s3result", s3result);
                     }
@@ -74,6 +76,9 @@ exports.handler = async (event, context) => {
                 //reply.user = await dynamodbfordummies.getUser(user.id)
     
             }
+        } else if (event.httpMethod.toLowerCase() === 'get') {
+            let images = await dynamodbfordummies.getImages(token.sub)
+            reply = {images}
         }
     }
     returnObject.body = JSON.stringify(reply);

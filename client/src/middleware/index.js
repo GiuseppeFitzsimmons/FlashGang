@@ -1,4 +1,4 @@
-import { SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
+import { GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -204,7 +204,7 @@ async function getFromServer(questObject) {
     var restfulResource = questObject.resource;
     var params = questObject.params;
     var responseCode = 0;
-    var token = localStorage.getItem('token');
+    var token = localStorage.getItem('flashJwt');
     var _url = environment.url + restfulResources[restfulResource];
     if (params && params.id) {
         _url += '/' + params.id
@@ -687,6 +687,17 @@ export function flashGangMiddleware({ dispatch }) {
                     action.url = postResult.url
                 } else {
                     console.log("There's been an error uploading the image", postResult);
+                }
+            } else if (action.type === GET_IMAGES) {
+                console.log('Middleware GET_IMAGES')
+                let questObject={}
+                questObject.resource = 'gallery'
+                let getResult = await getFromServer(questObject)
+                if (getResult.images){
+                    action.images = getResult.images
+                    console.log('action.images L689', action.images)
+                } else {
+                    console.log("Error receiving images", getResult)
                 }
             }
             return next(action);

@@ -12,14 +12,11 @@ import { ActionYoutubeSearchedFor } from 'material-ui/svg-icons';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const loadImage = require('blueimp-load-image');
 
-const allImages = ['/random_profile_male_1.png', '/random_profile_male_1.png',
-    '/random_profile_male_1.png', '/random_profile_male_1.png',
-    '/random_profile_male_1.png', '/random_profile_male_1.png',
-    '/random_profile_male_1.png'];
-
+const allImages = [];
 const holder = {}
 
 class GalleryStyled extends React.Component {
@@ -38,6 +35,16 @@ class GalleryStyled extends React.Component {
         this.setState({
             open: false,
         })
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.images){
+            this.props.images.forEach(image=>{
+                allImages.push(image.url)
+            })
+        }
+    }
+    componentDidMount() {
+        this.props.getImages()
     }
     handleFileChange(e) {
         let file = e.target.files;
@@ -97,9 +104,9 @@ class GalleryStyled extends React.Component {
                         Upload
                 </FlashButton>
                     <DialogContent dividers>
-                        <GridList cellHeight={60} cols={4}>
-                            {allImages.map( (image, index) => (
-                                <GridListTile key={image} id={index} cols={1}>
+                        <GridList cellHeight={160} cols={4} spacing={-32}>
+                            {allImages.map((image, index) => (
+                                <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
                                     <ImageUploadComponentRedux
                                         source={image}
                                         id={index}
@@ -132,15 +139,29 @@ class ImageUploadComponent extends React.Component {
     }
     render() {
         return (
-            <img
-                src={this.props.url ? this.props.url : this.props.source }
-            />
+            <>
+                {
+                    this.props.loading &&
+                    <div className='sweet-loading' style={{
+                        display: 'inline-block',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        top: '0', right: '0', left: '0', bottom: '0',
+                        position: 'absolute',
+                        backgroundColor: 'rgb(255,255,255,.5)'
+                    }} >
+                        <CircularProgress />
+                    </div>
+                }
+                <img
+                    src={this.props.url ? this.props.url : this.props.source}
+                />
+            </>
         )
     }
-
 }
 function mapStateToProps(state, props) {
-    if (state.id==props.id) {
+    if (state.id == props.id) {
         return { loading: state.loading, url: state.url }
     }
     return {};
@@ -150,7 +171,8 @@ function mapDispatchToProps(dispatch) {
 }
 const ImageUploadComponentRedux = connect(mapStateToProps, mapDispatchToProps)(ImageUploadComponent)
 
-const Gallery = withTheme(GalleryStyled);
+const GalleryStyle = withTheme(GalleryStyled);
+const Gallery = connect(mapStateToProps, mapDispatchToProps)(GalleryStyle)
 export {
     Gallery
 }
