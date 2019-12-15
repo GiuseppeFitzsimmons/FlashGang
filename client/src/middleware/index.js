@@ -686,6 +686,10 @@ export function flashGangMiddleware({ dispatch }) {
                 if (postResult.url){
                     action.url = postResult.url
                 } else {
+                    action.errors=postResult.errors ? postResult.errors : [];
+                    if (postResult.error) {
+                        action.errors.push(postResult.error);
+                    }
                     console.log("There's been an error uploading the image", postResult);
                 }
             } else if (action.type === GET_IMAGES) {
@@ -697,7 +701,11 @@ export function flashGangMiddleware({ dispatch }) {
                     action.images = getResult.images
                     console.log('action.images L689', action.images)
                 } else {
-                    console.log("Error receiving images", getResult)
+                    action.errors=getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error receiving images", getResult, action)
                 }
             }
             return next(action);

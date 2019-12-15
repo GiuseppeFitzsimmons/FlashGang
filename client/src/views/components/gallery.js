@@ -151,9 +151,24 @@ class ImageUploadComponent extends React.Component {
                         top: '0', right: '0', left: '0', bottom: '0',
                         position: 'absolute',
                         backgroundColor: 'rgb(255,255,255,.5)',
-                        paddingTop: '24px'
+                        paddingTop: '32px'
                     }} >
                         <CircularProgress/>
+                    </div>
+                }
+                {
+                  this.props.errors &&
+                    <div style={{
+                        display: 'inline-block',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        textAlign: 'center',
+                        top: '0', right: '0', left: '0', bottom: '0',
+                        position: 'absolute',
+                        backgroundColor: 'rgb(255,255,255,.5)',
+                        paddingTop: '32px'
+                    }} >
+                    <Icon style={{ fontSize: 30, color:'rgb(255,100,100,.5)' }}>error</Icon>
                     </div>
                 }
                 <div
@@ -170,7 +185,8 @@ class ImageUploadComponent extends React.Component {
 }
 function mapStateToProps(state, props) {
     if (state.id == props.id) {
-        return { loading: state.loading, url: state.url }
+        console.log("mapStateToProps", state);
+        return { loading: state.loading, url: state.url, errors: state.errors }
     }
     return {};
 }
