@@ -148,11 +148,13 @@ class ImageUploadComponent extends React.Component {
                         display: 'inline-block',
                         justifyContent: 'center',
                         alignItems: 'center',
+                        textAlign: 'center',
                         top: '0', right: '0', left: '0', bottom: '0',
                         position: 'absolute',
-                        backgroundColor: 'rgb(255,255,255,.5)'
+                        backgroundColor: 'rgb(255,255,255,.5)',
+                        paddingTop: '24px'
                     }} >
-                        <CircularProgress />
+                        <CircularProgress/>
                     </div>
                 }
                 <div
