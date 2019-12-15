@@ -160,9 +160,10 @@ class ImageUploadComponent extends React.Component {
                 <div
                     style={{
                         background: `url(${this.props.url ? this.props.url : this.props.source})`,
-                        backgroundSize: '100% auto',
+                        backgroundSize: 'cover',
                         width:'100%',
-                        height:'100%'
+                        height:'100%',
+                        backgroundPosition: 'center center'
                     }}></div>
             </>
         )
