@@ -96,6 +96,8 @@ class GalleryStyled extends React.Component {
                     contentStyle={{ width: "100%", maxWidth: "none" }}
                     aria-labelledby="confirmation-dialog-title"
                     open={this.state.open}
+                    fullWidth={true}
+                    maxWidth='xl'
                 >
                     <DialogTitle id="confirmation-dialog-title">Gallery</DialogTitle>
                     <FlashButton square buttonType='system'
@@ -103,7 +105,7 @@ class GalleryStyled extends React.Component {
                     >
                         Upload
                 </FlashButton>
-                    <DialogContent dividers>
+                    <DialogContent>
                         <GridList cellHeight={160} cols={4} spacing={-32}>
                             {allImages.map((image, index) => (
                                 <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
@@ -153,9 +155,13 @@ class ImageUploadComponent extends React.Component {
                         <CircularProgress />
                     </div>
                 }
-                <img
-                    src={this.props.url ? this.props.url : this.props.source}
-                />
+                <div
+                    style={{
+                        background: `url(${this.props.url ? this.props.url : this.props.source})`,
+                        backgroundSize: '100% auto',
+                        width:'100%',
+                        height:'100%'
+                    }}></div>
             </>
         )
     }

@@ -107,6 +107,11 @@ const greenTheme = createMuiTheme({
           width: '20%',
           height: 'auto'
         }
+      },
+      MuiGridList: {
+        root: {
+          margin: '0'
+        }
       }
     },
     systemButton: {
