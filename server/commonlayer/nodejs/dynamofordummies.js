@@ -805,34 +805,6 @@ async function getUserDeck(flashDeckId, userId) {
     else return null
 }
 
-async function putImage(id, url) {
-    let item = { id, url }
-    let result = await putItem(item, process.env.IMAGE_TABLE_NAME)
-}
-
-async function getImages(id) {
-    const params = {
-        TableName: process.env.IMAGE_TABLE_NAME,
-        KeyConditionExpression: 'id = :uid',
-        ExpressionAttributeValues: {
-            ':uid': id
-        }
-    }
-
-    var documentClient = getDocumentDbClient();
-    let images = await new Promise((resolve, reject) => {
-        documentClient.query(params, function (err, data) {
-            if (err) {
-                console.log(err);
-                resolve();
-            } else {
-                console.log(data);
-                resolve(data.Items)
-            }
-        });
-    })
-    return images;
-}
 
 module.exports = {
     putItem,
@@ -853,6 +825,4 @@ module.exports = {
     countFlashDecks,
     countFlashGangs,
     getProfile,
-    putImage,
-    getImages
 }

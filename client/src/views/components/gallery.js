@@ -16,7 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const loadImage = require('blueimp-load-image');
 
-const allImages = [];
+//const allImages = [];
 const holder = {}
 
 class GalleryStyled extends React.Component {
@@ -37,11 +37,11 @@ class GalleryStyled extends React.Component {
         })
     }
     componentDidUpdate(prevProps) {
-        if (this.props.images){
-            this.props.images.forEach(image=>{
-                allImages.push(image.url)
+        /*if (this.props.images) {
+            this.props.images.forEach(image => {
+                allImages.push(image)
             })
-        }
+        }*/
     }
     componentDidMount() {
         this.props.getImages()
@@ -54,7 +54,7 @@ class GalleryStyled extends React.Component {
                 function (img, data) {
                     try {
                         let binaryData = img.toDataURL();
-                        allImages.push(binaryData)
+                        holder.gallery.props.images.splice(0,0,binaryData)
                         holder.gallery.forceUpdate()
                         //binaryData is all we need to send back to the server
                         console.log("dataUrl", binaryData);
@@ -76,12 +76,15 @@ class GalleryStyled extends React.Component {
     }
 
     render() {
+        const images = this.props.images ? this.props.images : []
+        //console.log('allImages', allImages)
         return (
             <>
                 <form id="file-upload" autocomplete="off" style={{ display: 'none' }}>
                     <input id="input-file-upload" type="file" onChange={this.handleFileChange} accept="image/png, image/jpeg" />
                 </form>
-                <FlashButton square buttonType='system'
+                <FlashButton
+                    buttonType='system'
                     startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>add_photo_alternate</Icon>}
                     onClick={
                         () => this.setState({ open: true })
@@ -100,15 +103,17 @@ class GalleryStyled extends React.Component {
                 >
                     <DialogTitle id="confirmation-dialog-title">Gallery</DialogTitle>
                     <FlashButton square buttonType='system'
+                        disabled={!this.props.images}
                         onClick={() => document.getElementById("input-file-upload").click()}
                     >
                         Upload
                 </FlashButton>
                     <DialogContent>
                         <GridList cellHeight={160} cols={4} spacing={-32}>
-                            {allImages.map((image, index) => (
+                            {images.map((image, index) => (
                                 <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
                                     <ImageUploadComponentRedux
+                                        onImageSelected={this.props.onImageSelected}
                                         source={image}
                                         id={index}
                                     />
@@ -153,11 +158,11 @@ class ImageUploadComponent extends React.Component {
                         backgroundColor: 'rgb(255,255,255,.5)',
                         paddingTop: '32px'
                     }} >
-                        <CircularProgress/>
+                        <CircularProgress />
                     </div>
                 }
                 {
-                  this.props.errors && false &&
+                    this.props.errors && false &&
                     <div style={{
                         display: 'inline-block',
                         justifyContent: 'center',
@@ -168,17 +173,27 @@ class ImageUploadComponent extends React.Component {
                         backgroundColor: 'rgb(255,255,255,.5)',
                         paddingTop: '32px'
                     }} >
-                    <Icon style={{ fontSize: 30, color:'rgb(255,100,100,.75)' }}>error</Icon>
+                        <Icon style={{ fontSize: 30, color: 'rgb(255,100,100,.75)' }}>error</Icon>
                     </div>
                 }
                 <div
                     style={{
                         background: `url(${this.props.url ? this.props.url : this.props.source})`,
                         backgroundSize: 'cover',
-                        width:'100%',
-                        height:'100%',
+                        width: '100%',
+                        height: '100%',
                         backgroundPosition: 'center center'
-                    }}></div>
+                    }}
+                    onClick={() => {
+                        let isBinary = this.props.source.indexOf('data:image') == 0
+                        if (!isBinary) {
+                            this.props.onImageSelected(this.props.source)
+                        }
+                    }
+                    }
+                >
+
+                </div>
             </>
         )
     }
@@ -189,13 +204,16 @@ function mapStateToProps(state, props) {
     }
     return {};
 }
+function mapStateToPropsGallery(state, props) {
+    return { images: state.images };
+}
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)
 }
 const ImageUploadComponentRedux = connect(mapStateToProps, mapDispatchToProps)(ImageUploadComponent)
 
 const GalleryStyle = withTheme(GalleryStyled);
-const Gallery = connect(mapStateToProps, mapDispatchToProps)(GalleryStyle)
+const Gallery = connect(mapStateToPropsGallery, mapDispatchToProps)(GalleryStyle)
 export {
     Gallery
 }

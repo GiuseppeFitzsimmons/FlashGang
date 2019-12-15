@@ -699,7 +699,7 @@ export function flashGangMiddleware({ dispatch }) {
                 let getResult = await getFromServer(questObject)
                 if (getResult.images){
                     action.images = getResult.images
-                    console.log('action.images L689', action.images)
+                    console.log('getResult.images', getResult.images)
                 } else {
                     action.errors=getResult.errors ? getResult.errors : [];
                     if (getResult.error) {

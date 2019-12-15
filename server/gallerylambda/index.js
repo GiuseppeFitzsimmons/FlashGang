@@ -18,11 +18,10 @@ exports.handler = async (event, context) => {
         token = tokenUtility.validateToken(event)
     } catch (badtoken) {
         console.log("BADTOKEN", badtoken)
-        reply=badtoken;
-        returnObject.statusCode=badtoken.statusCode;
+        reply = badtoken;
+        returnObject.statusCode = badtoken.statusCode;
     }
     if (token) {
-        console.log('GalleryLambda line 25 called')
         if (event.httpMethod.toLowerCase() === 'post') {
             {
                 if (event.body.source) {
@@ -30,21 +29,9 @@ exports.handler = async (event, context) => {
                         var imageData = event.body.source.split(',');
                         var base64Data = imageData[1];
                         var imageType = imageData[0].toLowerCase().replace("data:image/", '').replace(';base64', '');
-                        var subPath = `/images/${uuidv4()}.${imageType}`
+                        var subPath = `/images/${token.sub}/${uuidv4()}.${imageType}`
                         var path = `${process.env.IMAGE_PREFIX}${subPath}`
-                        var s3Config = {};
-                        if (process.env.S3_ENDPOINT && process.env.S3_ENDPOINT != '') {
-                            s3Config.endpoint = process.env.S3_ENDPOINT;
-                        }
-                        if (process.env.REGION && process.env.REGION != '') {
-                            s3Config.region = process.env.REGION;
-                        }
-                        if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
-                            s3Config.accessKeyId = process.env.ACCESS_KEY_ID,
-                                s3Config.secretAccessKey = process.env.SECRET_ACCESS_KEY
-                        }
-                        console.log('s3Config', s3Config)
-                        var s3 = new AWS.S3(s3Config);
+                        var s3 = gets3()
                         var bucketParams = {
                             Body: new Buffer(base64Data, 'base64'),
                             Bucket: process.env.IMAGE_BUCKET,
@@ -67,18 +54,46 @@ exports.handler = async (event, context) => {
                         if (s3result.ETag) {
                             //TODO at some point in the future we should have a way that cleans up unused images.
                             reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
-                            await dynamodbfordummies.putImage(token.sub, reply.url)
+                            //await dynamodbfordummies.putImage(token.sub, reply.url)
                         }
                         console.log("s3result", s3result);
                     }
                 }
                 //await dynamodbfordummies.putItem(user, process.env.IMAGE_TABLE)
                 //reply.user = await dynamodbfordummies.getUser(user.id)
-    
+
             }
         } else if (event.httpMethod.toLowerCase() === 'get') {
-            let images = await dynamodbfordummies.getImages(token.sub)
-            reply = {images}
+            var s3 = gets3()
+            var params = {
+                Bucket: process.env.IMAGE_BUCKET,
+                Delimiter: '/',
+                MaxKeys: 1000,
+                Prefix: `flashgang/images/${token.sub}/`
+            };
+            let s3result = await new Promise((resolve, reject) => {
+                s3.listObjectsV2(params, function (err, data) {
+                    if (err) {
+                        console.log(err, err.stack)
+                        reject({ err })
+                    }
+                    else {
+                        console.log(data)
+                        resolve({ data })
+                    }
+                });
+            })
+            if (s3result.err) {
+                returnObject.statusCode = 400
+            } else {
+                reply.images = []
+                for (var i in s3result.data.Contents) {
+                    let key = s3result.data.Contents[i].Key
+                    key = key.replace('flashgang', '')
+                    reply.images.push(`https://${process.env.S3_SERVER_DOMAIN}${key}`)
+                }
+                console.log('reply.images', reply.images)
+            }
         }
     }
     returnObject.body = JSON.stringify(reply);
@@ -89,4 +104,21 @@ exports.handler = async (event, context) => {
     }
     console.log("GalleryLambda ", returnObject);
     return returnObject
+}
+
+function gets3() {
+    var s3Config = {};
+    if (process.env.S3_ENDPOINT && process.env.S3_ENDPOINT != '') {
+        s3Config.endpoint = process.env.S3_ENDPOINT;
+    }
+    if (process.env.REGION && process.env.REGION != '') {
+        s3Config.region = process.env.REGION;
+    }
+    if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
+        s3Config.accessKeyId = process.env.ACCESS_KEY_ID,
+            s3Config.secretAccessKey = process.env.SECRET_ACCESS_KEY
+    }
+    console.log('s3Config', s3Config)
+    var s3 = new AWS.S3(s3Config);
+    return s3
 }

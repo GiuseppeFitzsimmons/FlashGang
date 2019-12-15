@@ -25,6 +25,7 @@ class FlashCardEditor extends React.Component {
         this.addIncorrectAnswer = this.addIncorrectAnswer.bind(this)
         this.removeCorrectAnswer = this.removeCorrectAnswer.bind(this)
         this.removeIncorrectAnswer = this.removeIncorrectAnswer.bind(this)
+        this.onImageSelected = this.onImageSelected.bind(this)
     }
     componentDidMount() {
         if (this.props.navEvent) {
@@ -48,6 +49,11 @@ class FlashCardEditor extends React.Component {
             this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].incorrectAnswers = []
         }
         this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].incorrectAnswers.push('')
+        this.forceUpdate()
+    }
+    onImageSelected(url){
+        const flashCard = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
+        flashCard.image = url
         this.forceUpdate()
     }
     render() {
@@ -177,6 +183,12 @@ class FlashCardEditor extends React.Component {
                         input => input ? input.reset(flashCard.question) : true
                     }
                 />
+                {
+                    flashCard.image &&
+                    <img
+                        src = {flashCard.image}
+                    />
+                }
                 {generateCorrectAnswerList()}
                 <FlashButton
                     color='primary'
@@ -189,7 +201,9 @@ class FlashCardEditor extends React.Component {
                 >
                     Add correct answer
                 </FlashButton>
-                <Gallery />
+                <Gallery
+                    onImageSelected = {this.onImageSelected}
+                />
                 {generateIncorrectAnswerList()}
                 <FlashButton
                     color='secondary'
