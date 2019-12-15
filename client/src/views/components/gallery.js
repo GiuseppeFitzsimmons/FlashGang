@@ -157,7 +157,7 @@ class ImageUploadComponent extends React.Component {
                     </div>
                 }
                 {
-                  this.props.errors &&
+                  this.props.errors && false &&
                     <div style={{
                         display: 'inline-block',
                         justifyContent: 'center',
@@ -168,7 +168,7 @@ class ImageUploadComponent extends React.Component {
                         backgroundColor: 'rgb(255,255,255,.5)',
                         paddingTop: '32px'
                     }} >
-                    <Icon style={{ fontSize: 30, color:'rgb(255,100,100,.5)' }}>error</Icon>
+                    <Icon style={{ fontSize: 30, color:'rgb(255,100,100,.75)' }}>error</Icon>
                     </div>
                 }
                 <div
@@ -185,7 +185,6 @@ class ImageUploadComponent extends React.Component {
 }
 function mapStateToProps(state, props) {
     if (state.id == props.id) {
-        console.log("mapStateToProps", state);
         return { loading: state.loading, url: state.url, errors: state.errors }
     }
     return {};
