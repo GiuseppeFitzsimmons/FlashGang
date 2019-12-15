@@ -82,6 +82,7 @@ class GalleryStyled extends React.Component {
                     <input id="input-file-upload" type="file" onChange={this.handleFileChange} accept="image/png, image/jpeg" />
                 </form>
                 <FlashButton square buttonType='system'
+                    startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>add_photo_alternate</Icon>}
                     onClick={
                         () => this.setState({ open: true })
                     }>
