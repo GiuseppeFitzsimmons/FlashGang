@@ -178,7 +178,7 @@ class ImageUploadComponent extends React.Component {
                 }
                 <div
                     style={{
-                        background: `url(${this.props.url ? this.props.url : this.props.source})`,
+                        background: `url(${this.props.source})`,
                         backgroundSize: 'cover',
                         width: '100%',
                         height: '100%',
@@ -200,7 +200,7 @@ class ImageUploadComponent extends React.Component {
 }
 function mapStateToProps(state, props) {
     if (state.id == props.id) {
-        return { loading: state.loading, url: state.url, errors: state.errors }
+        return { loading: state.loading, source: state.url, errors: state.errors }
     }
     return {};
 }

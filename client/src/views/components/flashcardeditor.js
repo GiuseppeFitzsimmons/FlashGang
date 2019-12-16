@@ -185,8 +185,14 @@ class FlashCardEditor extends React.Component {
                 />
                 {
                     flashCard.image &&
-                    <img
-                        src = {flashCard.image}
+                    <div
+                        style={{
+                            background: 'url('+flashCard.image+')',
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center center',
+                            height:'132px',
+                            backgroundRepeat: 'no-repeat'
+                        }}
                     />
                 }
                 {generateCorrectAnswerList()}
