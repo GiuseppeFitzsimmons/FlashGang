@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ClickNHold from 'react-click-n-hold';
 
 const loadImage = require('blueimp-load-image');
 
@@ -22,14 +23,22 @@ const holder = {}
 class GalleryStyled extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { open: false }
+        this.state = { open: false, selecting: false }
         this.handleCancel = this.handleCancel.bind(this)
+        this.handleDelete = this.handleDelete.bind(this)
         holder.gallery = this
     }
     handleEntering() {
     }
+    handleDelete(){
+        
+        this.props.deleteImages(this.props.images)
+    }
     handleCancel() {
-        this.setState({ open: false })
+        for (var i in this.props.images) {
+            this.props.images[i].isSelected = false
+        }
+        this.setState({ open: false, selecting: false })
     }
     setImage() {
         this.setState({
@@ -54,7 +63,7 @@ class GalleryStyled extends React.Component {
                 function (img, data) {
                     try {
                         let binaryData = img.toDataURL();
-                        holder.gallery.props.images.splice(0,0,binaryData)
+                        holder.gallery.props.images.splice(0, 0, binaryData)
                         holder.gallery.forceUpdate()
                         //binaryData is all we need to send back to the server
                         console.log("dataUrl", binaryData);
@@ -112,17 +121,52 @@ class GalleryStyled extends React.Component {
                         <GridList cellHeight={160} cols={4} spacing={-32}>
                             {images.map((image, index) => (
                                 <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
-                                    <ImageUploadComponentRedux
-                                        onImageSelected={this.props.onImageSelected}
-                                        source={image}
-                                        id={index}
-                                    />
+                                    <ClickNHold
+                                        style={{
+                                            height: '100%'
+                                        }}
+                                        time={2} // Time to keep pressing. Default is 2
+                                        onStart={() => { console.log('onStart called') }}//this.start} // Start callback
+                                        onClickNHold={() => { console.log('onClickNHold called') }}//this.clickNHold} //Timeout callback
+                                        onEnd={(event, enough) => {
+                                            console.log('onEnd called', 'event', event, 'enough', enough)
+                                            if (enough) {
+                                                image.isSelected = true
+                                                this.setState({ selecting: true })
+                                                console.log('it was enough')
+                                            } else {
+                                                if (this.state.selecting) {
+                                                    image.isSelected = !image.isSelected
+                                                    var _isSelecting = false
+                                                    for (var i in images) {
+                                                        if (images[i].isSelected) {
+                                                            _isSelecting = true
+                                                            break
+                                                        }
+                                                    }
+                                                    this.setState({ selecting: _isSelecting })
+                                                } else {
+                                                    this.props.onImageSelected(image.url)
+                                                }
+                                            }
+                                        }}>
+                                        <>
+                                            <ImageUploadComponentRedux
+                                                source={image.url}
+                                                id={index}
+                                                isSelected={image.isSelected}
+                                            />
+                                        </>
+                                    </ClickNHold>
                                 </GridListTile>
                             ))}
                         </GridList>
                     </DialogContent>
 
                     <DialogActions>
+                        <FlashButton disabled={!this.state.selecting} onClick={this.handleDelete} color="primary" buttonType='action'>
+                            Delete
+                        </FlashButton>
                         <FlashButton onClick={this.handleCancel} color="primary">
                             Close
                         </FlashButton>
@@ -162,7 +206,7 @@ class ImageUploadComponent extends React.Component {
                     </div>
                 }
                 {
-                    this.props.errors && false &&
+                    this.props.isSelected &&
                     <div style={{
                         display: 'inline-block',
                         justifyContent: 'center',
@@ -173,7 +217,6 @@ class ImageUploadComponent extends React.Component {
                         backgroundColor: 'rgb(255,255,255,.5)',
                         paddingTop: '32px'
                     }} >
-                        <Icon style={{ fontSize: 30, color: 'rgb(255,100,100,.75)' }}>error</Icon>
                     </div>
                 }
                 <div
@@ -184,13 +227,6 @@ class ImageUploadComponent extends React.Component {
                         height: '100%',
                         backgroundPosition: 'center center'
                     }}
-                    onClick={() => {
-                        let isBinary = this.props.source.indexOf('data:image') == 0
-                        if (!isBinary) {
-                            this.props.onImageSelected(this.props.source)
-                        }
-                    }
-                    }
                 >
 
                 </div>

@@ -94,6 +94,37 @@ exports.handler = async (event, context) => {
                 }
                 console.log('reply.images', reply.images)
             }
+        } else if (event.httpMethod.toLowerCase() === 'delete') {
+            var s3 = gets3()
+            var objectsToDelete = []
+            for (var i in event.body.images) {
+                var splitted = event.body.images[i].split('/')
+                objectsToDelete.push({ Key: `flashgang/images/${splitted[splitted.length - 2]}/${splitted[splitted.length - 1]}` })
+            }
+            var params = {
+                Bucket: process.env.IMAGE_BUCKET,
+                Delete: {
+                    Objects: objectsToDelete
+                }
+            };
+            let s3result = await new Promise((resolve, reject) => {
+                s3.deleteObjects(params, function (err, data) {
+                    if (err) {
+                        console.log(err, err.stack)
+                        reject({ err })
+                    }
+                    else {
+                        console.log(data)
+                        resolve({ data })
+                    }
+                });
+            })
+            if (s3result.err) {
+                returnObject.statusCode = 400
+                reply = {
+                    errors: []
+                }
+            }
         }
     }
     returnObject.body = JSON.stringify(reply);

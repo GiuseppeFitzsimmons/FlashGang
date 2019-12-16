@@ -25,6 +25,7 @@ export const SET_SETTINGS = 'SET_SETTINGS';
 export const ENDSYNCHRONISE = 'ENDSYNCHRONISE';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const GET_IMAGES = 'GET_IMAGES';
+export const DELETE_IMAGES = 'DELETE_IMAGES';
 
 
 export function newDeck() {
@@ -123,21 +124,26 @@ export function poll(poll) {
 }
 export function synchronise() {
     console.log("Action SYNCHRONISE")
-    return { type: SYNCHRONISE}
+    return { type: SYNCHRONISE }
 
 }
 export function setSettings(user) {
     console.log("Action SET_SETTINGS")
-    return { type: SET_SETTINGS, data: {user}}
+    return { type: SET_SETTINGS, data: { user } }
 
 }
 export function uploadImage(source, id) {
     console.log("Action UPLOAD_IMAGE")
-    return { type: UPLOAD_IMAGE, data: {source, id}}
+    return { type: UPLOAD_IMAGE, data: { source, id } }
 
 }
 export function getImages() {
     console.log("Action GET_IMAGES")
     return { type: GET_IMAGES }
+
+}
+export function deleteImages(images) {
+    console.log("Action DELETE_IMAGES")
+    return { type: DELETE_IMAGES, data: { images } }
 
 }
