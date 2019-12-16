@@ -124,7 +124,7 @@ class GalleryStyled extends React.Component {
 
                     <DialogActions>
                         <FlashButton onClick={this.handleCancel} color="primary">
-                            Cancel
+                            Close
                         </FlashButton>
                     </DialogActions>
                 </Dialog>
