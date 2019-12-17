@@ -8,48 +8,53 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashButton} from '../widgets/FlashBits'
-import {FlashTypography} from '../widgets/FlashBits';
+import { FlashButton } from '../widgets/FlashBits'
+import { FlashTypography } from '../widgets/FlashBits';
 
 export default class FlashCardScore extends React.Component {
     render() {
         const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
         let renderable = {}
-        if (card.correct){
-            renderable = 
-            <>
-            <FlashTypography variant="h4" gutterBottom>
-                Correct answer!
-            </FlashTypography>
-            <FlashTypography variant="h4" gutterBottom correct>
-                {card.correctAnswers.join(', ')}
-            </FlashTypography>
-            </>
-        } else {
-            renderable = 
-            <>
-            <FlashTypography variant="h4" gutterBottom incorrect>
-                Incorrect Answer!
-            </FlashTypography>
-            {
-                //How about this? When in cram mode, you don't get to see the correct answer
-                this.props.flashDeck.testType!='CRAM' &&
+        if (card.correct) {
+            renderable =
                 <>
-                    <FlashTypography variant="h6" gutterBottom>
-                    The correct answer was: 
-                    </FlashTypography>
-                    <FlashTypography variant="h5" gutterBottom correct>
+                    <FlashTypography variant="h4" gutterBottom>
+                        Correct answer!
+            </FlashTypography>
+                    <FlashTypography variant="h4" gutterBottom correct>
                         {card.correctAnswers.join(', ')}
                     </FlashTypography>
                 </>
-            }
-            <FlashTypography variant="h6" gutterBottom>
-            Your answer was: 
+        } else {
+            renderable =
+                <>
+                    <FlashTypography variant="h4" gutterBottom incorrect>
+                        Incorrect Answer!
             </FlashTypography>
-            <FlashTypography variant="h5" gutterBottom incorrect>
-            {Array.isArray(card.userAnswer)?card.userAnswer.join(', '): card.userAnswer}
-            </FlashTypography>
-            </>
+                    {
+                        //How about this? When in cram mode, you don't get to see the correct answer
+                        this.props.flashDeck.testType != 'CRAM' &&
+                        <>
+                            <FlashTypography variant="h6" gutterBottom>
+                                The correct answer was:
+                            </FlashTypography>
+                            <FlashTypography variant="h5" gutterBottom correct>
+                                {card.correctAnswers.join(', ')}
+                            </FlashTypography>
+                            {card.description &&
+                                <FlashTypography variant="h6" gutterBottom>
+                                    {card.description}
+                                </FlashTypography>
+                            }
+                        </>
+                    }
+                    <FlashTypography variant="h6" gutterBottom>
+                        Your answer was:
+                    </FlashTypography>
+                    <FlashTypography variant="h5" gutterBottom incorrect>
+                        {Array.isArray(card.userAnswer) ? card.userAnswer.join(', ') : card.userAnswer}
+                    </FlashTypography>
+                </>
         }
         return (
             <Grid container
@@ -57,14 +62,24 @@ export default class FlashCardScore extends React.Component {
                 justify="space-between"
                 alignItems="flex-start">
                 <Grid>
-            <FlashTypography variant="h4" gutterBottom>
-            {card.question}
-            </FlashTypography>
-                    
+                    <FlashTypography variant="h4" gutterBottom>
+                        {
+                            card.image &&
+                            <div
+                                style={{
+                                    textAlign: 'center'
+                                }}
+                            >
+                                <img src={card.image} height='132px' />
+                            </div>
+                        }
+                        {card.question}
+                    </FlashTypography>
+
                     {renderable}
                     <FlashButton
-                    onClick={()=>{this.props.onNextCard(this.props.flashDeck)}}
-                    buttonType='action'
+                        onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
+                        buttonType='action'
                     >
                         Next Card
                     </FlashButton>

@@ -62,6 +62,11 @@ class IntegratedInput extends Component {
                         }
                     }
                 }}
+                onBlur = {()=>{
+                    if (this.props.onBlur){
+                        this.props.onBlur()
+                    }
+                }}
                 invalid={_invalid}
                 label={this.props.label}
                 id={this.props.id}

@@ -30,8 +30,8 @@ class GalleryStyled extends React.Component {
     }
     handleEntering() {
     }
-    handleDelete(){
-        
+    handleDelete() {
+
         this.props.deleteImages(this.props.images)
     }
     handleCancel() {
@@ -63,7 +63,7 @@ class GalleryStyled extends React.Component {
                 function (img, data) {
                     try {
                         let binaryData = img.toDataURL();
-                        holder.gallery.props.images.splice(0, 0, binaryData)
+                        holder.gallery.props.images.splice(0, 0, {url: binaryData})
                         holder.gallery.forceUpdate()
                         //binaryData is all we need to send back to the server
                         console.log("dataUrl", binaryData);
@@ -182,9 +182,11 @@ class ImageUploadComponent extends React.Component {
         super(props)
     }
     componentDidMount() {
-        let isBinary = this.props.source.indexOf('data:image') == 0
-        if (isBinary) {
-            this.props.uploadImage(this.props.source, this.props.id)
+        if (this.props.source) {
+            let isBinary = this.props.source.indexOf('data:image') == 0
+            if (isBinary) {
+                this.props.uploadImage(this.props.source, this.props.id)
+            }
         }
     }
     render() {

@@ -51,10 +51,13 @@ class FlashCardEditor extends React.Component {
         this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex].incorrectAnswers.push('')
         this.forceUpdate()
     }
-    onImageSelected(url){
+    onImageSelected(url) {
         const flashCard = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
         flashCard.image = url
+        this.props.flashDeck.dirty = true
         this.forceUpdate()
+    }
+    componentDidUpdate() {
     }
     render() {
         const flashCard = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
@@ -64,6 +67,7 @@ class FlashCardEditor extends React.Component {
         }
 
         const generateCorrectAnswerList = () => {
+            const thisCardEditor = this
             var _display = flashCard.correctAnswers.map((answer, i) => {
                 let removeButton = ''
                 let _gridWidth = 12;
@@ -104,11 +108,60 @@ class FlashCardEditor extends React.Component {
                             />
                         </Grid>
                         {removeButton}
-                    </Grid>)
+                    </Grid>
+                )
             })
             return (
                 <div>
                     {_display}
+                    {flashCard.description || flashCard.description == '' &&
+                        <Grid container
+                            direction="row"
+                            justify="space-between"
+                            alignItems="flex-end">
+                            <Grid item xs={11} sm={11}>
+                                <IntegratedInput
+                                    label={'Description'}
+                                    placeholder={'Description'}
+                                    onChange={
+                                        (event) => { flashCard.description = event.target.value; this.props.flashDeck.dirty = true; }
+                                    }
+                                    onBlur = {()=>{thisCardEditor.forceUpdate()}}
+                                    ref={
+                                        input => input ? input.reset(flashCard.description) : true
+                                    }
+                                />
+                            </Grid>
+                            <Grid >
+                                <MdDelete
+                                    onClick={
+                                        () => {
+                                            delete flashCard.description;
+                                            this.forceUpdate()
+                                        }
+                                    }
+                                />
+                            </Grid>
+                        </Grid>
+                    }
+                    {!flashCard.description && flashCard.description != '' &&
+                        <Grid>
+                            <FlashButton
+                                color='primary'
+                                variant='contained'
+                                buttonType='system'
+                                startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>check_box</Icon>}
+                                onClick={
+                                    () => {
+                                        flashCard.description = ''
+                                        this.forceUpdate()
+                                    }
+                                }
+                            >
+                                Add decription
+                            </FlashButton>
+                        </Grid>
+                    }
                 </div>
             )
         }
@@ -195,7 +248,7 @@ class FlashCardEditor extends React.Component {
                             textAlign: 'center'
                         }}
                     >
-                        <img src={flashCard.image} height='132px'/>
+                        <img src={flashCard.image} height='132px' />
                     </div>
                 }
                 {generateCorrectAnswerList()}
@@ -211,7 +264,7 @@ class FlashCardEditor extends React.Component {
                     Add correct answer
                 </FlashButton>
                 <Gallery
-                    onImageSelected = {this.onImageSelected}
+                    onImageSelected={this.onImageSelected}
                 />
                 {generateIncorrectAnswerList()}
                 <FlashButton

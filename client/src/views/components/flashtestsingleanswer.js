@@ -8,7 +8,7 @@ import IntegratedInput from '../widgets/IntegratedInput'
 import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
-import {FlashButton} from '../widgets/FlashBits'
+import { FlashButton } from '../widgets/FlashBits'
 
 export default class FlashTestSingleAnswer extends React.Component {
     render() {
@@ -19,9 +19,19 @@ export default class FlashTestSingleAnswer extends React.Component {
                 justify="space-between"
                 alignItems="flex-start">
                 <Grid>
+                    {
+                        card.image &&
+                        <div
+                            style={{
+                                textAlign: 'center'
+                            }}
+                        >
+                            <img src={card.image} height='132px' />
+                        </div>
+                    }
                     {card.question}
                     <IntegratedInput
-                        onEnterKey={(e)=>{
+                        onEnterKey={(e) => {
                             this.props.onNextCard(this.props.flashDeck)
                         }}
                         label={'Answer'}
@@ -30,13 +40,13 @@ export default class FlashTestSingleAnswer extends React.Component {
                             (event) => { card.userAnswer = event.target.value }
                         }
                         ref={
-                            input=>input ? input.reset('') : true
+                            input => input ? input.reset('') : true
                         }
                     >
                     </IntegratedInput>
                     <FlashButton
-                    onClick={()=>{this.props.onNextCard(this.props.flashDeck)}}
-                    buttonType='action'
+                        onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
+                        buttonType='action'
                     >
                         Next Card
                     </FlashButton>
