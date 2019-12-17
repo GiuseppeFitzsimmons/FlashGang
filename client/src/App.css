@@ -23,3 +23,40 @@
 html, body, #root {
   height: 100%;
 }
+.splash-enter {
+  height: 100%;
+  background-color: 'green';
+  margin-left: -10px;
+  margin-top: -10px;
+  width: calc(100% + 10px + 10px);
+}
+.splash-enter-active {
+  height: 100%;
+  transition: height 500ms;
+  background-color: rgb(97, 136, 51);
+  margin-left: -10px;
+  margin-top: -10px;
+  width: calc(100% + 10px + 10px);
+}
+.splash-exit {
+  height: 100%;
+  background-color: rgb(97, 136, 51);
+  margin-left: -10px;
+  margin-top: -10px;
+  width: calc(100% + 10px + 10px);
+}
+.splash-exit-done {
+  height: 10%;
+  background-color: rgb(97, 136, 51);
+  margin-left: -10px;
+  margin-top: -10px;
+  width: calc(100% + 10px + 10px);
+}
+.splash-exit-active {
+  height: 10%;
+  transition: height 500ms;
+  background-color: rgb(97, 136, 51);
+  margin-left: -10px;
+  margin-top: -10px;
+  width: calc(100% + 10px + 10px);
+}

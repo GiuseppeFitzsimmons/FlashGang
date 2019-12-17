@@ -60,13 +60,14 @@ exports.handler = async (event, context) => {
                 let decodedAccessToken;
                 let decodedRefreshAccessToken;
                 try {
-                    console.log("validating expired access token", event.headers.Authorization);
-                    decodedAccessToken = jwtUtility.validateToken(event, true)
-                    event.authorizationToken = event.body.token
+                    console.log("validating expired access token", event);
+                    decodedAccessToken = tokenUtility.validateToken(event, true);
+                    event.authorizationToken = event.body.token;
                     console.log("validating expired refresh token", event.authorizationToken);
-                    decodedRefreshAccessToken = jwtUtility.validateToken(event, false)
+                    decodedRefreshAccessToken = tokenUtility.validateToken(event, false)
+                } catch (err) { 
+                    console.log("Error validating expired access token", err, event);
                 }
-                catch (err) { }
                 if (decodedAccessToken && decodedRefreshAccessToken && decodedAccessToken.uuid == decodedRefreshAccessToken.uuid) {
                     let tokenPair = tokenUtility.generateNewPair(decodedRefreshAccessToken.sub, 'all')
                     reply.token = tokenPair.signedJwt

@@ -7,15 +7,19 @@ import { FlashButton } from '../widgets/FlashBits';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Button, Grid, GridList } from '@material-ui/core';
 import queryString, { parse } from 'query-string'
+import '../../App.css'
+import { CSSTransition } from 'react-transition-group';
+import InlineSplashScreen from './inlinesplashscreen';
 
 const env = require('../../middleware/environment.js');
 const environment = env.getEnvironment(window.location.origin);
 var googleUrl = environment.googleLogin;
 
+
 class Login extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { user: {}, mode: 'LOGIN' }
+        this.state = { user: {}, mode: 'LOGIN', showSplash: true }
     }
     componentDidUpdate() {
         console.log('this.props from login', this.props)
@@ -26,12 +30,27 @@ class Login extends React.Component {
             }
         }
     }
+    componentDidMount() {
+        const login=this;
+        setTimeout(function() {
+            login.setState({showSplash:false});
+        },5000)
+    }
 
     render() {
         const parsedurl = queryString.parseUrl(window.location.href)
         console.log('parsedurl', parsedurl)
         let renderable =
             <>
+            <CSSTransition
+            in={this.state.showSplash}
+            timeout={500}
+            classNames="splash"
+          >
+            <div class='splash-enter' style={{backgroundColor:'rgb(139, 195, 74)'}}>
+                <InlineSplashScreen/>
+            </div>
+            </CSSTransition>
                 <IntegratedInput
                     errors={this.props.errors}
                     id='id'
