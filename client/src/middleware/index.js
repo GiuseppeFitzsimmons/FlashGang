@@ -1,4 +1,4 @@
-import { GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
+import { DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -129,6 +129,8 @@ async function postToServer(questObject) {
     var method = 'POST'
     if (questObject.update) {
         method = 'PUT'
+    } else if (questObject.delete){
+        method = 'DELETE'
     }
     var _headers = {}
     _headers.Authorization = token
@@ -199,7 +201,7 @@ async function saveScore(flashDeck) {
     localStorage.setItem('score-' + flashDeck.id, JSON.stringify(score))
 }
 
-async function getFromServer(questObject) {
+async function getFromServer(questObject, method) {
     var environment = env.getEnvironment(window.location.origin);
     var restfulResource = questObject.resource;
     var params = questObject.params;
@@ -210,7 +212,7 @@ async function getFromServer(questObject) {
         _url += '/' + params.id
     }
     let reply = await fetch(_url, {
-        method: "GET",
+        method: method ? "DELETE" : "GET",
         credentials: "same-origin", // send cookies
         headers: {
             'Authorization': token,
@@ -235,6 +237,10 @@ async function getFromServer(questObject) {
         reply.responseCode = responseCode;
         return reply
     }
+}
+
+async function deleteFromServer(questObject) {
+    return await getFromServer(questObject, 'deletion')
 }
 
 async function refreshToken() {
@@ -590,7 +596,7 @@ export function flashGangMiddleware({ dispatch }) {
                     questObject.params = Object.assign({}, action.data.user)
                     questObject.resource = 'account'
                     let postResult = await postToServer(questObject)
-                    if (postResult.user){
+                    if (postResult.user) {
                         localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                     }
                     if (postResult.token) {
@@ -609,7 +615,7 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
                 let postResult = await postToServer(questObject)
-                if (postResult.user){
+                if (postResult.user) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
                 if (postResult.token) {
@@ -672,21 +678,21 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params.account_function = 'setsettings'
                 questObject.resource = 'setsettings'
                 let postResult = await postToServer(questObject)
-                if (postResult.user){
+                if (postResult.user) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
             } else if (action.type === UPLOAD_IMAGE) {
                 console.log('Middleware UPLOAD_IMAGE')
                 dispatch({ type: LOADING, data: { loading: true, id: action.data.id } })
                 let questObject = {}
-                questObject.params = {source: action.data.source}
+                questObject.params = { source: action.data.source }
                 questObject.resource = 'gallery'
                 let postResult = await postToServer(questObject);
-                action.id=action.data.id;
-                if (postResult.url){
+                action.id = action.data.id;
+                if (postResult.url) {
                     action.url = postResult.url
                 } else {
-                    action.errors=postResult.errors ? postResult.errors : [];
+                    action.errors = postResult.errors ? postResult.errors : [];
                     if (postResult.error) {
                         action.errors.push(postResult.error);
                     }
@@ -694,19 +700,48 @@ export function flashGangMiddleware({ dispatch }) {
                 }
             } else if (action.type === GET_IMAGES) {
                 console.log('Middleware GET_IMAGES')
-                let questObject={}
+                let questObject = {}
                 questObject.resource = 'gallery'
                 let getResult = await getFromServer(questObject)
-                if (getResult.images){
-                    action.images = getResult.images
+                if (getResult.images) {
+                    action.images = []
+                    for (var i in getResult.images) {
+                        action.images.push({ url: getResult.images[i] })
+                    }
                     console.log('getResult.images', getResult.images)
                 } else {
-                    action.errors=getResult.errors ? getResult.errors : [];
+                    action.errors = getResult.errors ? getResult.errors : [];
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
                     console.log("Error receiving images", getResult, action)
                 }
+            } else if (action.type === DELETE_IMAGES) {
+                console.log('Middleware DELETE_IMAGES')
+                let imagesToDelete = []
+                let imagesToRetain = []
+                for (var i in action.data.images) {
+                    if (action.data.images[i].isSelected) {
+                        imagesToDelete.push(action.data.images[i].url)
+                    } else {
+                        imagesToRetain.push(action.data.images[i])
+                    }
+                }
+                let questObject = {}
+                questObject.params = {}
+                questObject.resource = 'gallery'
+                questObject.delete = true
+                questObject.params.images = imagesToDelete
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    action.images = imagesToRetain
+                }
+                console.log("Error deleting images", getResult, action)
             }
             return next(action);
         }

@@ -185,9 +185,18 @@ class FlashCardEditor extends React.Component {
                 />
                 {
                     flashCard.image &&
-                    <img
-                        src = {flashCard.image}
-                    />
+                    <div
+                        style={{
+                            /*background: 'url('+flashCard.image+') no-repeat',
+                            backgroundSize: 'contain',
+                            backgroundPosition: 'center center',
+                            height:'132px',
+                            backgroundRepeat: 'no-repeat'*/
+                            textAlign: 'center'
+                        }}
+                    >
+                        <img src={flashCard.image} height='132px'/>
+                    </div>
                 }
                 {generateCorrectAnswerList()}
                 <FlashButton
