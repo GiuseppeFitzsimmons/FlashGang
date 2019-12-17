@@ -60,3 +60,37 @@ html, body, #root {
   margin-top: -10px;
   width: calc(100% + 10px + 10px);
 }
+
+
+
+img.splashlogotype-enter {
+  position: 'relative';
+  width: '50%';
+  left: '25%';
+  top: '50%'
+}
+img.splashlogotype-enter-active {
+  position: 'relative';
+  width: '50%';
+  left: '25%';
+  top: '50%'
+}
+img.splashlogotype-exit {
+  position: 'relative';
+  width: '50%';
+  left: '25%';
+  top: '50%'
+}
+img.splashlogotype-exit-done {
+  position: 'relative';
+  width: '10%';
+  left: '5%';
+  top: '5%'
+}
+img.splashlogotype-exit-active {
+  position: 'relative';
+  width: '10%';
+  left: '5%';
+  top: '5%';
+  transition: width 500ms top 500ms;
+}

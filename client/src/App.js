@@ -221,7 +221,7 @@ export default class App extends React.Component {
             <SynchroniseComponent
               callSynchronise={this.callSynchronise}
             />
-            <SplashScreen showing={this.state.splashScreenShowing} />
+            {/*<SplashScreen showing={this.state.splashScreenShowing} />*/}
             <ErrorDialog error={this.state.error} onClose={()=>{this.setState({error: null})}}/>
             {renderable}
           </Box>

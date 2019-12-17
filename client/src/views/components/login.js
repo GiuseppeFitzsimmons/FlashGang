@@ -32,9 +32,6 @@ class Login extends React.Component {
     }
     componentDidMount() {
         const login=this;
-        setTimeout(function() {
-            login.setState({showSplash:false});
-        },5000)
     }
 
     render() {
@@ -42,15 +39,7 @@ class Login extends React.Component {
         console.log('parsedurl', parsedurl)
         let renderable =
             <>
-            <CSSTransition
-            in={this.state.showSplash}
-            timeout={500}
-            classNames="splash"
-          >
-            <div class='splash-enter' style={{backgroundColor:'rgb(139, 195, 74)'}}>
-                <InlineSplashScreen/>
-            </div>
-            </CSSTransition>
+            <InlineSplashScreen/>
                 <IntegratedInput
                     errors={this.props.errors}
                     id='id'
