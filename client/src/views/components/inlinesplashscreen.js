@@ -29,10 +29,10 @@ class SplashScreenStyled extends React.Component {
             fullSize: true, 
             logotypeLeft: 25, 
             logotypeTop: 50, 
-            logotypeWidth: 50, 
+            logotypeWidth: 20, 
             cardLogoLeft: 25, 
             cardLogoTop: 15, 
-            cardLogoWidth: 50  }
+            cardLogoHeight: 30  }
     }
     componentDidMount() {
         const interval = setInterval(() => {
@@ -47,16 +47,16 @@ class SplashScreenStyled extends React.Component {
                             this.state.logotypeWidth<=5 &&
                             this.state.cardLogoLeft<=25 && 
                             this.state.cardLogoTop<=5 && 
-                            this.state.cardLogoWidth<=5) {
+                            this.state.cardLogoHeight<=5) {
                             clearInterval(secondInterval);
                         } else {
                             this.setState({
                                 logotypeLeft: this.state.logotypeLeft<=5 ? 5 : this.state.logotypeLeft-5,
                                 logotypeTop: this.state.logotypeTop<=3 ? 2 : this.state.logotypeTop-7,
-                                logotypeWidth: this.state.logotypeWidth<=20 ? 20 : this.state.logotypeWidth-5,
+                                logotypeWidth: this.state.logotypeWidth<=7 ? 7 : this.state.logotypeWidth-5,
                                 cardLogoLeft: this.state.cardLogoLeft<=25 ? 25 : this.state.cardLogoLeft-3,
                                 cardLogoTop: this.state.cardLogoTop<=3 ? 2 : this.state.cardLogoTop-7,
-                                cardLogoWidth: this.state.cardLogoWidth<=10 ? 10 : this.state.cardLogoWidth-7
+                                cardLogoHeight: this.state.cardLogoHeight<=7 ? 7 : this.state.cardLogoHeight-7
                             })
                         }
                     }, 25)
@@ -78,7 +78,7 @@ class SplashScreenStyled extends React.Component {
                         src={frames[this.state.frameIndex]}
                         style={{
                             position: 'absolute',
-                            width: this.state.logotypeWidth+'%',
+                            height: this.state.logotypeWidth+'%',
                             left: this.state.logotypeLeft+'%',
                             top: this.state.logotypeTop+'%'
                         }}
@@ -88,7 +88,7 @@ class SplashScreenStyled extends React.Component {
                         src={splashLogoCard}
                         style={{
                             position: 'absolute',
-                            width: '50%',
+                            height: '30%',
                             left: this.state.cardPosition+'%',
                             top: '15%',
                             display: !this.state.animationFinished ? '' : 'none'
@@ -98,7 +98,7 @@ class SplashScreenStyled extends React.Component {
                         src={splashLogoHand}
                         style={{
                             position: 'absolute',
-                            width: '50%',
+                            height: '30%',
                             left: this.state.handPosition+'%',
                             top: '15%',
                             display: !this.state.animationFinished ? '' : 'none'
@@ -108,7 +108,7 @@ class SplashScreenStyled extends React.Component {
                         src={splashLogoComplete}
                         style={{
                             position: "absolute",
-                            width: this.state.cardLogoWidth+'%',
+                            height: this.state.cardLogoHeight+'%',
                             left: this.state.cardLogoLeft+'%',
                             top: this.state.cardLogoTop+'%',
                             display: this.state.animationFinished ? '' : 'none'
