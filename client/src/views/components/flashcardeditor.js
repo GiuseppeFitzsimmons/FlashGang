@@ -298,8 +298,8 @@ class FlashCardEditor extends React.Component {
                 >
                     Add correct answer
                 </FlashButton>
-                {generateIncorrectAnswerList()}
                 {descriptionInput(flashCard)}
+                {generateIncorrectAnswerList()}
                 <FlashButton
                     color='secondary'
                     variant='contained'
