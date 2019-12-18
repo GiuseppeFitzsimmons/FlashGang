@@ -1,4 +1,9 @@
-import { DELETE_IMAGES, UPLOAD_IMAGE, SET_PASSWORD, DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, RESET_PASSWORD, POLL, GET_IMAGES } from '../action';
+import { DELETE_IMAGES, UPLOAD_IMAGE, SET_PASSWORD, 
+    DELETE_GANG, RSVP, LOADING, NEW_DECK, SAVE_DECK, 
+    NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, 
+    DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, 
+    NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, 
+    LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE } from '../action';
 
 const initialState = {};
 var user
@@ -93,6 +98,10 @@ function rootReducer(state = initialState, action) {
             return state
         case DELETE_IMAGES:
             state = Object.assign({}, state, { errors: action.errors, images: action.images })
+            return state
+        case ENDSYNCHRONISE:
+            console.log("ENDSYNCHRONISE", action);
+            state = Object.assign({}, state, { flashDecks: action.data.flashDecks })
             return state
         default:
             console.log('state', state)

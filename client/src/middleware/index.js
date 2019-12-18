@@ -1,4 +1,9 @@
-import { DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
+import { DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, 
+    SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, 
+    RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, 
+    LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, 
+    PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, 
+    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -84,7 +89,7 @@ async function synchronise(dispatch) {
             }
         }
         if (dispatch) {
-            //dispatch({ type: ENDSYNCHRONISE, data: { user: currentUser } })
+            dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks } })
         }
     }
     console.log('Synchronisation complete')
