@@ -26,7 +26,7 @@ export const ENDSYNCHRONISE = 'ENDSYNCHRONISE';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const GET_IMAGES = 'GET_IMAGES';
 export const DELETE_IMAGES = 'DELETE_IMAGES';
-
+export const SESSION_EXPIRED = 'SESSION_EXPIRED';
 
 export function newDeck() {
     console.log("Action NEW_DECK")

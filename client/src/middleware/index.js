@@ -3,7 +3,7 @@ import { DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE,
     RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, 
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, 
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, 
-    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE } from '../action'
+    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -57,7 +57,7 @@ async function synchronise(dispatch) {
     }
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
-    if (!postResult.errors) {
+    if (!postResult.errors && postResult.statusCode<400) {
         if (postResult.flashDecks) {
             for (var i in postResult.flashDecks) {
                 let _deck = postResult.flashDecks[i]
@@ -91,6 +91,17 @@ async function synchronise(dispatch) {
         if (dispatch) {
             dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks } })
         }
+    } else {
+        console.log("ERROR SYNCHRONISING", postResult);
+        if (postResult.statusCode>=400) {
+            dispatch({ type: SESSION_EXPIRED })
+        }
+        /*for (e in postResult.errors) {
+            let error=postResult.errors[e];
+            if (error) {
+
+            }
+        }*/
     }
     console.log('Synchronisation complete')
 }
@@ -165,7 +176,6 @@ async function postToServer(questObject) {
         })
     if (responseCode == 401 && reply.code === 'exp' && !questObject.retry) {
         //the token expired, refresh it and try again
-        console.log("POSTTOSERVER EXPIRED TOKEN RETRYING");
         await refreshToken();
         questObject.retry = true;
         return await postToServer(questObject);
@@ -257,7 +267,7 @@ async function refreshToken() {
     var questObject = { resource: 'login', params: params };
     let refresh = await postToServer(questObject);
     if (refresh.responseCode != 200 && refresh.responseCode != 201) {
-        console.log("failed to refresh token TODO clear the session, return to login")
+        console.log("failed to refresh token TODO clear the session, return to login");
     } else {
         console.log("token is refreshed, storing new tokens in session")
         localStorage.setItem('flashJwt', refresh.token)

@@ -3,7 +3,7 @@ import { DELETE_IMAGES, UPLOAD_IMAGE, SET_PASSWORD,
     NEXT_CARD, LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, 
     DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS, 
     NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT, 
-    LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE } from '../action';
+    LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE, SESSION_EXPIRED } from '../action';
 
 const initialState = {};
 var user
@@ -102,6 +102,10 @@ function rootReducer(state = initialState, action) {
         case ENDSYNCHRONISE:
             console.log("ENDSYNCHRONISE", action);
             state = Object.assign({}, state, { flashDecks: action.data.flashDecks })
+            return state
+        case SESSION_EXPIRED:
+            console.log("SESSION_EXPIRED", action);
+            state = Object.assign({}, state, { sessionExpired: true })
             return state
         default:
             console.log('state', state)

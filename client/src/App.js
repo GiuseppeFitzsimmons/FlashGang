@@ -87,6 +87,7 @@ export default class App extends React.Component {
     this.goSettings = this.goSettings.bind(this)
     this.callSynchronise = false
     this.navEvent = navEvent;
+    this.onSessionExpired = this.onSessionExpired.bind(this)
   }
   logOut() {
     console.log("Logging out bug before", Object.entries(localStorage).length);
@@ -94,6 +95,12 @@ export default class App extends React.Component {
     console.log("Logging out bug after", Object.entries(localStorage).length);
     //window.location.href = '/'
     this.setState({ mode: '', flashDeckId: null })
+  }
+  onSessionExpired() {
+    localStorage.removeItem("flashJwt")
+    localStorage.removeItem("flashJwtRefresh");
+    alert("Session has expired, please log in again");
+    this.setState({ mode: '', flashDeckId: null });
   }
   createFlashDeck() {
     this.navEvent.push("DECK");
@@ -220,6 +227,7 @@ export default class App extends React.Component {
           <Box height={'1'} style={{ overflow: 'hidden' }}>
             <SynchroniseComponent
               callSynchronise={this.callSynchronise}
+              onSessionExpired={this.onSessionExpired}
             />
             {/*<SplashScreen showing={this.state.splashScreenShowing} />*/}
             <ErrorDialog error={this.state.error} onClose={()=>{this.setState({error: null})}}/>
