@@ -62,11 +62,11 @@ class IntegratedInput extends Component {
                         }
                     }
                 }}
-                onBlur = {()=>{
+                /*onBlur = {()=>{
                     if (this.props.onBlur){
                         this.props.onBlur()
                     }
-                }}
+                }}*/
                 invalid={_invalid}
                 label={this.props.label}
                 id={this.props.id}
@@ -89,7 +89,6 @@ class IntegratedInput extends Component {
                 <div style={{ marginTop: '10px' }}>
                     {_label}
                     {_input}
-
                 </div>
 
             </span>

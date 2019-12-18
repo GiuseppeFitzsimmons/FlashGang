@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashTypography, FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Icon from '@material-ui/core/Icon';
+//https://material.io/resources/icons/?style=baseline
 import Upgrade from '../components/upgrade';
 import { Gallery } from '../components/gallery';
 
@@ -114,56 +115,70 @@ class FlashCardEditor extends React.Component {
             return (
                 <div>
                     {_display}
-                    {flashCard.description || flashCard.description == '' &&
-                        <Grid container
-                            direction="row"
-                            justify="space-between"
-                            alignItems="flex-end">
-                            <Grid item xs={11} sm={11}>
-                                <IntegratedInput
-                                    label={'Description'}
-                                    placeholder={'Description'}
-                                    onChange={
-                                        (event) => { flashCard.description = event.target.value; this.props.flashDeck.dirty = true; }
+                </div>
+            )
+        }
+        const descriptionInput = flashCard => {
+            if (flashCard.description || flashCard.description == '') {
+
+                return (
+
+
+                    <Grid container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="flex-end">
+                        <Grid item xs={11} sm={11}>
+                            <IntegratedInput
+                                label='Description'
+                                placeholder='Description'
+                                onChange={
+                                    (event) => {
+                                        flashCard.description = event.target.value;
+                                        this.props.flashDeck.dirty = true;
                                     }
-                                    onBlur = {()=>{thisCardEditor.forceUpdate()}}
-                                    ref={
-                                        input => input ? input.reset(flashCard.description) : true
-                                    }
-                                />
-                            </Grid>
-                            <Grid >
-                                <MdDelete
-                                    onClick={
-                                        () => {
-                                            delete flashCard.description;
-                                            this.forceUpdate()
-                                        }
-                                    }
-                                />
-                            </Grid>
+                                }
+                                ref={
+                                    input => input ? input.reset(flashCard.description) : true
+                                }
+                            />
                         </Grid>
-                    }
-                    {!flashCard.description && flashCard.description != '' &&
-                        <Grid>
-                            <FlashButton
-                                color='primary'
-                                variant='contained'
-                                buttonType='system'
-                                startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>check_box</Icon>}
+                        <Grid >
+                            <MdDelete
                                 onClick={
                                     () => {
-                                        flashCard.description = ''
+                                        delete flashCard.description;
+                                        this.props.flashDeck.dirty = true;
                                         this.forceUpdate()
                                     }
                                 }
-                            >
-                                Add decription
-                            </FlashButton>
+                            />
                         </Grid>
-                    }
-                </div>
-            )
+                    </Grid>
+                )
+            } else {
+                return (
+                    <Grid>
+                        <FlashButton
+                            color='primary'
+                            variant='contained'
+                            buttonType='system'
+                            style={{width:'100%'}}
+                            startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>done_all</Icon>}
+                            onClick={
+                                () => {
+                                    flashCard.description = ''
+                                    this.props.flashDeck.dirty = true;
+                                    this.forceUpdate()
+                                }
+                            }
+                        >
+                        Add answer decription
+                    </FlashButton>
+                    </Grid>
+                )
+            }
+
         }
 
         const generateIncorrectAnswerList = () => {
@@ -266,7 +281,24 @@ class FlashCardEditor extends React.Component {
                 <Gallery
                     onImageSelected={this.onImageSelected}
                 />
+                {flashCard.image &&
+                    <FlashButton
+                        color='secondary'
+                        variant='contained'
+                        buttonType='system'
+                        startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>delete_outline</Icon>}
+                        onClick={
+                            ()=>{
+                                delete flashCard.image;
+                                this.forceUpdate();
+                            }
+                        }
+                    >
+                        Remove image
+                    </FlashButton>
+                }
                 {generateIncorrectAnswerList()}
+                {descriptionInput(flashCard)}
                 <FlashButton
                     color='secondary'
                     variant='contained'
