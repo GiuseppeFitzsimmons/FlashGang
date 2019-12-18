@@ -241,8 +241,9 @@ class FlashCardEditor extends React.Component {
                 justify="space-between"
                 alignItems="stretch"
             >
+                
                 <IntegratedInput
-                    label='Description'
+                    label='Question'
                     placeholder='flash card question'
                     onChange={
                         (event) => { flashCard.question = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
@@ -266,18 +267,6 @@ class FlashCardEditor extends React.Component {
                         <img src={flashCard.image} height='132px' />
                     </div>
                 }
-                {generateCorrectAnswerList()}
-                <FlashButton
-                    color='primary'
-                    variant='contained'
-                    buttonType='system'
-                    startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>check_box</Icon>}
-                    onClick={
-                        this.addCorrectAnswer
-                    }
-                >
-                    Add correct answer
-                </FlashButton>
                 <Gallery
                     onImageSelected={this.onImageSelected}
                 />
@@ -297,6 +286,18 @@ class FlashCardEditor extends React.Component {
                         Remove image
                     </FlashButton>
                 }
+                {generateCorrectAnswerList()}
+                <FlashButton
+                    color='primary'
+                    variant='contained'
+                    buttonType='system'
+                    startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>check_box</Icon>}
+                    onClick={
+                        this.addCorrectAnswer
+                    }
+                >
+                    Add correct answer
+                </FlashButton>
                 {generateIncorrectAnswerList()}
                 {descriptionInput(flashCard)}
                 <FlashButton
