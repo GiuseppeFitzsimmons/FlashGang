@@ -80,8 +80,11 @@ export default class FlashAppBar extends React.Component {
       }
     </>
     return (
-      <div>
-        <AppBar position="static">
+      <div style={{
+        marginBottom: '48px'
+      }}>
+        <AppBar position="absolute" style={{
+        }}>
           <Toolbar>
             <IconButton
               edge="start"
