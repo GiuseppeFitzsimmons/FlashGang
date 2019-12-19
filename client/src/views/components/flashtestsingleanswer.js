@@ -9,16 +9,17 @@ import { Button, Grid, GridList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashButton } from '../widgets/FlashBits'
+import { FlashTypography } from '../widgets/FlashBits';
 
 export default class FlashTestSingleAnswer extends React.Component {
     render() {
         const card = this.props.flashDeck.flashCards[this.props.flashDeck.currentIndex]
         return (
             <Grid container
-                direction="column"
-                justify="space-between"
-                alignItems="flex-start">
-                <Grid>
+                direction="row"
+                justify="center"
+                alignItems="center">
+                <Grid item xs={12} sm={12}>
                     {
                         card.image &&
                         <div
@@ -29,7 +30,11 @@ export default class FlashTestSingleAnswer extends React.Component {
                             <img src={card.image} height='132px' />
                         </div>
                     }
-                    {card.question}
+                    <div class='score-showing'>
+                        <FlashTypography variant="h5" gutterBottom>
+                            {card.question}
+                        </FlashTypography>
+                    </div>
                     <IntegratedInput
                         onEnterKey={(e) => {
                             this.props.onNextCard(this.props.flashDeck)

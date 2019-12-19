@@ -82,7 +82,6 @@ class SplashScreenStyled extends React.Component {
                             left: this.state.logotypeLeft+'%',
                             top: this.state.logotypeTop+'%'
                         }}
-                        cla
                     />
                     <img
                         src={splashLogoCard}
