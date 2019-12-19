@@ -45,6 +45,15 @@ class GalleryStyled extends React.Component {
             open: false,
         })
     }
+    imageSelected(url) {
+        this.setState({image:url})
+        if (this.props.onImageSelected) {
+            this.props.onImageSelected(url)
+        }
+        if (this.props.closeOnSelect) {
+            this.setState({open:false});
+        }
+    }
     componentDidUpdate(prevProps) {
         /*if (this.props.images) {
             this.props.images.forEach(image => {
@@ -83,23 +92,52 @@ class GalleryStyled extends React.Component {
         }
         document.getElementById("file-upload").reset();
     }
-
     render() {
         const images = this.props.images ? this.props.images : []
         //console.log('allImages', allImages)
+        var button=
+            <FlashButton
+                buttonType='system'
+                startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>add_photo_alternate</Icon>}
+                onClick={
+                    () => this.setState({ open: true })
+                }>
+                Add image
+            </FlashButton>
+        if (this.props.imageButton) {
+            button=
+            <ClickNHold
+                style={{
+                    backgroundImage: `url(${this.state.image || this.props.image})`,
+                    backgroundSize: 'cover',
+                    width: '100%',
+                    height: '100%',
+                    backgroundPosition: 'center center',
+                    backgroundColor: this.props.theme.palette.secondary.main
+                }}
+                time={1} 
+                onStart={() => {  }}
+                onClickNHold={() => {  }}
+                onEnd={(event, enough) => {
+                    if (enough) {
+                        if (this.props.onImageUnselected) {
+                            this.props.onImageUnselected();
+                        }
+                    } else {
+                        this.setState({ open: true })
+                    }
+                }}>
+                    {!this.state.image && !this.props.image &&
+                    <Icon style={{ fontSize: '16vw', color: 'green' }}>add_photo_alternate</Icon>
+                    }
+                </ClickNHold>
+        }
         return (
             <>
                 <form id="file-upload" autocomplete="off" style={{ display: 'none' }}>
                     <input id="input-file-upload" type="file" onChange={this.handleFileChange} accept="image/png, image/jpeg" />
                 </form>
-                <FlashButton
-                    buttonType='system'
-                    startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>add_photo_alternate</Icon>}
-                    onClick={
-                        () => this.setState({ open: true })
-                    }>
-                    Add image
-                </FlashButton>
+                {button}
                 <Dialog
                     disableBackdropClick
                     disableEscapeKeyDown
@@ -146,7 +184,7 @@ class GalleryStyled extends React.Component {
                                                     }
                                                     this.setState({ selecting: _isSelecting })
                                                 } else {
-                                                    this.props.onImageSelected(image.url)
+                                                    this.imageSelected(image.url);
                                                 }
                                             }
                                         }}>

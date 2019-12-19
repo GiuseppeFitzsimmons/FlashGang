@@ -5,9 +5,9 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 const greenTheme = createMuiTheme({
     palette: {
-      primary: { main: lightGreen[500], color: 'white' },
+      primary: { main: lightGreen[500], color: 'white', selected: lightGreen[500] },
       default: { main: lightGreen[500] },
-      secondary: { main: lightGreen[500] }
+      secondary: { main: lightGreen[500], selected: lightGreen[300] }
     },
     overrides: {
       MuiButton: {
@@ -141,6 +141,20 @@ const greenTheme = createMuiTheme({
     },
     incorrect: {
       color: red[400]
+    },
+    label: {
+      color: 'white',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      content:'',
+      display: 'block'
+    },
+    sublabel: {
+      color: 'rgba(255,255,255,0.8)',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      content:'',
+      display: 'block' 
     },
     disabled: {
       color: 'rgba(0,0,0,0.6)',

@@ -68,6 +68,8 @@ class DeckSelector extends React.Component {
         return (
           <FlashDeckListItem flashDeck={flashDeck}
             buttonType={deckInGang ? 'system':'action'}
+            selected={deckInGang}
+            small
             onClick={() =>
               this.putDeck(flashDeck)
             } />
@@ -99,15 +101,19 @@ class DeckSelector extends React.Component {
         <Dialog
           disableBackdropClick
           disableEscapeKeyDown
-          fullWidth={true}
-          maxWidth='lg'
           onEntering={this.handleEntering}
           aria-labelledby="confirmation-dialog-title"
+          contentStyle={{ width: "100%", maxWidth: "none", height:'90%' }}
           open={this.state.open}
+          fullWidth={true}
+          maxWidth='xl'
+          style={{
+            height:'90%'
+          }}
         >
           <DialogTitle id="confirmation-dialog-title">Select Decks</DialogTitle>
 
-          <DialogContent dividers>
+          <DialogContent>
             {generateFlashDeckList()}
           </DialogContent>
 

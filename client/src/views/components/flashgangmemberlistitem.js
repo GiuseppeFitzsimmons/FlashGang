@@ -15,6 +15,7 @@ import { GiSwordman, GiHoodedFigure, GiBrutalHelm, GiImperialCrown, GiFedora, Gi
 import Paper from 'material-ui/Paper';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Popover from '@material-ui/core/Popover';
+import {FlashTypography} from '../widgets/FlashBits';
 
 
 const styles = theme => ({
@@ -239,30 +240,85 @@ class FlashGangMemberListItemStyled extends React.Component {
 class FlashDeckListItemStyled extends React.Component {
 
     render() {
+        var big=this.props.small ? 'h7' : 'h5';
+        var medium=this.props.small ? 'h9' : 'h5';
+        var small=this.props.small ? 'h10' : 'h6';
+        var mininmumHeight=this.props.small ? '30%' : '11%';
         return (
-            <Grid container spacing={0} style={{ paddingTop: '4px' }}>
-                <FlashListItem alignItems="flex-start"
-                    buttonType={this.props.buttonType ? this.props.buttonType : 'action'}
-                    button
-                    style={{ ...this.props.style }}
-                >
-                    <ListItemAvatar
-                    >
-                        <Icon style={{ fontSize: 30 }}>{this.props.flashDeck.icon}</Icon>
-                    </ListItemAvatar>
-                    <ListItemText
-                        primary={this.props.flashDeck.name}
-                        secondary={this.props.flashDeck.description}
-                        onClick={this.props.onClick}
-                    />
-                </FlashListItem>
+
+            <Grid container spacing={0} style={{ 
+                marginTop: '4px', 
+                minHeight: mininmumHeight, 
+                cursor: 'pointer'
+                }}
+                onClick={this.props.onClick}>
+                <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
+                    <Container style={{
+                        height: '100%',
+                        backgroundImage: `url('${this.props.flashDeck.image}')`,
+                        backgroundSize: '100%',
+                        backgroundRepeat: 'no-repeat',
+                        marginRight:'4px'
+                    }}
+                        height={'20%'}>
+                        {!this.props.flashDeck.image && 
+                            <Icon style={{ fontSize: '15vw', color: 'green' }}>add_photo_alternate</Icon>
+                        }
+                    </Container>
+                </Grid>
+                <Grid container direction='column' xs={10} sm={11} md={11} 
+                    style={{...this.props.theme.actionListItem, ...{backgroundColor : this.props.selected ? this.props.theme.palette.primary.selected : this.props.theme.palette.secondary.selected}}}>
+                    <Container style={{
+                        paddingLeft:'4px',
+                        paddingTop: this.props.flashDeck.description ? 0 : '6px'
+                    }}>
+                    <FlashTypography variant={this.props.flashDeck.description ? medium : big} label>
+                        {this.props.flashDeck.name}
+                    </FlashTypography>
+                    {this.props.flashDeck.description &&
+                        <FlashTypography variant={small} sublabel>
+                            {this.props.flashDeck.description}
+                        </FlashTypography>
+                    }
+                    </Container>
+                </Grid>
+            </Grid>
+        )
+    }
+}
+
+class FlashDeckListButtonStyled extends React.Component {
+
+    render() {
+        var big=this.props.small ? 'h7' : 'h4';
+        var medium=this.props.small ? 'h9' : 'h5';
+        var small=this.props.small ? 'h10' : 'h6';
+        return (
+
+            <Grid container spacing={0} style={{ paddingTop: '4px', minHeight: '12%', width:'100%' }}
+            
+                onClick={this.props.onClick}>
+                <Grid item xs={12} sm={12} md={12} style={this.props.theme.actionListItem}>
+                    <Container style={{
+                        padding:'4px'
+                    }}>
+                    <FlashTypography  variant={this.props.sub ? medium : big} label>
+                        {this.props.main}
+                    </FlashTypography>
+                    <FlashTypography variant={small} sublabel>
+                    {this.props.sub}
+                        </FlashTypography>
+                    </Container>
+                </Grid>
             </Grid>
         )
     }
 }
 const FlashGangMemberListItem = withTheme(FlashGangMemberListItemStyled);
 const FlashDeckListItem = withTheme(FlashDeckListItemStyled);
+const FlashDeckListButton = withTheme(FlashDeckListButtonStyled);
 export {
     FlashGangMemberListItem,
-    FlashDeckListItem
+    FlashDeckListItem,
+    FlashDeckListButton
 }

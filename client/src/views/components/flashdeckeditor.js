@@ -11,6 +11,7 @@ import { IconSelector } from '../widgets/iconselector';
 import { FlashTypography } from '../widgets/FlashBits';
 import Slider from '@material-ui/core/Slider';
 import Confirmation from '../components/confirmation';
+import { Gallery } from '../components/gallery';
 
 const marks = [
   {
@@ -82,8 +83,24 @@ class FlashDeckEditor extends React.Component {
           justify="space-between"
           alignItems="stretch"
         >
-          <Grid item xs='1'>
-            <IconSelector icon={flashDeck.icon} iconClient={flashDeck} />
+          <Grid item xs='2'>
+            {/*<IconSelector icon={flashDeck.icon} iconClient={flashDeck} />*/}
+            <Gallery
+                    onImageSelected={(image)=>{
+                        flashDeck.image=image;
+                        flashDeck.dirty=true;
+                        this.forceUpdate();
+                      }
+                    }
+                    onImageUnselected={(image)=>{
+                      delete flashDeck.image;
+                      flashDeck.dirty=true;
+                      this.forceUpdate();
+                    }}
+                    imageButton
+                    closeOnSelect
+                    image={flashDeck.image}
+                />
           </Grid>
           <Grid item xs='9'>
             <IntegratedInput
