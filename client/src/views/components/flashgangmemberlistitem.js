@@ -15,7 +15,8 @@ import { GiSwordman, GiHoodedFigure, GiBrutalHelm, GiImperialCrown, GiFedora, Gi
 import Paper from 'material-ui/Paper';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Popover from '@material-ui/core/Popover';
-import {FlashTypography} from '../widgets/FlashBits';
+import { FlashTypography } from '../widgets/FlashBits';
+import ClickNHold from 'react-click-n-hold';
 
 
 const styles = theme => ({
@@ -48,7 +49,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                 editLevel = 1;
             } else if (this.props.flashGang.rank == 'BOSS') {
                 editLevel = 0;
-            } else if (this.props.user.id == this.props.flashGang.owner){
+            } else if (this.props.user.id == this.props.flashGang.owner) {
                 editLevel = 0;
             }
         }
@@ -56,13 +57,87 @@ class FlashGangMemberListItemStyled extends React.Component {
         var name = this.props.gangMember.firstName;
         if (name) {
             if (this.props.gangMember.lastName) {
-                name+=' '+this.props.gangMember.lastName;
+                name += ' ' + this.props.gangMember.lastName;
             }
         } else {
-            name=this.props.gangMember.lastName;
+            name = this.props.gangMember.lastName;
         }
         if (!name) {
-            name=this.props.gangMember.id;
+            name = this.props.gangMember.id;
+        }
+        var big = this.props.small ? 'h7' : 'h5';
+        var medium = this.props.small ? 'h9' : 'h5';
+        var small = this.props.small ? 'h10' : 'h6';
+        var mininmumHeight = this.props.small ? '30%' : '30%';
+return (
+        <ClickNHold
+            time={1} 
+            onStart={() => {  }}
+            onClickNHold={() => {  }}
+            onEnd={(event, enough) => {
+                if (enough) {
+                    alert("long holde")
+                } else {
+                    alert("click")
+                }
+            }}>
+        <Grid container spacing={0} style={{
+            marginTop: '4px',
+            minHeight: mininmumHeight,
+            cursor: 'pointer'
+        }}
+            onClick={this.props.onClick}>
+            <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
+                <Container style={{
+                    height: '100%',
+                    backgroundImage: `url('${this.props.gangMember.picture}')`,
+                    backgroundSize: '100%',
+                    backgroundRepeat: 'no-repeat',
+                    marginRight: '4px'
+                }}
+                    height={'20%'}>
+                </Container>
+            </Grid>
+            <Grid container direction='column' xs={10} sm={11} md={11}
+                style={this.props.theme.actionListItem}>
+                <Container style={{
+                    paddingLeft: '4px',
+                    paddingTop: this.props.gangMember.rank ? 0 : '6px'
+                }}>
+                    <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
+                        {name}
+                    </FlashTypography>
+                    <FlashTypography variant={small} sublabel>
+                        {this.props.gangMember.rank}
+                    </FlashTypography>
+                </Container>
+            </Grid>
+        </Grid>
+        </ClickNHold>
+        )
+    }
+    renderOld() {
+        var editLevel = 2;
+        if (this.props.flashGang) {
+            if (this.props.flashGang.rank == 'LIEUTENANT') {
+                editLevel = 1;
+            } else if (this.props.flashGang.rank == 'BOSS') {
+                editLevel = 0;
+            } else if (this.props.user.id == this.props.flashGang.owner) {
+                editLevel = 0;
+            }
+        }
+        this.props.gangMember.picture = this.props.gangMember.picture ? this.props.gangMember.picture : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
+        var name = this.props.gangMember.firstName;
+        if (name) {
+            if (this.props.gangMember.lastName) {
+                name += ' ' + this.props.gangMember.lastName;
+            }
+        } else {
+            name = this.props.gangMember.lastName;
+        }
+        if (!name) {
+            name = this.props.gangMember.id;
         }
         return (
             <Grid container spacing={0} style={{ paddingTop: '4px', height: '15%' }}>
@@ -110,50 +185,50 @@ class FlashGangMemberListItemStyled extends React.Component {
                             style={{
                                 position: 'absolute',
                                 top: 0, right: '28px',
-                                paddingLeft:'2px',
-                                paddingRight:'2px',
+                                paddingLeft: '2px',
+                                paddingRight: '2px',
                                 ...this.props.theme.systemButton
                             }}>
-                                {
-                                    this.props.gangMember.rank == 'BOSS' &&
-                                    <GiImperialCrown
-                                        onClick={
-                                            (event) => {
-                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
-                                            }
+                            {
+                                this.props.gangMember.rank == 'BOSS' &&
+                                <GiImperialCrown
+                                    onClick={
+                                        (event) => {
+                                            this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
                                         }
-                                    />
-                                }
-                                {
-                                    this.props.gangMember.rank == 'LIEUTENANT' &&
-                                    <GiFedora
-                                        onClick={
-                                            (event) => {
-                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
-                                            }
+                                    }
+                                />
+                            }
+                            {
+                                this.props.gangMember.rank == 'LIEUTENANT' &&
+                                <GiFedora
+                                    onClick={
+                                        (event) => {
+                                            this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
                                         }
-                                    />
-                                }
-                                {
-                                    this.props.gangMember.rank == 'MEMBER' &&
-                                    <GiCaptainHatProfile
-                                        onClick={
-                                            (event) => {
-                                                this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
-                                            }
+                                    }
+                                />
+                            }
+                            {
+                                this.props.gangMember.rank == 'MEMBER' &&
+                                <GiCaptainHatProfile
+                                    onClick={
+                                        (event) => {
+                                            this.setState({ editingRank: !this.state.editingRank, anchorRankIcon: event.currentTarget })
                                         }
-                                    />
-                                }
+                                    }
+                                />
+                            }
 
                         </div>
-                        
+
                         <div
                             id='rankEditorIcon'
                             style={{
                                 position: 'absolute',
                                 top: 0, right: 0,
-                                paddingLeft:'2px',
-                                paddingRight:'2px',
+                                paddingLeft: '2px',
+                                paddingRight: '2px',
                                 ...this.props.theme.systemButton
                             }}>
                             <GiFloorHatch
@@ -216,7 +291,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 onChange={
                                     (event) => {
                                         this.props.gangMember.rank = event.target.value;
-                                        this.setState({editingRank:false})
+                                        this.setState({ editingRank: false })
                                         // this.forceUpdate()
                                     }
                                 }
@@ -240,17 +315,17 @@ class FlashGangMemberListItemStyled extends React.Component {
 class FlashDeckListItemStyled extends React.Component {
 
     render() {
-        var big=this.props.small ? 'h7' : 'h5';
-        var medium=this.props.small ? 'h9' : 'h5';
-        var small=this.props.small ? 'h10' : 'h6';
-        var mininmumHeight=this.props.small ? '30%' : '11%';
+        var big = this.props.small ? 'h7' : 'h5';
+        var medium = this.props.small ? 'h9' : 'h5';
+        var small = this.props.small ? 'h10' : 'h6';
+        var mininmumHeight = this.props.small ? '30%' : '11%';
         return (
 
-            <Grid container spacing={0} style={{ 
-                marginTop: '4px', 
-                minHeight: mininmumHeight, 
+            <Grid container spacing={0} style={{
+                marginTop: '4px',
+                minHeight: mininmumHeight,
                 cursor: 'pointer'
-                }}
+            }}
                 onClick={this.props.onClick}>
                 <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
                     <Container style={{
@@ -258,28 +333,28 @@ class FlashDeckListItemStyled extends React.Component {
                         backgroundImage: `url('${this.props.flashDeck.image}')`,
                         backgroundSize: '100%',
                         backgroundRepeat: 'no-repeat',
-                        marginRight:'4px'
+                        marginRight: '4px'
                     }}
                         height={'20%'}>
-                        {!this.props.flashDeck.image && 
+                        {!this.props.flashDeck.image &&
                             <Icon style={{ fontSize: '15vw', color: 'green' }}>add_photo_alternate</Icon>
                         }
                     </Container>
                 </Grid>
-                <Grid container direction='column' xs={10} sm={11} md={11} 
-                    style={{...this.props.theme.actionListItem, ...{backgroundColor : this.props.selected ? this.props.theme.palette.primary.selected : this.props.theme.palette.secondary.selected}}}>
+                <Grid container direction='column' xs={10} sm={11} md={11}
+                    style={{ ...this.props.theme.actionListItem, ...{ backgroundColor: this.props.selected ? this.props.theme.palette.primary.selected : this.props.theme.palette.secondary.selected } }}>
                     <Container style={{
-                        paddingLeft:'4px',
+                        paddingLeft: '4px',
                         paddingTop: this.props.flashDeck.description ? 0 : '6px'
                     }}>
-                    <FlashTypography variant={this.props.flashDeck.description ? medium : big} label>
-                        {this.props.flashDeck.name}
-                    </FlashTypography>
-                    {this.props.flashDeck.description &&
-                        <FlashTypography variant={small} sublabel>
-                            {this.props.flashDeck.description}
+                        <FlashTypography variant={this.props.flashDeck.description ? medium : big} label>
+                            {this.props.flashDeck.name}
                         </FlashTypography>
-                    }
+                        {this.props.flashDeck.description &&
+                            <FlashTypography variant={small} sublabel>
+                                {this.props.flashDeck.description}
+                            </FlashTypography>
+                        }
                     </Container>
                 </Grid>
             </Grid>
@@ -290,23 +365,23 @@ class FlashDeckListItemStyled extends React.Component {
 class FlashDeckListButtonStyled extends React.Component {
 
     render() {
-        var big=this.props.small ? 'h7' : 'h4';
-        var medium=this.props.small ? 'h9' : 'h5';
-        var small=this.props.small ? 'h10' : 'h6';
+        var big = this.props.small ? 'h7' : 'h4';
+        var medium = this.props.small ? 'h9' : 'h5';
+        var small = this.props.small ? 'h10' : 'h6';
         return (
 
-            <Grid container spacing={0} style={{ paddingTop: '4px', minHeight: '12%', width:'100%' }}
-            
+            <Grid container spacing={0} style={{ paddingTop: '4px', minHeight: '12%', width: '100%' }}
+
                 onClick={this.props.onClick}>
                 <Grid item xs={12} sm={12} md={12} style={this.props.theme.actionListItem}>
                     <Container style={{
-                        padding:'4px'
+                        padding: '4px'
                     }}>
-                    <FlashTypography  variant={this.props.sub ? medium : big} label>
-                        {this.props.main}
-                    </FlashTypography>
-                    <FlashTypography variant={small} sublabel>
-                    {this.props.sub}
+                        <FlashTypography variant={this.props.sub ? medium : big} label>
+                            {this.props.main}
+                        </FlashTypography>
+                        <FlashTypography variant={small} sublabel>
+                            {this.props.sub}
                         </FlashTypography>
                     </Container>
                 </Grid>
