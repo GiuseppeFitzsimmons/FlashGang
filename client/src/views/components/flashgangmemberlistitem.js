@@ -42,7 +42,7 @@ const randomProfiles = [
 class FlashGangMemberListItemStyled extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { editing: false, rank: 'MEMBER', editingRank: false }
+        this.state = { editing: !props.gangMember.id || props.gangMember.id=='' }
     }
     render() {
         var editLevel = 2;
@@ -127,7 +127,8 @@ class FlashGangMemberListItemStyled extends React.Component {
                         </Container>
                     </ClickNHold>
                 </Grid>
-                <Dialog /*onClose={handleClose}*/ aria-labelledby="simple-dialog-title" open={this.state.editing}
+                <Dialog /*onClose={handleClose}*/ aria-labelledby="simple-dialog-title" 
+                    open={this.state.editing}
                     maxWidth='lg' fullWidth>
                     <Grid container spacing={0} direction='columns' style={{ width: '100%', padding: '4px' }}>
                         <Grid item xs={8} sm={8} md={8} >
@@ -171,13 +172,15 @@ class FlashGangMemberListItemStyled extends React.Component {
                     </Grid>
 
                     <DialogActions>
-                        <Button onClick={() => this.setState({ editing: false })} color="primary" disabled={!this.props.gangMember.id || this.props.gangMember.id == ''}>
+                        <Button onClick={() => this.setState({ editing: false })} color="primary" 
+                            disabled={!this.props.gangMember.id || this.props.gangMember.id == ''}>
                             Close
                         </Button>
                         <Button onClick={() => {
                             if (this.props.onDelete) {
                                 this.props.onDelete();
                             }
+                            this.setState({editing:false})
                         }} color="primary">
                             Delete
                         </Button>
