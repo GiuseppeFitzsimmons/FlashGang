@@ -17,6 +17,8 @@ import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Popover from '@material-ui/core/Popover';
 import { FlashTypography } from '../widgets/FlashBits';
 import ClickNHold from 'react-click-n-hold';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
 
 
 const styles = theme => ({
@@ -65,66 +67,123 @@ class FlashGangMemberListItemStyled extends React.Component {
         if (!name) {
             name = this.props.gangMember.id;
         }
-        if (!name || name=='') {
-            name='New member'
+        if (!name || name == '') {
+            name = 'New member'
         }
         var big = this.props.small ? 'h7' : 'h5';
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
         var mininmumHeight = this.props.small ? '15%' : '15%';
-return (
-        <Grid container spacing={0} direction='row' style={{
-            marginTop: '4px',
-            minHeight: mininmumHeight,
-            cursor: 'pointer'
-        }}
-            onClick={this.props.onClick}
-            id={this.props.id}>
-            <Grid item xs={2} sm={2} md={1} style={this.props.theme.actionListItem}>
-                <Container style={{
-                    height: '100%',
-                    backgroundImage: `url('${this.props.gangMember.picture}')`,
-                    backgroundSize: '100%',
-                    backgroundRepeat: 'no-repeat',
-                    marginRight: '4px'
-                }}
-                    height={'20%'}>
-                </Container>
-            </Grid>
-            <Grid container direction='column' xs={10} sm={10} md={11}
-                style={this.props.theme.actionListItem}>
-                <ClickNHold
-                    time={1} 
-                    onStart={() => {  }}
-                    onClickNHold={() => {  }}
-                    onEnd={(event, enough) => {
-                        if (enough) {
-                            this.props.onLongHold();
-                        } else {
-                           this.props.onClick();
-                        }
+        return (
+            <Grid container spacing={0} direction='row' style={{
+                marginTop: '4px',
+                minHeight: mininmumHeight,
+                cursor: 'pointer'
+            }}
+                onClick={this.props.onClick}
+                id={this.props.id}>
+                <Grid item xs={2} sm={2} md={1} style={this.props.theme.actionListItem}>
+                    <Container style={{
+                        height: '100%',
+                        backgroundImage: `url('${this.props.gangMember.picture}')`,
+                        backgroundSize: '100%',
+                        backgroundRepeat: 'no-repeat',
+                        marginRight: '4px'
                     }}
-                    style={{
-                        marginTop: '4px',
-                        minHeight: mininmumHeight,
-                        cursor: 'pointer'
-                    }}>
-                <Container style={{
-                    paddingLeft: '4px',
-                    height: '100%',
-                    paddingTop: this.props.gangMember.rank ? 0 : '6px'
-                }}
-                height={'20%'}>
-                    <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
-                        {name}
-                    </FlashTypography>
-                    <FlashTypography variant={small} sublabel>
-                        {this.props.gangMember.rank}
-                    </FlashTypography>
-                </Container>
-        </ClickNHold>
+                        height={'20%'}>
+                    </Container>
+                </Grid>
+                <Grid container direction='column' xs={10} sm={10} md={11}
+                    style={this.props.theme.actionListItem}>
+                    <ClickNHold
+                        time={1}
+                        onStart={() => { }}
+                        onClickNHold={() => { }}
+                        onEnd={(event, enough) => {
+                            if (enough) {
+                                //this.props.onLongHold(event.target);
+                                this.setState({ editing: true })
+                            } else {
+                                //this.props.onClick(event.target);
+                            }
+                        }}
+                        style={{
+                            marginTop: '4px',
+                            minHeight: mininmumHeight,
+                            cursor: 'pointer'
+                        }}>
+                        <Container style={{
+                            paddingLeft: '4px',
+                            height: '100%',
+                            paddingTop: this.props.gangMember.rank ? 0 : '6px'
+                        }}
+                            height={'20%'}>
+                            <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
+                                {name}
+                            </FlashTypography>
+                            <FlashTypography variant={small} sublabel>
+                                {this.props.gangMember.rank}
+                            </FlashTypography>
+                        </Container>
+                    </ClickNHold>
+                </Grid>
+                <Dialog /*onClose={handleClose}*/ aria-labelledby="simple-dialog-title" open={this.state.editing}
+                    maxWidth='lg' fullWidth>
+                    <Grid container spacing={0} direction='columns' style={{ width: '100%', padding: '4px' }}>
+                        <Grid item xs={8} sm={8} md={8} >
+                            <IntegratedInput
+                                label='Gang member email'
+                                placeholder='@'
+                                onChange={
+                                    (event) => {
+                                        this.props.gangMember.id = event.target.value;
+                                        this.forceUpdate();
+                                    }
+                                }
+                                ref={
+                                    input => input ? input.reset(this.props.gangMember.id) : true
+                                }
+                            />
+                        </Grid>
+                        <Grid item xs={1} sm={1} md={1} />
+                        <Grid item xs={3} sm={3} md={3} >
+                            <div style={{ marginTop: '10px' }}>
+                                <label style={{ color: '0,0,0,0.6' }}>Rank</label><br />
+                                <Select
+                                    value={this.props.gangMember.rank}
+                                    onChange={
+                                        (event) => {
+                                            this.props.gangMember.rank = event.target.value;
+                                        }
+                                    }
+                                    style={{ width: '100%' }}
+                                >
+                                    {editLevel < 1 &&
+                                        <MenuItem value={'BOSS'}>BOSS</MenuItem>
+                                    }
+                                    {editLevel < 2 &&
+                                        <MenuItem value={'LIEUTENANT'}>LIEUTENANT</MenuItem>
+                                    }
+                                    <MenuItem value={'MEMBER'}>MEMBER</MenuItem>
+                                </Select>
+                            </div>
+                        </Grid>
+                    </Grid>
+
+                    <DialogActions>
+                        <Button onClick={() => this.setState({ editing: false })} color="primary" disabled={!this.props.gangMember.id || this.props.gangMember.id == ''}>
+                            Close
+                        </Button>
+                        <Button onClick={() => {
+                            if (this.props.onDelete) {
+                                this.props.onDelete();
+                            }
+                        }} color="primary">
+                            Delete
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Grid>
-        </Grid>
         )
     }
     renderOld() {
@@ -352,7 +411,7 @@ class FlashDeckListItemStyled extends React.Component {
                         }
                     </Container>
                 </Grid>
-            <Grid container direction='column' xs={10} sm={10} md={11}
+                <Grid container direction='column' xs={10} sm={10} md={11}
                     style={{ ...this.props.theme.actionListItem, ...{ backgroundColor: this.props.selected ? this.props.theme.palette.primary.selected : this.props.theme.palette.secondary.selected } }}>
                     <Container style={{
                         paddingLeft: '4px',

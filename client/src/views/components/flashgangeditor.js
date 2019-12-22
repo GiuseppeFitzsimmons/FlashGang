@@ -23,12 +23,12 @@ import { IconSelector } from '../widgets/iconselector';
 import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlistitem';
 import Upgrade from '../components/upgrade';
 import Confirmation from '../components/confirmation';
-import Popper from '@material-ui/core/Popper'
-import Fade from '@material-ui/core/Fade';
+import { withTheme } from '@material-ui/styles';
+
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
-class FlashGangEditor extends React.Component {
+class FlashGangEditorStyled extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -72,11 +72,9 @@ class FlashGangEditor extends React.Component {
         this.props.flashGang.members.splice(index, 1)
         this.forceUpdate()
     }
-    editMember(index) {
-        this.setState({editingIndex: index})
-    }
 
     render() {
+        //const classes = useStyles();
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
         const isOwner = this.props.user && this.props.user.id == flashGang.owner
         return (
@@ -181,12 +179,6 @@ class FlashGangEditor extends React.Component {
                             />
                         </FlashListItem>
                         {this.generateFlashGangMemberList()}
-                              <Popper id={'flashgang-index-popper'} 
-                                open={this.state.editingIndex>-1} 
-                                anchorEl={'flashgang-index-'+this.state.editingIndex}>
-                                <div >The content of the Popper.</div>
-                            )}
-                        </Popper>
                     </Box>
                     <Box
                         style={{
@@ -258,9 +250,7 @@ class FlashGangEditor extends React.Component {
                         flashGang={flashGang}
                         user={this.props.user}
                         onDelete={() => { this.removeMember(i) }}
-                        onLongHold={()=>
-                            this.editMember(i)
-                        }
+                        onMemberEdited={()=>this.forceUpdate()}
                         onClick={()=>{}}
                         id={'flashgang-index-'+i}
                     />
@@ -308,4 +298,5 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)
 }
 
+const FlashGangEditor = withTheme(FlashGangEditorStyled);
 export default connect(mapStateToProps, mapDispatchToProps)(FlashGangEditor)
