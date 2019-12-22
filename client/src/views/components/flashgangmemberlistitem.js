@@ -65,29 +65,22 @@ class FlashGangMemberListItemStyled extends React.Component {
         if (!name) {
             name = this.props.gangMember.id;
         }
+        if (!name || name=='') {
+            name='New member'
+        }
         var big = this.props.small ? 'h7' : 'h5';
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
-        var mininmumHeight = this.props.small ? '30%' : '30%';
+        var mininmumHeight = this.props.small ? '15%' : '15%';
 return (
-        <ClickNHold
-            time={1} 
-            onStart={() => {  }}
-            onClickNHold={() => {  }}
-            onEnd={(event, enough) => {
-                if (enough) {
-                    alert("long holde")
-                } else {
-                    alert("click")
-                }
-            }}>
-        <Grid container spacing={0} style={{
+        <Grid container spacing={0} direction='row' style={{
             marginTop: '4px',
             minHeight: mininmumHeight,
             cursor: 'pointer'
         }}
-            onClick={this.props.onClick}>
-            <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
+            onClick={this.props.onClick}
+            id={this.props.id}>
+            <Grid item xs={2} sm={2} md={1} style={this.props.theme.actionListItem}>
                 <Container style={{
                     height: '100%',
                     backgroundImage: `url('${this.props.gangMember.picture}')`,
@@ -98,12 +91,30 @@ return (
                     height={'20%'}>
                 </Container>
             </Grid>
-            <Grid container direction='column' xs={10} sm={11} md={11}
+            <Grid container direction='column' xs={10} sm={10} md={11}
                 style={this.props.theme.actionListItem}>
+                <ClickNHold
+                    time={1} 
+                    onStart={() => {  }}
+                    onClickNHold={() => {  }}
+                    onEnd={(event, enough) => {
+                        if (enough) {
+                            this.props.onLongHold();
+                        } else {
+                           this.props.onClick();
+                        }
+                    }}
+                    style={{
+                        marginTop: '4px',
+                        minHeight: mininmumHeight,
+                        cursor: 'pointer'
+                    }}>
                 <Container style={{
                     paddingLeft: '4px',
+                    height: '100%',
                     paddingTop: this.props.gangMember.rank ? 0 : '6px'
-                }}>
+                }}
+                height={'20%'}>
                     <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
                         {name}
                     </FlashTypography>
@@ -111,9 +122,9 @@ return (
                         {this.props.gangMember.rank}
                     </FlashTypography>
                 </Container>
+        </ClickNHold>
             </Grid>
         </Grid>
-        </ClickNHold>
         )
     }
     renderOld() {
@@ -327,7 +338,7 @@ class FlashDeckListItemStyled extends React.Component {
                 cursor: 'pointer'
             }}
                 onClick={this.props.onClick}>
-                <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
+                <Grid item xs={2} sm={2} md={1} style={this.props.theme.actionListItem}>
                     <Container style={{
                         height: '100%',
                         backgroundImage: `url('${this.props.flashDeck.image}')`,
@@ -341,7 +352,7 @@ class FlashDeckListItemStyled extends React.Component {
                         }
                     </Container>
                 </Grid>
-                <Grid container direction='column' xs={10} sm={11} md={11}
+            <Grid container direction='column' xs={10} sm={10} md={11}
                     style={{ ...this.props.theme.actionListItem, ...{ backgroundColor: this.props.selected ? this.props.theme.palette.primary.selected : this.props.theme.palette.secondary.selected } }}>
                     <Container style={{
                         paddingLeft: '4px',

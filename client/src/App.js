@@ -75,7 +75,7 @@ const navEvent = new NavEvent();
 export default class App extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { splashScreenShowing: true }
+    this.state = { /*splashScreenShowing: true*/ }
     this.createFlashDeck = this.createFlashDeck.bind(this)
     this.onFlashDeckSelected = this.onFlashDeckSelected.bind(this)
     this.goHome = this.goHome.bind(this)
@@ -161,9 +161,9 @@ export default class App extends React.Component {
     return this.loggedIn
   }
   componentDidMount() {
-    setTimeout(() => {
+    /*setTimeout(() => {
       this.setState({ splashScreenShowing: false })
-    }, 1000);
+    }, 1000);*/
     window.onpopstate = function (e) {
       navEvent.onBackButtonEvent(e);
     };
@@ -219,6 +219,8 @@ export default class App extends React.Component {
         goGangs={this.goGangs}
         navEvent={this.navEvent}
       />
+    } else if (window.location.pathname.endsWith('/admin')) {
+      renderable=<div>admin page</div>
     }
     //renderable=<TestGrid/>
     return (

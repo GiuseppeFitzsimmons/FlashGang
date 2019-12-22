@@ -23,6 +23,8 @@ import { IconSelector } from '../widgets/iconselector';
 import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlistitem';
 import Upgrade from '../components/upgrade';
 import Confirmation from '../components/confirmation';
+import Popper from '@material-ui/core/Popper'
+import Fade from '@material-ui/core/Fade';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 
@@ -31,7 +33,9 @@ class FlashGangEditor extends React.Component {
         super(props)
         this.state = {
             memberTab: 'block',
-            deckTab: 'none'
+            deckTab: 'none',
+            editingIndex: -1,
+            popupId: ''
         }
         this.invite = this.invite.bind(this)
         this.onDecksSelected = this.onDecksSelected.bind(this)
@@ -67,6 +71,9 @@ class FlashGangEditor extends React.Component {
         this.props.flashGang.remainingMembersAllowed++
         this.props.flashGang.members.splice(index, 1)
         this.forceUpdate()
+    }
+    editMember(index) {
+        this.setState({editingIndex: index})
     }
 
     render() {
@@ -174,6 +181,12 @@ class FlashGangEditor extends React.Component {
                             />
                         </FlashListItem>
                         {this.generateFlashGangMemberList()}
+                              <Popper id={'flashgang-index-popper'} 
+                                open={this.state.editingIndex>-1} 
+                                anchorEl={'flashgang-index-'+this.state.editingIndex}>
+                                <div >The content of the Popper.</div>
+                            )}
+                        </Popper>
                     </Box>
                     <Box
                         style={{
@@ -245,10 +258,12 @@ class FlashGangEditor extends React.Component {
                         flashGang={flashGang}
                         user={this.props.user}
                         onDelete={() => { this.removeMember(i) }}
+                        onLongHold={()=>
+                            this.editMember(i)
+                        }
+                        onClick={()=>{}}
+                        id={'flashgang-index-'+i}
                     />
-                    {/*i < flashGang.members.length - 1 &&
-                        <Divider variant="inset" component="li" />
-                    */}
                 </>
             )
         })
@@ -269,39 +284,6 @@ class FlashGangEditor extends React.Component {
                     onClick={() =>
                         this.props.onFlashDeckSelected(flashDeck.id, 'TEST', 'GANGS')
                     } />
-            )
-        })
-        return (
-            <>
-                {_display}
-            </>
-        )
-    }
-
-    generateFlashDeckListX() {
-        const flashDecks = this.props.flashGang && this.props.flashGang.flashDecks ? this.props.flashGang.flashDecks : []
-        var _display = flashDecks.map((flashDeck, i) => {
-            if (!flashDeck.icon) {
-                flashDeck.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
-            }
-            return (
-                <>
-                    <Grid>
-                        <ListItem alignItems="flex-start"
-                            button>
-                            <ListItemAvatar>
-                                <Icon style={{ fontSize: 30 }}>{flashDeck.icon}</Icon>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={flashDeck.name}
-                                secondary={flashDeck.description}
-                            />
-                        </ListItem>
-                    </Grid>
-                    {i < flashDecks.length - 1 &&
-                        <Divider variant="inset" component="li" />
-                    }
-                </>
             )
         })
         return (
