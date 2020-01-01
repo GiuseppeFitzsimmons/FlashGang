@@ -805,6 +805,28 @@ async function getUserDeck(flashDeckId, userId) {
     else return null
 }
 
+async function getAllUsers() {
+    var documentClient = getDocumentDbClient();
+    var params = {
+        TableName: process.env.USER_TABLE_NAME
+    };
+    let item = await new Promise((resolve, reject) => {
+        documentClient.scan(params, function (err, data) {
+            if (err) {
+                console.log("Error getting user table", err);
+                reject(err);
+            } else {
+                console.log("success getting user table", data);
+                resolve(data);
+            }
+        });
+    });
+    console.log('getAllUsers item', item)
+    if (item) {
+        return item
+    }
+    else return null
+}
 
 module.exports = {
     putItem,
@@ -825,4 +847,5 @@ module.exports = {
     countFlashDecks,
     countFlashGangs,
     getProfile,
+    getAllUsers
 }

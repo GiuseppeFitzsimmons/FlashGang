@@ -20,6 +20,7 @@ import SplashScreen from './views/components/splashscreen';
 import ErrorDialog from './views/components/errordialog';
 import SynchroniseComponent from './views/components/synchronisecomponent';
 import Settings from './views/components/settings';
+import Admin from './views/components/admin';
 
 function Cookies() {
   const split = document.cookie.split(';');
@@ -220,7 +221,13 @@ export default class App extends React.Component {
         navEvent={this.navEvent}
       />
     } else if (window.location.pathname.endsWith('/admin')) {
-      renderable=<div>admin page</div>
+      renderable=<Admin
+      goGangs={this.goGangs}
+      onLogOut={this.logOut}
+      goSettings={this.goSettings}
+      goHome={this.goHome}
+      navEvent={this.navEvent}
+      />
     }
     //renderable=<TestGrid/>
     return (

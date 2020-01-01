@@ -27,6 +27,7 @@ export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const GET_IMAGES = 'GET_IMAGES';
 export const DELETE_IMAGES = 'DELETE_IMAGES';
 export const SESSION_EXPIRED = 'SESSION_EXPIRED';
+export const GET_ALL_USERS = 'GET_ALL_USERS';
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -145,5 +146,10 @@ export function getImages() {
 export function deleteImages(images) {
     console.log("Action DELETE_IMAGES")
     return { type: DELETE_IMAGES, data: { images } }
+
+}
+export function getAllUsers() {
+    console.log("Action GET_ALL_USERS")
+    return { type: GET_ALL_USERS, users: {  } }
 
 }

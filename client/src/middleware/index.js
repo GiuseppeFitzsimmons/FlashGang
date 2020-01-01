@@ -1,9 +1,11 @@
-import { DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE, 
-    SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD, 
-    RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD, 
-    LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD, 
-    PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, 
-    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED } from '../action'
+import {
+    DELETE_IMAGES, GET_IMAGES, SET_SCORE, ENDSYNCHRONISE,
+    SET_SETTINGS, SYNCHRONISE, DELETE_GANG, POLL, SET_PASSWORD,
+    RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD,
+    LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
+    PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
+    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS
+} from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
@@ -57,7 +59,7 @@ async function synchronise(dispatch) {
     }
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
-    if (!postResult.errors && postResult.statusCode<400) {
+    if (!postResult.errors && postResult.statusCode < 400) {
         if (postResult.flashDecks) {
             for (var i in postResult.flashDecks) {
                 let _deck = postResult.flashDecks[i]
@@ -93,7 +95,7 @@ async function synchronise(dispatch) {
         }
     } else {
         console.log("ERROR SYNCHRONISING", postResult);
-        if (postResult.statusCode>=400) {
+        if (postResult.statusCode >= 400) {
             dispatch({ type: SESSION_EXPIRED })
         }
         /*for (e in postResult.errors) {
@@ -106,7 +108,7 @@ async function synchronise(dispatch) {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings', gallery: '/gallery' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings', gallery: '/gallery', admin:'/admin' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -145,7 +147,7 @@ async function postToServer(questObject) {
     var method = 'POST'
     if (questObject.update) {
         method = 'PUT'
-    } else if (questObject.delete){
+    } else if (questObject.delete) {
         method = 'DELETE'
     }
     var _headers = {}
@@ -757,6 +759,23 @@ export function flashGangMiddleware({ dispatch }) {
                     action.images = imagesToRetain
                 }
                 console.log("Error deleting images", getResult, action)
+            } else if (action.type === GET_ALL_USERS) {
+                dispatch({ type: LOADING, data: { loading: true } })
+                console.log('Middleware GET_ALL_USERS')
+                let questObject = {}
+                questObject.resource = 'admin'
+                let getResult = await getFromServer(questObject)
+                console.log('getResult', getResult)
+                if (getResult.users) {
+                    action.users = []
+                    console.log('getResult.users', getResult.users)
+                } else {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error receiving users", getResult, action)
+                }
             }
             return next(action);
         }

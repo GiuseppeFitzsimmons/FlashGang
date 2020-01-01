@@ -142,6 +142,21 @@ Resources:
             Method: any
             RestApiId: !Ref ApiGateway
 
+  AdminLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: adminlambda/
+      Runtime: nodejs12.x
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
+      Events:
+        ApiEventSource:
+          Type: Api
+          Properties:
+            Path: /admin
+            Method: any
+            RestApiId: !Ref ApiGateway
+
   PollLambda:
     Type: AWS::Serverless::Function
     Properties:
