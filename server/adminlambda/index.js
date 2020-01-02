@@ -9,6 +9,7 @@ exports.handler = async (event, context) => {
     }
     let returnObject = {}
     returnObject.statusCode = 200;
+    let _body = {}
     var token;
     /*try {
         token = tokenUtility.validateToken(event)
@@ -21,7 +22,19 @@ exports.handler = async (event, context) => {
         if (event.httpMethod.toLowerCase() === 'get') {
             {
                 var users = await dynamodbfordummies.getAllUsers()
-                returnObject.body = JSON.stringify(users)
+                console.log('adminlambda users', users.Items)
+                _body.users = []
+                var filteredUsers = []
+                for (var i in users.Items){
+                    let user = users.Items[i]
+                    let filteredUser = {}
+                    filteredUser.firstName = user.firstName
+                    filteredUser.lastName = user.lastName
+                    filteredUser.id = user.id
+                    filteredUsers.push(filteredUser)
+                }
+                _body.users = filteredUsers
+                returnObject.body = JSON.stringify(_body)
                 /*if (event.body.source) {
                     if (event.body.source.indexOf('data:image') == 0) {
                         var imageData = event.body.source.split(',');

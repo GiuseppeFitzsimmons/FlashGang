@@ -27,36 +27,41 @@ import Tab from '@material-ui/core/Tab';
 class AdminUsers extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {open: this.props.open}
-        var users = {}
+        this.state = { open: this.props.open }
+        var userArray = []
     }
-    
+
     componentDidMount() {
         console.log('adminusers componentdidmount')
-        this.users = this.props.getAllUsers()
-        this.setState({users:this.users})
-        //console.log('users from adminusers', users)
+        this.props.getAllUsers()
     }
     componentDidUpdate() {
-        console.log('adminusers componentdidupdate users', this.users)
     }
     render() {
-        console.log('adminusers render')
-        /*const generateUserList=()=>{
+        const generateUserList = () => {
+            if (this.props.users) {
+                this.userArray = this.props.users.map((user) =>
+                    <li>
+                        {user.firstName+'\n'}
+                        {user.lastName+'\n'}
+                        {user.id}
+                    </li>
+                )
+            }
         }
-        generateUserList()*/
-        console.log('adminusers', this.users)
+        generateUserList()
+        console.log('adminusers', this.props.users)
         return (
-            <>
-
-            </>
+            <Grid>
+                {this.userArray}
+            </Grid>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    console.log('mapstatetoprops')
-    return {}
+    console.log('mapstatetoprops users', state.users)
+    return { users: state.users }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

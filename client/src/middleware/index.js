@@ -766,9 +766,9 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.resource = 'admin'
                 let getResult = await getFromServer(questObject)
                 console.log('getResult', getResult)
-                if (getResult.Items) {
-                    action.users = []
-                    console.log('getResult.users', getResult.Items)
+                if (getResult.users) {
+                    action.users = getResult.users
+                    console.log('getResult.users', getResult.users)
                 } else {
                     action.errors = getResult.errors ? getResult.errors : [];
                     if (getResult.error) {
