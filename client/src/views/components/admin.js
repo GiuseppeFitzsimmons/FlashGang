@@ -28,12 +28,12 @@ import AdminUsers from './adminusers';
 class Admin extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { index: 0 }
+        this.state = { index: 0, open: false }
         var renderable = <>USER TAB CONTENT</>
     }
     render() {
         const handleChange = (event, index) => {
-            this.setState({ index: index })
+            this.setState({ index: index }) 
         };
         switch (this.state.index) {
             case 0:

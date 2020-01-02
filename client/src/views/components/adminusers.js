@@ -27,24 +27,35 @@ import Tab from '@material-ui/core/Tab';
 class AdminUsers extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {open: this.props.open}
+        var users = {}
     }
-    componentDidMount(){
-        var users = this.props.getAllUsers()
-        console.log('users from adminusers', users)
+    
+    componentDidMount() {
+        console.log('adminusers componentdidmount')
+        this.users = this.props.getAllUsers()
+        this.setState({users:this.users})
+        //console.log('users from adminusers', users)
+    }
+    componentDidUpdate() {
+        console.log('adminusers componentdidupdate users', this.users)
     }
     render() {
-        if (this.state.loading = false){
-            console.log('users doneloading')
+        console.log('adminusers render')
+        /*const generateUserList=()=>{
         }
+        generateUserList()*/
+        console.log('adminusers', this.users)
         return (
             <>
+
             </>
         )
     }
 }
 
 function mapStateToProps(state, props) {
+    console.log('mapstatetoprops')
     return {}
 }
 function mapDispatchToProps(dispatch) {
