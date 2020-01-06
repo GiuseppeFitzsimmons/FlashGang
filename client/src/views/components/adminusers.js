@@ -44,7 +44,8 @@ class AdminUsers extends React.Component {
                     <li>
                         {user.firstName+'\n'}
                         {user.lastName+'\n'}
-                        {user.id}
+                        {user.id+'\n'}
+                        {user.subscription ? user.subscription : 'member'}
                     </li>
                 )
             }

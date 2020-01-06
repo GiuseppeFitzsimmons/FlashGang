@@ -31,6 +31,11 @@ exports.handler = async (event, context) => {
                     filteredUser.firstName = user.firstName
                     filteredUser.lastName = user.lastName
                     filteredUser.id = user.id
+                    if (filteredUser.subscription){
+                        filteredUser.subscription = user.subscription
+                    } else {
+                        user.subscription = 'member'
+                    }
                     filteredUsers.push(filteredUser)
                 }
                 _body.users = filteredUsers

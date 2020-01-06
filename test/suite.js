@@ -6,19 +6,22 @@ const createAccountTony = {
     id: 'tony@soprano.it',
     firstName: 'Tony',
     lastName: 'Soprano',
-    password: 'password'
+    password: 'password',
+    subscription: 'boss'
 }
 const createAccountChris = {
     id: 'chris@soprano.it',
     firstName: 'Chris',
     lastName: 'Moltisanti',
-    password: 'password'
+    password: 'password',
+    subscription: 'lieutenant'
 }
 const createAccountCarmella = {
     id: 'carmella@soprano.it',
     firstName: 'Carmella',
     lastName: 'Soprano',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountJunior = {
     id: 'junior@soprano.it',
@@ -31,7 +34,8 @@ const createAccountPaulie = {
     firstName: 'Paulie',
     lastName: 'Gualtieri',
     nickName: 'Wallnuts',
-    password: 'password'
+    password: 'password',
+    subscription: 'lieutenant'
 }
 const createAccountBobby = {
     id: 'bobby@soprano.it',
@@ -87,7 +91,7 @@ const createAccountCarmine = {
 }
 const createAccountMikey = {
     id: 'mikey@soprano.it',
-    firstName: 'CarMikeymine',
+    firstName: 'Mikey',
     lastName: 'Palmice',
     password: 'password'
 }
