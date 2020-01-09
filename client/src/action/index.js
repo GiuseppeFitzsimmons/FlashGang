@@ -148,8 +148,8 @@ export function deleteImages(images) {
     return { type: DELETE_IMAGES, data: { images } }
 
 }
-export function getAllUsers() {
+export function getAllUsers(filters) {
     console.log("Action GET_ALL_USERS")
-    return { type: GET_ALL_USERS, users: {  } }
+    return { type: GET_ALL_USERS, users: {  }, data: {filters} }
 
 }

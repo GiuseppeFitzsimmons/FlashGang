@@ -21,6 +21,7 @@ import FlashAppBar from '../widgets/flashappbar';
 import { RadioButton } from 'material-ui';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 
@@ -38,13 +39,25 @@ class AdminUsers extends React.Component {
     componentDidUpdate() {
     }
     render() {
+        var filters = ['member', 'lieutenant']
+        var index = ''
+        const setFilter = (value, checked) => {
+            console.log('filter set to', value)
+            if (checked){
+                filters.push(value)
+            } else {
+                index = filters.indexOf(value)
+                filters.splice(index, 1)
+            }
+            console.log('current filters', filters)
+        }
         const generateUserList = () => {
             if (this.props.users) {
                 this.userArray = this.props.users.map((user) =>
                     <li>
-                        {user.firstName+'\n'}
-                        {user.lastName+'\n'}
-                        {user.id+'\n'}
+                        {user.firstName + '\n'}
+                        {user.lastName + '\n'}
+                        {user.id + '\n'}
                         {user.subscription ? user.subscription : 'member'}
                     </li>
                 )
@@ -54,7 +67,38 @@ class AdminUsers extends React.Component {
         console.log('adminusers', this.props.users)
         return (
             <Grid>
-                {this.userArray}
+                Member
+                <Checkbox
+                    defaultChecked
+                    color="default"
+                    value="member"
+                    inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    onChange={
+                        (event) => {
+                            setFilter(event.target.value, event.target.checked)
+                        }}
+                />
+                Lieutenant
+                <Checkbox
+                    defaultChecked
+                    color="default"
+                    value="lieutenant"
+                    inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    onChange={
+                        (event) => {
+                            setFilter(event.target.value, event.target.checked)
+                        }}
+                />
+                <Button
+                    onClick = {()=>{
+                        console.log('filters onClick', filters)
+                        this.props.getAllUsers(filters)}}
+                >
+                    Fetch users
+                </Button>
+                <Grid>
+                    {this.userArray}
+                </Grid>
             </Grid>
         )
     }

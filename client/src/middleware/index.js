@@ -764,6 +764,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware GET_ALL_USERS')
                 let questObject = {}
                 questObject.resource = 'admin'
+                questObject.params = action.data.filters
                 let getResult = await getFromServer(questObject)
                 console.log('getResult', getResult)
                 if (getResult.users) {

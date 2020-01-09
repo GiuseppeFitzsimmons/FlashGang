@@ -805,11 +805,13 @@ async function getUserDeck(flashDeckId, userId) {
     else return null
 }
 
-async function getAllUsers() {
+async function getAllUsers(filters) {
     var documentClient = getDocumentDbClient();
     var params = {
-        TableName: process.env.USER_TABLE_NAME
+        TableName: process.env.USER_TABLE_NAME,
+        KeyConditionExpression: filters
     };
+    console.log('getAllUsers params', params)
     let item = await new Promise((resolve, reject) => {
         documentClient.scan(params, function (err, data) {
             if (err) {
