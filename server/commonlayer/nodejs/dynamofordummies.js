@@ -806,11 +806,32 @@ async function getUserDeck(flashDeckId, userId) {
 }
 
 async function getAllUsers(filters) {
+
     var documentClient = getDocumentDbClient();
     var params = {
-        TableName: process.env.USER_TABLE_NAME,
-        KeyConditionExpression: filters
+        TableName: process.env.USER_TABLE_NAME
     };
+    //{ ':member': { 'S': 'member' }, ':lieutenant': { 'S': 'lieutenant' } }
+    if (filters) {
+        let FilterAttributeValues = {}
+        if (filters.subscription) {
+            let subscriptionFilter = ''
+            if (Array.isArray(filters.subscription)) {
+                for (var i in filters.subscription) {
+                    subscriptionFilter += 'subscription = :' + filters.subscription[i]
+                    FilterAttributeValues[':' + filters.subscription[i]] = { S: filters.subscription[i] }
+                    if (i < filters.subscription.length - 1) {
+                        subscriptionFilter += ' or '
+                    }
+                }
+            } else {
+                subscriptionFilter += 'subscription = :' + filters.subscription
+                FilterAttributeValues[':' + filters.subscription] = { S: filters.subscription }
+            }
+            params.FilterExpression = subscriptionFilter
+            params.ExpressionAttributeValues = FilterAttributeValues
+        }
+    }
     console.log('getAllUsers params', params)
     let item = await new Promise((resolve, reject) => {
         documentClient.scan(params, function (err, data) {

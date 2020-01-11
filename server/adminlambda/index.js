@@ -11,6 +11,8 @@ exports.handler = async (event, context) => {
     returnObject.statusCode = 200;
     let _body = {}
     var token;
+    let _event = JSON.stringify(event)
+    console.log('adminlambda _event', _event)
     /*try {
         token = tokenUtility.validateToken(event)
     } catch (badtoken) {
@@ -21,7 +23,7 @@ exports.handler = async (event, context) => {
     if (token) {*/
         if (event.httpMethod.toLowerCase() === 'get') {
             {
-                var users = await dynamodbfordummies.getAllUsers()
+                var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
                 console.log('adminlambda users', users.Items)
                 _body.users = []
                 var filteredUsers = []

@@ -108,7 +108,7 @@ async function synchronise(dispatch) {
     console.log('Synchronisation complete')
 }
 
-const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings', gallery: '/gallery', admin:'/admin' }
+const restfulResources = { synchronise: '/synchronise', account: '/account', login: '/login', rsvp: '/rsvp', resetpw: '/resetpw', setpw: '/setpw', poll: '/poll', setsettings: '/setsettings', gallery: '/gallery', admin: '/admin' }
 
 async function postToServer(questObject) {
     var environment = env.getEnvironment(window.location.origin);
@@ -227,7 +227,22 @@ async function getFromServer(questObject, method) {
     var _url = environment.url + restfulResources[restfulResource];
     if (params && params.id) {
         _url += '/' + params.id
+    } else if (params) {
+        let keys = Object.keys(params)
+        _url += '?'
+        for (var i in keys) {
+            let key = keys[i]
+            let value = params[key]
+            if (Array.isArray(value)) {
+                for (var j in value) {
+                    _url += '&' + key + '=' + value[j]
+                }
+            } else {
+                _url += '&' + key + '=' + value
+            }
+        }
     }
+    console.log(_url, '_url')
     let reply = await fetch(_url, {
         method: method ? "DELETE" : "GET",
         credentials: "same-origin", // send cookies

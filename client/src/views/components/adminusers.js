@@ -30,6 +30,7 @@ class AdminUsers extends React.Component {
         super(props)
         this.state = { open: this.props.open }
         var userArray = []
+        this.subscription = ['member', 'lieutenant']
     }
 
     componentDidMount() {
@@ -39,17 +40,16 @@ class AdminUsers extends React.Component {
     componentDidUpdate() {
     }
     render() {
-        var filters = ['member', 'lieutenant']
         var index = ''
-        const setFilter = (value, checked) => {
+        const setSubscription = (value, checked) => {
             console.log('filter set to', value)
-            if (checked){
-                filters.push(value)
+            if (checked) {
+                this.subscription.push(value)
             } else {
-                index = filters.indexOf(value)
-                filters.splice(index, 1)
+                index = this.subscription.indexOf(value)
+                this.subscription.splice(index, 1)
             }
-            console.log('current filters', filters)
+            console.log('current subscriptions', this.subscription)
         }
         const generateUserList = () => {
             if (this.props.users) {
@@ -75,7 +75,7 @@ class AdminUsers extends React.Component {
                     inputProps={{ 'aria-label': 'checkbox with default color' }}
                     onChange={
                         (event) => {
-                            setFilter(event.target.value, event.target.checked)
+                            setSubscription(event.target.value, event.target.checked)
                         }}
                 />
                 Lieutenant
@@ -86,13 +86,14 @@ class AdminUsers extends React.Component {
                     inputProps={{ 'aria-label': 'checkbox with default color' }}
                     onChange={
                         (event) => {
-                            setFilter(event.target.value, event.target.checked)
+                            setSubscription(event.target.value, event.target.checked)
                         }}
                 />
                 <Button
-                    onClick = {()=>{
-                        console.log('filters onClick', filters)
-                        this.props.getAllUsers(filters)}}
+                    onClick={() => {
+                        console.log('filters onClick', this.subscription)
+                        this.props.getAllUsers({ subscription: this.subscription })
+                    }}
                 >
                     Fetch users
                 </Button>
