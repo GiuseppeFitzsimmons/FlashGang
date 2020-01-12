@@ -809,7 +809,8 @@ async function getAllUsers(filters) {
 
     var documentClient = getDocumentDbClient();
     var params = {
-        TableName: process.env.USER_TABLE_NAME
+        TableName: process.env.USER_TABLE_NAME,
+        Limit: 99,
     };
     //{ ':member': { 'S': 'member' }, ':lieutenant': { 'S': 'lieutenant' } }
     if (filters) {
@@ -826,7 +827,7 @@ async function getAllUsers(filters) {
                 }
             } else {
                 subscriptionFilter += 'subscription = :' + filters.subscription
-                FilterAttributeValues[':' + filters.subscription] = { S: filters.subscription }
+                FilterAttributeValues[':' + filters.subscription] = filters.subscription
             }
             params.FilterExpression = subscriptionFilter
             params.ExpressionAttributeValues = FilterAttributeValues

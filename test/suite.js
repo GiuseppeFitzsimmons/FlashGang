@@ -261,8 +261,8 @@ async function test() {
 }
 
 function run() {
-    console.log(process.argv);
-    if (process.argv[2]=='users') {
+    let testArg=process.argv[2];
+    if (testArg=='users') {
         testGetAllUsers();
     } else {
         test();
@@ -271,6 +271,6 @@ function run() {
 run();
 async function testGetAllUsers() {
     console.log("test")
-    let getAll=await get(domain+'/admin?');
+    let getAll=await get(domain+'/admin?subscription=member');
     console.log("all users",getAll);
 }
