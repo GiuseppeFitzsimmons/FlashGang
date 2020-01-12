@@ -832,6 +832,15 @@ async function getAllUsers(filters) {
             params.FilterExpression = subscriptionFilter
             params.ExpressionAttributeValues = FilterAttributeValues
         }
+        if (filters.suspension){
+            let suspensionAttributeValue = {}
+            let suspensionFilter = ''
+            suspensionFilter += 'suspension = :' + filters.suspension
+            params.FilterExpression += ' and ' + suspensionFilter
+            suspensionAttributeValue[':' + filters.suspension] = filters.suspension
+            params.ExpressionAttributeValues += suspensionAttributeValue
+            params.ExpressionAttributeValues = JSON.stringify(params.ExpressionAttributeValues)
+        }
     }
     console.log('getAllUsers params', params)
     let item = await new Promise((resolve, reject) => {

@@ -29,15 +29,17 @@ class AdminUsers extends React.Component {
     constructor(props) {
         super(props)
         this.state = { open: this.props.open }
-        var userArray = []
-        this.subscription = ['member', 'lieutenant']
+        this.subscription = ['member', 'lieutenant', 'boss']
+        this.suspension = false
     }
 
     componentDidMount() {
         console.log('adminusers componentdidmount')
         this.props.getAllUsers()
+        console.log('componentDidMount: subscription filter is set to', this.subscription, 'suspension filter is set to', this.suspension)
     }
     componentDidUpdate() {
+        console.log('componentDidUpdate: subscription filter is set to', this.subscription, 'suspension filter is set to', this.suspension)
     }
     render() {
         var index = ''
@@ -50,6 +52,14 @@ class AdminUsers extends React.Component {
                 this.subscription.splice(index, 1)
             }
             console.log('current subscriptions', this.subscription)
+        }
+        const setSuspension = (checked) => {
+            console.log('suspension set to', checked)
+            if (checked){
+                this.suspension = true
+            } else {
+                this.suspension = false
+            }
         }
         const generateUserList = () => {
             if (this.props.users) {
@@ -89,10 +99,32 @@ class AdminUsers extends React.Component {
                             setSubscription(event.target.value, event.target.checked)
                         }}
                 />
+                Boss
+                <Checkbox
+                    defaultChecked
+                    color="default"
+                    value="boss"
+                    inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    onChange={
+                        (event) => {
+                            setSubscription(event.target.value, event.target.checked)
+                        }}
+                />
+                Suspended
+                <Checkbox
+                    //defaultChecked
+                    color="default"
+                    value="suspended"
+                    inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    onChange={
+                        (event) => {
+                            setSuspension(event.target.checked)
+                        }}
+                />
                 <Button
                     onClick={() => {
                         console.log('filters onClick', this.subscription)
-                        this.props.getAllUsers({ subscription: this.subscription })
+                        this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
                     }}
                 >
                     Fetch users
