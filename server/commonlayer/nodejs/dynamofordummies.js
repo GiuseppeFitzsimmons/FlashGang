@@ -820,7 +820,7 @@ async function getAllUsers(filters) {
             if (Array.isArray(filters.subscription)) {
                 for (var i in filters.subscription) {
                     subscriptionFilter += 'subscription = :' + filters.subscription[i]
-                    FilterAttributeValues[':' + filters.subscription[i]] = { S: filters.subscription[i] }
+                    FilterAttributeValues[':' + filters.subscription[i]] = filters.subscription[i]
                     if (i < filters.subscription.length - 1) {
                         subscriptionFilter += ' or '
                     }
