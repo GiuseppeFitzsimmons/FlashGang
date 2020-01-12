@@ -198,6 +198,32 @@ async function post(url, params, token) {
         })
     return reply
 }
+async function get(url, token) {
+    var _headers = {}
+    if (token) {
+        _headers.authorization = token;
+    }
+    let reply = await fetch(url, {
+        method: 'get',
+        credentials: "same-origin",
+        headers: _headers
+    })
+        .then(function (response) {
+            responseCode = response.status;
+            return response.json();
+
+        })
+        .then(function (json) {
+            //console.log("REPLY FROM POST", json);
+            return json
+        })
+        .catch(function (err) {
+            responseCode = 0
+            console.log('getFromServer error', err)
+            return {}
+        })
+    return reply
+}
 
 async function test() {
     console.log("CREATING ACCOUNT TONY");
@@ -234,4 +260,17 @@ async function test() {
     
 }
 
-test();
+function run() {
+    console.log(process.argv);
+    if (process.argv[2]=='users') {
+        testGetAllUsers();
+    } else {
+        test();
+    }
+}
+run();
+async function testGetAllUsers() {
+    console.log("test")
+    let getAll=await get(domain+'/admin?');
+    console.log("all users",getAll);
+}
