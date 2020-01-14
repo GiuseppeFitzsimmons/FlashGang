@@ -755,10 +755,6 @@ async function putUser(user) {
     delete user.remainingFlashDecksAllowed;
     delete user.remainingFlashGangsAllowed;
     delete user.profile;
-    user.lastModified=(new Date()).getTime();
-    if (!user.subscription) {
-        user.subscription='member';
-    }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
@@ -814,9 +810,8 @@ async function getAllUsers(filters) {
     var documentClient = getDocumentDbClient();
     var params = {
         TableName: process.env.USER_TABLE_NAME,
-        Limit: 99,
+        Limit: 10,
     };
-    //{ ':member': { 'S': 'member' }, ':lieutenant': { 'S': 'lieutenant' } }
     if (filters) {
         let FilterAttributeValues = {}
         if (filters.subscription) {
@@ -836,14 +831,22 @@ async function getAllUsers(filters) {
             params.FilterExpression = subscriptionFilter
             params.ExpressionAttributeValues = FilterAttributeValues
         }
-        if (filters.suspension){
+        if (filters.suspension) {
             let suspensionAttributeValue = {}
             let suspensionFilter = ''
-            suspensionFilter += 'suspension = :' + filters.suspension
-            params.FilterExpression += ' and ' + suspensionFilter
+            if (filters.subscription) {
+                filters.subscription = 'true'
+                params.FilterExpression = '(' + params.FilterExpression + ')'
+                suspensionFilter += 'suspension = :' + filters.suspension
+                params.FilterExpression += ' and ' + suspensionFilter
+            } else {
+                filters.subscription = 'true'
+                params.FilterExpression = {}
+                suspensionFilter += 'suspension = :' + filters.suspension
+                params.FilterExpression = suspensionFilter
+            }
             suspensionAttributeValue[':' + filters.suspension] = filters.suspension
-            params.ExpressionAttributeValues += suspensionAttributeValue
-            params.ExpressionAttributeValues = params.ExpressionAttributeValues
+            params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
         }
     }
     console.log('getAllUsers params', params)

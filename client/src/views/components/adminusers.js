@@ -132,6 +132,9 @@ class AdminUsers extends React.Component {
                 <Grid>
                     {this.userArray}
                 </Grid>
+                <Button>
+                    Next page
+                </Button>
             </Grid>
         )
     }
