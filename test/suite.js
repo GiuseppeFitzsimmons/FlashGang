@@ -28,7 +28,8 @@ const createAccountJunior = {
     firstName: 'Junior',
     lastName: 'Soprano',
     password: 'password',
-    suspension: 'true'
+    suspension: 'true',
+    subscription: 'member'
 }
 const createAccountPaulie = {
     id: 'paulie@soprano.it',
@@ -43,58 +44,67 @@ const createAccountBobby = {
     firstName: 'Bobby',
     lastName: 'Baccalieri',
     nickName: 'Bacala',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountVito = {
     id: 'vito@soprano.it',
     firstName: 'Vito',
     lastName: 'Spatafore',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountJohnny = {
     id: 'johnny@soprano.it',
     firstName: 'Johnny',
     lastName: 'Sacramoni',
     nickName: 'Sack',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountPhil = {
     id: 'phil@soprano.it',
     firstName: 'Phil',
     lastName: 'Leotardo',
-    password: 'password'
+    password: 'password',
+    subscription: 'lieutenant'
 }
 const createAccountLivia = {
     id: 'mom@soprano.it',
     firstName: 'Livia',
     lastName: 'Soprano',
     nickName: 'Mom',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountSal = {
     id: 'salvatore@soprano.it',
     firstName: 'Salvatore',
     lastName: 'Bonpensiero',
     nickName: 'Big Pussy',
-    password: 'password'
+    password: 'password',
+    subscription: 'lieutenant'
 }
 const createAccountAngelo = {
     id: 'angelo@soprano.it',
     firstName: 'Angelo',
-    lastName: 'Garepi',
-    password: 'password'
+    lastName: 'Garepe',
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountCarmine = {
     id: 'carmine@soprano.it',
     firstName: 'Carmine',
     lastName: 'Lupertazzi Jr',
-    password: 'password'
+    password: 'password',
+    subscription: 'member'
 }
 const createAccountMikey = {
     id: 'mikey@soprano.it',
     firstName: 'Mikey',
     lastName: 'Palmice',
-    password: 'password'
+    password: 'password',
+    subscription: 'lieutenant'
 }
 const castOfSopranos=[createAccountCarmella, createAccountJunior, createAccountPaulie, 
     createAccountBobby, createAccountVito, createAccountJohnny, 
