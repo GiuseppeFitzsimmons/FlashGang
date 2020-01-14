@@ -167,7 +167,7 @@ exports.handler = async (event, context) => {
                             console.log("s3result", s3result);
                         }
                     }
-                    await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
+                    await dynamodbfordummies.putUser(user);
                     reply.user = await dynamodbfordummies.getUser(user.id)
 
                 }
@@ -175,11 +175,13 @@ exports.handler = async (event, context) => {
         } else {
             //Account creation sequence
             console.log("EVENT DOT BODY", event.body, event.body.id, typeof event.body);
-            event.body.id = event.body.id.toLowerCase()
+            event.body.id = event.body.id.toLowerCase();
+            console.log("===================1");
             let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME);
+            console.log("===================2", user);
             if (!user) {
                 event.body.password = await hashAPass(event.body.password)
-                let dynamoItem = await dynamodbfordummies.putItem(event.body, process.env.USER_TABLE_NAME)
+                let dynamoItem = await dynamodbfordummies.putUser(event.body)
                 let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                 reply.token = tokenPair.signedJwt
                 reply.refresh = tokenPair.signedRefresh

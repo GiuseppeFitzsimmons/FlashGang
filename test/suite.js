@@ -272,6 +272,6 @@ function run() {
 run();
 async function testGetAllUsers() {
     console.log("test")
-    let getAll=await get(domain+'/admin?subscription=member');
+    let getAll=await get(domain+'/admin?subscription=member&suspension=true');
     console.log("all users",getAll);
 }

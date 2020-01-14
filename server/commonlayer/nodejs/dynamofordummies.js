@@ -755,6 +755,10 @@ async function putUser(user) {
     delete user.remainingFlashDecksAllowed;
     delete user.remainingFlashGangsAllowed;
     delete user.profile;
+    user.lastModified=(new Date()).getTime();
+    if (!user.subscription) {
+        user.subscription='member';
+    }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
@@ -839,7 +843,7 @@ async function getAllUsers(filters) {
             params.FilterExpression += ' and ' + suspensionFilter
             suspensionAttributeValue[':' + filters.suspension] = filters.suspension
             params.ExpressionAttributeValues += suspensionAttributeValue
-            params.ExpressionAttributeValues = JSON.stringify(params.ExpressionAttributeValues)
+            params.ExpressionAttributeValues = params.ExpressionAttributeValues
         }
     }
     console.log('getAllUsers params', params)
