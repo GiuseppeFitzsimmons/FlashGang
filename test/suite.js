@@ -28,7 +28,7 @@ const createAccountJunior = {
     firstName: 'Junior',
     lastName: 'Soprano',
     password: 'password',
-    suspended: true
+    suspension: 'true'
 }
 const createAccountPaulie = {
     id: 'paulie@soprano.it',

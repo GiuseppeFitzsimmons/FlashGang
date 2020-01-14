@@ -810,7 +810,7 @@ async function getAllUsers(filters) {
     var documentClient = getDocumentDbClient();
     var params = {
         TableName: process.env.USER_TABLE_NAME,
-        Limit: 10,
+        Limit: 99,
     };
     if (filters) {
         let FilterAttributeValues = {}
@@ -831,7 +831,7 @@ async function getAllUsers(filters) {
             params.FilterExpression = subscriptionFilter
             params.ExpressionAttributeValues = FilterAttributeValues
         }
-        if (filters.suspension) {
+        if (filters.suspension == 'true') {
             let suspensionAttributeValue = {}
             let suspensionFilter = ''
             if (filters.subscription) {
