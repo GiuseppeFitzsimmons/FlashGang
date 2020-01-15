@@ -27,7 +27,7 @@ const createAccountJunior = {
     firstName: 'Junior',
     lastName: 'Soprano',
     password: 'password',
-    suspension: 'true',
+    suspended: 'true',
     subscription: 'member'
 }
 const createAccountPaulie = {

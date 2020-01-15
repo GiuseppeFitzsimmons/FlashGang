@@ -21,63 +21,66 @@ exports.handler = async (event, context) => {
         returnObject.statusCode = badtoken.statusCode;
     }
     if (token) {*/
-        if (event.httpMethod.toLowerCase() === 'get') {
-            {
-                var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
-                console.log('adminlambda users', users.Items)
-                _body.users = []
-                var filteredUsers = []
-                for (var i in users.Items){
-                    let user = users.Items[i]
-                    let filteredUser = {}
-                    filteredUser.firstName = user.firstName
-                    filteredUser.lastName = user.lastName
-                    filteredUser.id = user.id
-                    if (user.subscription){
-                        filteredUser.subscription = user.subscription
-                    } else {
-                        filteredUser.subscription = 'member'
-                    }
-                    filteredUsers.push(filteredUser)
+    if (event.httpMethod.toLowerCase() === 'get') {
+        {
+            var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
+            console.log('adminlambda users', users.Items)
+            _body.users = []
+            var filteredUsers = []
+            for (var i in users.Items) {
+                let user = users.Items[i]
+                let filteredUser = {}
+                filteredUser.firstName = user.firstName
+                filteredUser.lastName = user.lastName
+                filteredUser.id = user.id
+                if (user.subscription) {
+                    filteredUser.subscription = user.subscription
+                } else {
+                    filteredUser.subscription = 'member'
                 }
-                _body.users = filteredUsers
-                returnObject.body = JSON.stringify(_body)
-                /*if (event.body.source) {
-                    if (event.body.source.indexOf('data:image') == 0) {
-                        var imageData = event.body.source.split(',');
-                        var base64Data = imageData[1];
-                        var imageType = imageData[0].toLowerCase().replace("data:image/", '').replace(';base64', '');
-                        var subPath = `/images/${token.sub}/${uuidv4()}.${imageType}`
-                        var path = `${process.env.IMAGE_PREFIX}${subPath}`
-                        var s3 = gets3()
-                        var bucketParams = {
-                            Body: new Buffer(base64Data, 'base64'),
-                            Bucket: process.env.IMAGE_BUCKET,
-                            Key: path,
-                            ContentEncoding: 'base64',
-                            ContentType: `image/${imageType}`
-                        };
-                        //fs.writeFileSync('avatartest.jpg',base64Data, 'base64');
-                        let s3result = await new Promise((resolve, reject) => {
-                            s3.putObject(bucketParams, function (err, data) {
-                                if (err) {
-                                    console.log("Error uploading IMAGE", err, err.stack);
-                                    reject(err);
-                                } else {
-                                    console.log("Success uploading IMAGE", data);
-                                    resolve(data);
-                                }
-                            });
-                        })
-                        if (s3result.ETag) {
-                            //TODO at some point in the future we should have a way that cleans up unused images.
-                            reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
-                            //await dynamodbfordummies.putImage(token.sub, reply.url)
-                        }
-                        console.log("s3result", s3result);
-                    }
-                }*/
+                filteredUsers.push(filteredUser)
             }
+            if (users.LastEvaluatedKey) {
+                _body.LastEvaluatedKey = users.LastEvaluatedKey
+            }
+            _body.users = filteredUsers
+            returnObject.body = JSON.stringify(_body)
+            /*if (event.body.source) {
+                if (event.body.source.indexOf('data:image') == 0) {
+                    var imageData = event.body.source.split(',');
+                    var base64Data = imageData[1];
+                    var imageType = imageData[0].toLowerCase().replace("data:image/", '').replace(';base64', '');
+                    var subPath = `/images/${token.sub}/${uuidv4()}.${imageType}`
+                    var path = `${process.env.IMAGE_PREFIX}${subPath}`
+                    var s3 = gets3()
+                    var bucketParams = {
+                        Body: new Buffer(base64Data, 'base64'),
+                        Bucket: process.env.IMAGE_BUCKET,
+                        Key: path,
+                        ContentEncoding: 'base64',
+                        ContentType: `image/${imageType}`
+                    };
+                    //fs.writeFileSync('avatartest.jpg',base64Data, 'base64');
+                    let s3result = await new Promise((resolve, reject) => {
+                        s3.putObject(bucketParams, function (err, data) {
+                            if (err) {
+                                console.log("Error uploading IMAGE", err, err.stack);
+                                reject(err);
+                            } else {
+                                console.log("Success uploading IMAGE", data);
+                                resolve(data);
+                            }
+                        });
+                    })
+                    if (s3result.ETag) {
+                        //TODO at some point in the future we should have a way that cleans up unused images.
+                        reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
+                        //await dynamodbfordummies.putImage(token.sub, reply.url)
+                    }
+                    console.log("s3result", s3result);
+                }
+            }*/
+        }
     }
     //returnObject.body = JSON.stringify(reply);
     returnObject.headers = {

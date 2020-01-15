@@ -55,7 +55,7 @@ class AdminUsers extends React.Component {
         }
         const setSuspension = (checked) => {
             console.log('suspension set to', checked)
-            if (checked){
+            if (checked) {
                 this.suspension = true
             } else {
                 this.suspension = false
@@ -124,7 +124,17 @@ class AdminUsers extends React.Component {
                 <Button
                     onClick={() => {
                         console.log('filters onClick', this.subscription)
-                        this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
+                        if (this.props.cursor && this.props.cursor != null) {
+                            /*let cursor = JSON.stringify(this.props.cursor)
+                            let splittedCursor = cursor.split(':')
+                            let reformedCursor = `'{"id":{"S":` + splittedCursor[1] + `}'`
+                            console.log('reformedCursor', reformedCursor)*/
+                            let cursor = this.props.cursor.id
+                            console.log('cursor', cursor)
+                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension, cursor: cursor })
+                        } else {
+                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
+                        }
                     }}
                 >
                     Fetch users
@@ -139,7 +149,7 @@ class AdminUsers extends React.Component {
 
 function mapStateToProps(state, props) {
     console.log('mapstatetoprops users', state.users)
-    return { users: state.users }
+    return { users: state.users, cursor: state.cursor }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

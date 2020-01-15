@@ -110,7 +110,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { sessionExpired: true })
             return state
         case GET_ALL_USERS:
-            state = Object.assign({}, state, { users: action.users, loading: false  })
+            state = Object.assign({}, state, { users: action.users, loading: false, cursor: action.cursor  })
             return state
         default:
             console.log('state', state)

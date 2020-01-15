@@ -792,6 +792,9 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                     console.log("Error receiving users", getResult, action)
                 }
+                if (getResult.LastEvaluatedKey){
+                    action.cursor = getResult.LastEvaluatedKey
+                }
             }
             return next(action);
         }

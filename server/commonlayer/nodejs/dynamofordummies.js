@@ -842,18 +842,19 @@ async function getAllUsers(filters) {
             let suspensionAttributeValue = {}
             let suspensionFilter = ''
             if (filters.subscription) {
-                filters.subscription = 'true'
                 params.FilterExpression = '(' + params.FilterExpression + ')'
-                suspensionFilter += 'suspension = :' + filters.suspension
+                suspensionFilter += 'suspended = :' + filters.suspension
                 params.FilterExpression += ' and ' + suspensionFilter
             } else {
-                filters.subscription = 'true'
                 params.FilterExpression = {}
-                suspensionFilter += 'suspension = :' + filters.suspension
+                suspensionFilter += 'suspended = :' + filters.suspension
                 params.FilterExpression = suspensionFilter
             }
             suspensionAttributeValue[':' + filters.suspension] = filters.suspension
             params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
+        }
+        if (filters.cursor && filters.cursor!=null){
+            params.ExclusiveStartKey = {id:filters.cursor}
         }
     }
     console.log('getAllUsers params', params)
