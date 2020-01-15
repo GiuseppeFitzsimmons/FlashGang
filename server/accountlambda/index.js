@@ -95,7 +95,7 @@ exports.handler = async (event, context) => {
                 if (token) {
                     if (token.sub == event.body.id && token.scope == 'resetpw') {
                         user.password = await hashAPass(event.body.password)
-                        await dynamodbfordummies.putItem(user, process.env.USER_TABLE_NAME)
+                        await dynamodbfordummies.putUser(user)
                         let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
                         reply.token = tokenPair.signedJwt
                         reply.refresh = tokenPair.signedRefresh
@@ -176,11 +176,10 @@ exports.handler = async (event, context) => {
             //Account creation sequence
             console.log("EVENT DOT BODY", event.body, event.body.id, typeof event.body);
             event.body.id = event.body.id.toLowerCase();
-            console.log("===================1");
             let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME);
-            console.log("===================2", user);
             if (!user) {
-                event.body.password = await hashAPass(event.body.password)
+                event.body.password = await hashAPass(event.body.password);
+                event.body.creationDate=(new Date()).getTime();
                 let dynamoItem = await dynamodbfordummies.putUser(event.body)
                 let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                 reply.token = tokenPair.signedJwt

@@ -20,8 +20,7 @@ const createAccountCarmella = {
     id: 'carmella@soprano.it',
     firstName: 'Carmella',
     lastName: 'Soprano',
-    password: 'password',
-    subscription: 'member'
+    password: 'password'
 }
 const createAccountJunior = {
     id: 'junior@soprano.it',
@@ -44,15 +43,13 @@ const createAccountBobby = {
     firstName: 'Bobby',
     lastName: 'Baccalieri',
     nickName: 'Bacala',
-    password: 'password',
-    subscription: 'member'
+    password: 'password'
 }
 const createAccountVito = {
     id: 'vito@soprano.it',
     firstName: 'Vito',
     lastName: 'Spatafore',
-    password: 'password',
-    subscription: 'member'
+    password: 'password'
 }
 const createAccountJohnny = {
     id: 'johnny@soprano.it',
@@ -74,8 +71,7 @@ const createAccountLivia = {
     firstName: 'Livia',
     lastName: 'Soprano',
     nickName: 'Mom',
-    password: 'password',
-    subscription: 'member'
+    password: 'password'
 }
 const createAccountSal = {
     id: 'salvatore@soprano.it',
@@ -89,8 +85,7 @@ const createAccountAngelo = {
     id: 'angelo@soprano.it',
     firstName: 'Angelo',
     lastName: 'Garepe',
-    password: 'password',
-    subscription: 'member'
+    password: 'password'
 }
 const createAccountCarmine = {
     id: 'carmine@soprano.it',
@@ -282,6 +277,6 @@ function run() {
 run();
 async function testGetAllUsers() {
     console.log("test")
-    let getAll=await get(domain+'/admin?subscription=member&suspension=true');
+    let getAll=await get(domain+'/admin?subscription=lieutenant');
     console.log("all users",getAll);
 }

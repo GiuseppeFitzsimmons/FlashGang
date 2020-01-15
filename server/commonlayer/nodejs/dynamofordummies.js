@@ -755,6 +755,10 @@ async function putUser(user) {
     delete user.remainingFlashDecksAllowed;
     delete user.remainingFlashGangsAllowed;
     delete user.profile;
+    user.lastModified=(new Date()).getTime();
+    if (!user.subscription) {
+        user.subscription='member'
+    }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
@@ -832,7 +836,9 @@ async function getAllUsers(filters) {
             params.ExpressionAttributeValues = FilterAttributeValues
         }
         if (filters.suspension == 'true') {
-             params.ExpressionAttributeValues = {}
+            if (!params.ExpressionAttributeValues) {
+                params.ExpressionAttributeValues = {}
+            }
             let suspensionAttributeValue = {}
             let suspensionFilter = ''
             if (filters.subscription) {
