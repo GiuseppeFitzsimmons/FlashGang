@@ -31,6 +31,7 @@ class AdminUsers extends React.Component {
         this.state = { open: this.props.open }
         this.subscription = ['member', 'lieutenant', 'boss']
         this.suspension = false
+        var cursor = this.props.cursor
     }
 
     componentDidMount() {
@@ -86,6 +87,7 @@ class AdminUsers extends React.Component {
                     onChange={
                         (event) => {
                             setSubscription(event.target.value, event.target.checked)
+                            this.cursor = null
                         }}
                 />
                 Lieutenant
@@ -97,6 +99,7 @@ class AdminUsers extends React.Component {
                     onChange={
                         (event) => {
                             setSubscription(event.target.value, event.target.checked)
+                            this.cursor = null
                         }}
                 />
                 Boss
@@ -108,6 +111,7 @@ class AdminUsers extends React.Component {
                     onChange={
                         (event) => {
                             setSubscription(event.target.value, event.target.checked)
+                            this.cursor = null
                         }}
                 />
                 Suspended
@@ -119,6 +123,7 @@ class AdminUsers extends React.Component {
                     onChange={
                         (event) => {
                             setSuspension(event.target.checked)
+                            this.cursor = null
                         }}
                 />
                 <Button
@@ -129,9 +134,9 @@ class AdminUsers extends React.Component {
                             let splittedCursor = cursor.split(':')
                             let reformedCursor = `'{"id":{"S":` + splittedCursor[1] + `}'`
                             console.log('reformedCursor', reformedCursor)*/
-                            let cursor = this.props.cursor.id
-                            console.log('cursor', cursor)
-                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension, cursor: cursor })
+                            this.cursor = this.props.cursor.id
+                            console.log('cursor', this.cursor)
+                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension, cursor: this.cursor })
                         } else {
                             this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
                         }
