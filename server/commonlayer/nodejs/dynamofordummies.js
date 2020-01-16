@@ -755,9 +755,9 @@ async function putUser(user) {
     delete user.remainingFlashDecksAllowed;
     delete user.remainingFlashGangsAllowed;
     delete user.profile;
-    user.lastModified=(new Date()).getTime();
+    user.lastModified = (new Date()).getTime();
     if (!user.subscription) {
-        user.subscription='member'
+        user.subscription = 'member'
     }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
@@ -818,6 +818,22 @@ async function getAllUsers(filters) {
     };
     if (filters) {
         let FilterAttributeValues = {}
+        if (filters.string) {
+            params.ScanFilter = {}
+            params.ScanFilter = {
+                ComparisonOperator: "CONTAINS",
+                firstName: {
+                    AttributeValueList: [filters.string],
+                    ConditionalOperator: 'OR'
+                }, lastName: {
+                    AttributeValueList: [filters.string],
+                    ConditionalOperator: 'OR'
+                }, id: {
+                    AttributeValueList: [filters.string],
+                    ConditionalOperator: 'OR'
+                }
+            }
+        }
         if (filters.subscription) {
             let subscriptionFilter = ''
             if (Array.isArray(filters.subscription)) {
@@ -853,11 +869,12 @@ async function getAllUsers(filters) {
             suspensionAttributeValue[':' + filters.suspension] = filters.suspension
             params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
         }
-        if (filters.cursor && filters.cursor!=null){
-            params.ExclusiveStartKey = {id:filters.cursor}
+        if (filters.cursor && filters.cursor != null) {
+            params.ExclusiveStartKey = { id: filters.cursor }
         }
     }
-    console.log('getAllUsers params', params)
+    let stringifiedParams = JSON.stringify(params)
+    console.log('getAllUsers params', stringifiedParams)
     let item = await new Promise((resolve, reject) => {
         documentClient.scan(params, function (err, data) {
             if (err) {

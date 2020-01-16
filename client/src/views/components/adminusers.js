@@ -22,6 +22,7 @@ import { RadioButton } from 'material-ui';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
 
 
 
@@ -32,6 +33,7 @@ class AdminUsers extends React.Component {
         this.subscription = ['member', 'lieutenant', 'boss']
         this.suspension = false
         var cursor = this.props.cursor
+        this.string = ''
     }
 
     componentDidMount() {
@@ -61,6 +63,10 @@ class AdminUsers extends React.Component {
             } else {
                 this.suspension = false
             }
+        }
+        const setString = (value) => {
+            console.log('string set to', value)
+            this.string = value
         }
         const generateUserList = () => {
             if (this.props.users) {
@@ -143,6 +149,22 @@ class AdminUsers extends React.Component {
                     }}
                 >
                     Fetch users
+                </Button>
+                <TextField id="standard-basic" label="Search..."
+                    onChange={
+                        (event) => {
+                            setString(event.target.value)
+                        }
+                    }
+                />
+                <Button
+                    onClick={()=>{
+                        if (this.string.length>0){
+                            this.props.getAllUsers({string: this.string})
+                        }
+                    }}
+                >
+                    Search
                 </Button>
                 <Grid>
                     {this.userArray}
