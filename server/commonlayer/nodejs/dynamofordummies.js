@@ -819,20 +819,34 @@ async function getAllUsers(filters) {
     if (filters) {
         let FilterAttributeValues = {}
         if (filters.string) {
-            params.ScanFilter = {}
+            /*params.ScanFilter = {}
             params.ScanFilter = {
-                ComparisonOperator: "CONTAINS",
+                //ComparisonOperator: "CONTAINS",
+                //ConditionalOperator: 'OR',
                 firstName: {
                     AttributeValueList: [filters.string],
-                    ConditionalOperator: 'OR'
+                    ConditionalOperator: 'OR',
+                    ComparisonOperator: "CONTAINS"
                 }, lastName: {
                     AttributeValueList: [filters.string],
-                    ConditionalOperator: 'OR'
+                    ConditionalOperator: 'OR',
+                    ComparisonOperator: "CONTAINS"
                 }, id: {
                     AttributeValueList: [filters.string],
-                    ConditionalOperator: 'OR'
+                    ConditionalOperator: 'OR',
+                    ComparisonOperator: "CONTAINS"
                 }
+            }*/
+            params.FilterExpression = {}
+            params.FilterAttributeValues = {}
+            params.FilterAttributeValues = {
+                ':firstName' : {'S':filters.string},
+                ':lastName' : filters.string,
+                ':id' : filters.string
             }
+            params.FilterExpression = 'contains (firstName, :firstName)'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
+            //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
+            //params.FilterExpression = Attr('firstName').contains(filters.string)
         }
         if (filters.subscription) {
             let subscriptionFilter = ''
