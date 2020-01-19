@@ -40,6 +40,10 @@ if (install!='false') {
     console.log(installed.toString());
     installed=execSync('npm run install:all --prefix server/accountlambda');
     console.log("done installing accountlambda", installed.toString());
+    installed=execSync('npm run install:all --prefix server/adminlambda');
+    console.log("done installing adminlambda", installed.toString());
+    installed=execSync('npm run install:all --prefix server/gallerylambda');
+    console.log("done installing gallerylambda", installed.toString());
     installed=execSync('npm run install:all --prefix server/googleloginlambda');
     console.log("done installing googleloginlambda", installed.toString());
     installed=execSync('npm run install:all --prefix server/polllambda');

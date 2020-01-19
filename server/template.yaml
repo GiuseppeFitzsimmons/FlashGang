@@ -708,7 +708,7 @@ Resources:
     Properties:
       BucketName: !Ref ImageServerDomain
       WebsiteConfiguration:
-        ErrorDocument: '404.htm'
+        ErrorDocument: 'index.html'
         IndexDocument: 'index.html'
       CorsConfiguration:
         CorsRules:
@@ -797,3 +797,8 @@ Resources:
         ViewerCertificate:
           AcmCertificateArn: !Ref FlashCertificate
           SslSupportMethod: sni-only
+Outputs:
+  ClientUrl:
+    Value: !Ref Home
+  GatewayUrl:
+    Value: !Ref ApiDomain
