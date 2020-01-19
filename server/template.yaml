@@ -612,7 +612,7 @@ Resources:
     Properties:
       BucketName: !Ref BucketName
       WebsiteConfiguration:
-        ErrorDocument: '404.htm'
+        ErrorDocument: 'flashgang/index.html'
         IndexDocument: 'index.html'
       CorsConfiguration:
         CorsRules:
