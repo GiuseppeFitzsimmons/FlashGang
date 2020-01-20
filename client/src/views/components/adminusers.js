@@ -34,7 +34,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 class AdminUsers extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { open: this.props.open, modalShowing: false, user:{} }
+        this.state = { open: this.props.open, modalShowing: false, user: {} }
         this.subscription = ['member', 'lieutenant', 'boss']
         this.suspension = false
         var cursor = this.props.cursor
@@ -52,7 +52,6 @@ class AdminUsers extends React.Component {
     render() {
         var index = ''
         const openModal = (user) => {
-            this.setState({ modalShowing: true })
             console.log('modal was opened for ', user)
             return (
                 <>
@@ -65,26 +64,38 @@ class AdminUsers extends React.Component {
                     >
                         <DialogContent>
                             <div>
-                                {this.props.user.firstName}
+                                <TextField
+                                    defaultValue={this.state.user.firstName}
+                                >
+                                </TextField>
+
+                                <FlashButton
+                                    buttonType='system'
+                                    onClick={() => {
+                                        console.log('you are editing ', this.state.user)
+                                    }}
+                                >
+                                    Edit
+                                </FlashButton>
                             </div>
                         </DialogContent>
+                        <FlashButton
+                            buttonType='system'
+                            onClick={() => {
+                                this.setState({ modalShowing: false })
+                            }}
+                        >
+                            Save
+                        </FlashButton>
+                        <FlashButton
+                            buttonType='system'
+                            onClick={() => {
+                                this.setState({ modalShowing: false })
+                            }}
+                        >
+                            Cancel
+                        </FlashButton>
                     </Dialog>
-                    <FlashButton
-                        buttonType='system'
-                        onClick={() => {
-                            this.setState({ modalShowing: false })
-                        }}
-                    >
-                        Save
-                    </FlashButton>
-                    <FlashButton
-                        buttonType='system'
-                        onClick={() => {
-                            this.setState({ modalShowing: false })
-                        }}
-                    >
-                        Cancel
-                    </FlashButton>
                 </>
             )
         }
@@ -117,7 +128,7 @@ class AdminUsers extends React.Component {
                         <FlashButton
                             buttonType='system'
                             onClick={() => {
-                                this.setState({user: user})
+                                this.setState({ user: user, modalShowing: true })
                                 openModal(user)
                             }}
                         >
@@ -134,96 +145,96 @@ class AdminUsers extends React.Component {
         console.log('adminusers', this.props.users)
         return (
             <>
-            {openModal(this.props.user)}
-            <Grid>
-                Member
-                <Checkbox
-                    defaultChecked
-                    color="default"
-                    value="member"
-                    inputProps={{ 'aria-label': 'checkbox with default color' }}
-                    onChange={
-                        (event) => {
-                            setSubscription(event.target.value, event.target.checked)
-                            this.cursor = null
-                        }}
-                />
-                Lieutenant
-                <Checkbox
-                    defaultChecked
-                    color="default"
-                    value="lieutenant"
-                    inputProps={{ 'aria-label': 'checkbox with default color' }}
-                    onChange={
-                        (event) => {
-                            setSubscription(event.target.value, event.target.checked)
-                            this.cursor = null
-                        }}
-                />
-                Boss
-                <Checkbox
-                    defaultChecked
-                    color="default"
-                    value="boss"
-                    inputProps={{ 'aria-label': 'checkbox with default color' }}
-                    onChange={
-                        (event) => {
-                            setSubscription(event.target.value, event.target.checked)
-                            this.cursor = null
-                        }}
-                />
-                Suspended
-                <Checkbox
-                    //defaultChecked
-                    color="default"
-                    value="suspended"
-                    inputProps={{ 'aria-label': 'checkbox with default color' }}
-                    onChange={
-                        (event) => {
-                            setSuspension(event.target.checked)
-                            this.cursor = null
-                        }}
-                />
-                <FlashButton
-                    buttonType='system'
-                    onClick={() => {
-                        console.log('filters onClick', this.subscription)
-                        if (this.props.cursor && this.props.cursor != null) {
-                            /*let cursor = JSON.stringify(this.props.cursor)
-                            let splittedCursor = cursor.split(':')
-                            let reformedCursor = `'{"id":{"S":` + splittedCursor[1] + `}'`
-                            console.log('reformedCursor', reformedCursor)*/
-                            this.cursor = this.props.cursor.id
-                            console.log('cursor', this.cursor)
-                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension, cursor: this.cursor })
-                        } else {
-                            this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
-                        }
-                    }}
-                >
-                    Fetch users
-                </FlashButton>
-                <TextField id="standard-basic" label="Search..."
-                    onChange={
-                        (event) => {
-                            setString(event.target.value)
-                        }
-                    }
-                />
-                <FlashButton
-                    buttonType='system'
-                    onClick={() => {
-                        if (this.string.length > 0) {
-                            this.props.getAllUsers({ string: this.string })
-                        }
-                    }}
-                >
-                    Search
-                </FlashButton>
+                {openModal(this.props.user)}
                 <Grid>
-                    {this.userArray}
+                    Member
+                <Checkbox
+                        defaultChecked
+                        color="default"
+                        value="member"
+                        inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        onChange={
+                            (event) => {
+                                setSubscription(event.target.value, event.target.checked)
+                                this.cursor = null
+                            }}
+                    />
+                    Lieutenant
+                <Checkbox
+                        defaultChecked
+                        color="default"
+                        value="lieutenant"
+                        inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        onChange={
+                            (event) => {
+                                setSubscription(event.target.value, event.target.checked)
+                                this.cursor = null
+                            }}
+                    />
+                    Boss
+                <Checkbox
+                        defaultChecked
+                        color="default"
+                        value="boss"
+                        inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        onChange={
+                            (event) => {
+                                setSubscription(event.target.value, event.target.checked)
+                                this.cursor = null
+                            }}
+                    />
+                    Suspended
+                <Checkbox
+                        //defaultChecked
+                        color="default"
+                        value="suspended"
+                        inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        onChange={
+                            (event) => {
+                                setSuspension(event.target.checked)
+                                this.cursor = null
+                            }}
+                    />
+                    <FlashButton
+                        buttonType='system'
+                        onClick={() => {
+                            console.log('filters onClick', this.subscription)
+                            if (this.props.cursor && this.props.cursor != null) {
+                                /*let cursor = JSON.stringify(this.props.cursor)
+                                let splittedCursor = cursor.split(':')
+                                let reformedCursor = `'{"id":{"S":` + splittedCursor[1] + `}'`
+                                console.log('reformedCursor', reformedCursor)*/
+                                this.cursor = this.props.cursor.id
+                                console.log('cursor', this.cursor)
+                                this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension, cursor: this.cursor })
+                            } else {
+                                this.props.getAllUsers({ subscription: this.subscription, suspension: this.suspension })
+                            }
+                        }}
+                    >
+                        Fetch users
+                </FlashButton>
+                    <TextField id="standard-basic" label="Search..."
+                        onChange={
+                            (event) => {
+                                setString(event.target.value)
+                            }
+                        }
+                    />
+                    <FlashButton
+                        buttonType='system'
+                        onClick={() => {
+                            if (this.string.length > 0) {
+                                this.props.getAllUsers({ string: this.string })
+                            }
+                        }}
+                    >
+                        Search
+                </FlashButton>
+                    <Grid>
+                        {this.userArray}
+                    </Grid>
                 </Grid>
-            </Grid>
             </>
         )
     }
