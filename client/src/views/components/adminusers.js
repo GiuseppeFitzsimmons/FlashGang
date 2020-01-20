@@ -23,13 +23,18 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 
 class AdminUsers extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { open: this.props.open }
+        this.state = { open: this.props.open, modalShowing: false, user:{} }
         this.subscription = ['member', 'lieutenant', 'boss']
         this.suspension = false
         var cursor = this.props.cursor
@@ -46,6 +51,43 @@ class AdminUsers extends React.Component {
     }
     render() {
         var index = ''
+        const openModal = (user) => {
+            this.setState({ modalShowing: true })
+            console.log('modal was opened for ', user)
+            return (
+                <>
+                    <Dialog
+                        open={this.state.modalShowing}
+                        keepMounted
+                        aria-labelledby="alert-dialog-slide-title"
+                        aria-describedby="alert-dialog-slide-description"
+                        user={this.state.user}
+                    >
+                        <DialogContent>
+                            <div>
+                                {this.props.user.firstName}
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                    <FlashButton
+                        buttonType='system'
+                        onClick={() => {
+                            this.setState({ modalShowing: false })
+                        }}
+                    >
+                        Save
+                    </FlashButton>
+                    <FlashButton
+                        buttonType='system'
+                        onClick={() => {
+                            this.setState({ modalShowing: false })
+                        }}
+                    >
+                        Cancel
+                    </FlashButton>
+                </>
+            )
+        }
         const setSubscription = (value, checked) => {
             console.log('filter set to', value)
             if (checked) {
@@ -71,18 +113,28 @@ class AdminUsers extends React.Component {
         const generateUserList = () => {
             if (this.props.users) {
                 this.userArray = this.props.users.map((user) =>
-                    <li>
-                        {user.firstName + '\n'}
-                        {user.lastName + '\n'}
-                        {user.id + '\n'}
-                        {user.subscription ? user.subscription : 'member'}
-                    </li>
+                    <div>
+                        <FlashButton
+                            buttonType='system'
+                            onClick={() => {
+                                this.setState({user: user})
+                                openModal(user)
+                            }}
+                        >
+                            {user.firstName}
+                            {user.lastName}
+                            {' ID: ' + user.id}
+                            {' Subscription: ' + user.subscription}
+                        </FlashButton>
+                    </div>
                 )
             }
         }
         generateUserList()
         console.log('adminusers', this.props.users)
         return (
+            <>
+            {openModal(this.props.user)}
             <Grid>
                 Member
                 <Checkbox
@@ -132,7 +184,8 @@ class AdminUsers extends React.Component {
                             this.cursor = null
                         }}
                 />
-                <Button
+                <FlashButton
+                    buttonType='system'
                     onClick={() => {
                         console.log('filters onClick', this.subscription)
                         if (this.props.cursor && this.props.cursor != null) {
@@ -149,7 +202,7 @@ class AdminUsers extends React.Component {
                     }}
                 >
                     Fetch users
-                </Button>
+                </FlashButton>
                 <TextField id="standard-basic" label="Search..."
                     onChange={
                         (event) => {
@@ -157,19 +210,21 @@ class AdminUsers extends React.Component {
                         }
                     }
                 />
-                <Button
-                    onClick={()=>{
-                        if (this.string.length>0){
-                            this.props.getAllUsers({string: this.string})
+                <FlashButton
+                    buttonType='system'
+                    onClick={() => {
+                        if (this.string.length > 0) {
+                            this.props.getAllUsers({ string: this.string })
                         }
                     }}
                 >
                     Search
-                </Button>
+                </FlashButton>
                 <Grid>
                     {this.userArray}
                 </Grid>
             </Grid>
+            </>
         )
     }
 }
