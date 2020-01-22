@@ -16,7 +16,13 @@ import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 class AdminUsersEditor extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { modalShowing: this.props.modalShowing, user: this.props.user }
+        this.state = { modalShowing: this.props.modalShowing, editableUser: this.props.user, newFirstName: '', newLastName: '' }
+    }
+    componentDidMount(){
+        this.setState({newFirstName: '', newLastName: '' })
+    }
+    componentDidUpdate(){
+        this.setState({newFirstName: '', newLastName: '' })
     }
 
     render() {
@@ -27,17 +33,16 @@ class AdminUsersEditor extends React.Component {
                 keepMounted
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
-                user={this.state.user}
-                newFirstName=''
-                newLastName=''
+                //user={this.state.user}
+                //var editableUser = {this.state.user}
             >
                 <DialogContent>
                     <div>
                         <TextField
-                            placeholder={this.state.user.firstName}
+                            placeholder={this.props.user.firstName}
                             onChange={(event) => {
-                                this.props.newFirstName = event.target.value
-                                console.log('newFirstName ', this.props.newFirstName)
+                                this.state.newFirstName = event.target.value
+                                console.log('newFirstName ', this.state.newFirstName)
                             }}
                         >
                         </TextField>
@@ -46,13 +51,14 @@ class AdminUsersEditor extends React.Component {
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        if (this.props.newFirstName.length > 0) {
-                            this.props.user.firstName = this.props.newFirstName
+                        if (this.state.newFirstName.length > 0) {
+                            this.props.user.firstName = this.state.newFirstName
                         }
-                        if (this.props.newLastName.length > 0) {
-                            this.props.user.newLastName = this.props.newLastName
+                        if (this.state.newLastName.length > 0) {
+                            this.props.user.newLastName = this.state.newLastName
                         }
                         this.setState({ modalShowing: false })
+                        this.props.saveUser(this.props.user)
                     }}
                 >
                     Save
@@ -60,10 +66,10 @@ class AdminUsersEditor extends React.Component {
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        this.props.newFirstName = ''
-                        this.props.newLastName = ''
+                        this.state.newFirstName = ''
+                        this.state.newLastName = ''
                         this.setState({ modalShowing: false })
-                        this.props.saveUser(this.props.user)
+                        
                     }}
                 >
                     Cancel
