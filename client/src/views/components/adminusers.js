@@ -23,11 +23,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import AdminUsersEditor from './adminuserseditor'
 
 
 
@@ -53,50 +49,11 @@ class AdminUsers extends React.Component {
         var index = ''
         const openModal = (user) => {
             console.log('modal was opened for ', user)
-            return (
-                <>
-                    <Dialog
-                        open={this.state.modalShowing}
-                        keepMounted
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                        user={this.state.user}
-                    >
-                        <DialogContent>
-                            <div>
-                                <TextField
-                                    defaultValue={this.state.user.firstName}
-                                >
-                                </TextField>
-
-                                <FlashButton
-                                    buttonType='system'
-                                    onClick={() => {
-                                        console.log('you are editing ', this.state.user)
-                                    }}
-                                >
-                                    Edit
-                                </FlashButton>
-                            </div>
-                        </DialogContent>
-                        <FlashButton
-                            buttonType='system'
-                            onClick={() => {
-                                this.setState({ modalShowing: false })
-                            }}
-                        >
-                            Save
-                        </FlashButton>
-                        <FlashButton
-                            buttonType='system'
-                            onClick={() => {
-                                this.setState({ modalShowing: false })
-                            }}
-                        >
-                            Cancel
-                        </FlashButton>
-                    </Dialog>
-                </>
+            return(
+                <AdminUsersEditor
+                    modalShowing={this.state.modalShowing}
+                    user={this.props.user}
+                />
             )
         }
         const setSubscription = (value, checked) => {

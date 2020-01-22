@@ -4,7 +4,8 @@ import {
     RESET_PASSWORD, RSVP, LOADING, NEW_DECK, SAVE_DECK, NEXT_CARD,
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
-    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS
+    CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
+    SAVE_USER
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -795,6 +796,22 @@ export function flashGangMiddleware({ dispatch }) {
                 if (getResult.LastEvaluatedKey){
                     action.cursor = getResult.LastEvaluatedKey
                 }
+            } else if (action.type === SAVE_USER) {
+                console.log('Middleware SAVE_USER')
+                let questObject = {}
+                questObject.params = {}
+                questObject.resource = 'admin'
+                questObject.params.user = action.user
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error saving user", getResult, action)
             }
             return next(action);
         }

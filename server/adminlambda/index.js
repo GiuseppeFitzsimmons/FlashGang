@@ -81,6 +81,10 @@ exports.handler = async (event, context) => {
                 }
             }*/
         }
+    } else if (event.httpMethod.toLowerCase() === 'post')
+        {
+        var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
+        console.log('adminlambda saveUser', user)
     }
     //returnObject.body = JSON.stringify(reply);
     returnObject.headers = {

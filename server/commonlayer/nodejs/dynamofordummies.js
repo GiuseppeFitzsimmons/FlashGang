@@ -761,6 +761,10 @@ async function putUser(user) {
     }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
+async function saveUser(user){
+    user.lastModified = (new Date()).getTime();
+    await putItem(user, process.env.USER_TABLE_NAME);
+}
 //score = { flashDeckId: flashDeck.id, score: percentage, time: flashDeck.time, highScore: percentage }
 async function saveScores(scores, userId) {
     console.log('DDB4Dummies saveScores', scores, 'UserID', userId)
@@ -918,6 +922,7 @@ module.exports = {
     deleteFlashGang,
     getUser,
     putUser,
+    saveUser,
     saveScores,
     countFlashDecks,
     countFlashGangs,
