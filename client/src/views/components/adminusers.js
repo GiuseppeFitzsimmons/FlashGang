@@ -49,12 +49,7 @@ class AdminUsers extends React.Component {
         var index = ''
         const openModal = (user) => {
             console.log('modal was opened for ', user)
-            return(
-                <AdminUsersEditor
-                    modalShowing={this.state.modalShowing}
-                    user={this.props.user}
-                />
-            )
+            this.setState({ modalShowing: true, user: user })
         }
         const setSubscription = (value, checked) => {
             console.log('filter set to', value)
@@ -85,7 +80,8 @@ class AdminUsers extends React.Component {
                         <FlashButton
                             buttonType='system'
                             onClick={() => {
-                                this.setState({ user: user, modalShowing: true })
+                                //this.setState({ user: user, modalShowing: true })
+                                console.log('modalShowing', this.state.modalShowing)
                                 openModal(user)
                             }}
                         >
@@ -102,7 +98,10 @@ class AdminUsers extends React.Component {
         console.log('adminusers', this.props.users)
         return (
             <>
-                {openModal(this.props.user)}
+                <AdminUsersEditor
+                    modalShowing={this.state.modalShowing}
+                    user={this.state.user}
+                />
                 <Grid>
                     Member
                 <Checkbox

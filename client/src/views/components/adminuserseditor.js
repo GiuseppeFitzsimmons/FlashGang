@@ -23,7 +23,7 @@ class AdminUsersEditor extends React.Component {
         console.log('userseditor state', this.state)
         return (
             <Dialog
-                open={this.state.modalShowing}
+                open={this.props.modalShowing}
                 keepMounted
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
