@@ -8,6 +8,7 @@ let deployParameters = '';
 let stackName;
 let local;
 let environment;
+let install='false';
 process.argv.forEach(function (val, index, array) {
     if (val == '--profile') {
         profileArgument = '--profile ' + array[index + 1];
@@ -19,6 +20,8 @@ process.argv.forEach(function (val, index, array) {
         local = array[index + 1];
     } else if (val == '--env' || val == '--environment') {
         environment = array[index + 1];
+    } else if (val=='--install') {
+        install=array[index+1];
     }
 });
 if (!deployParametersFile && environment) {
@@ -29,6 +32,29 @@ if (!deployParametersFile && environment) {
     } else if (environment==='local' || local) {
         deployParametersFile='deploy-parameters-local.json';
     }
+}
+
+if (install!='false') {
+    if (process.platform==='darwin') {
+        installed=execSync('npm run install:linux --prefix commonlayer/nodejs');
+    } else {
+        installed=execSync('npm run install:windows --prefix commonlayer/nodejs');
+    }
+    console.log(installed.toString());
+    installed=execSync('npm run install:all --prefix accountlambda');
+    console.log("done installing accountlambda", installed.toString());
+    installed=execSync('npm run install:all --prefix adminlambda');
+    console.log("done installing adminlambda", installed.toString());
+    installed=execSync('npm run install:all --prefix gallerylambda');
+    console.log("done installing gallerylambda", installed.toString());
+    installed=execSync('npm run install:all --prefix googleloginlambda');
+    console.log("done installing googleloginlambda", installed.toString());
+    installed=execSync('npm run install:all --prefix polllambda');
+    console.log("done installing polllambda", installed.toString());
+    installed=execSync('npm run install:all --prefix rsvplambda');
+    console.log("done installing rsvplambda", installed.toString());
+    installed=execSync('npm run install:all --prefix synchroniselambda');
+    console.log("done installing synchroniselambda", installed.toString());
 }
 if (!stackName && environment) {
     if (environment==='dev') {
