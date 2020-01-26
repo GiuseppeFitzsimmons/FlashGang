@@ -90,6 +90,7 @@ class AdminUsersEditor extends React.Component {
                         //this.setState({ modalShowing: false })
                         this.props.closeModal()
                         this.props.saveUser(this.props.user)
+                        this.setState({imageChanged: false})
                     }}
                 >
                     Save
