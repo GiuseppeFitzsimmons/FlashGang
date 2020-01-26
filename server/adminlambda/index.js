@@ -86,7 +86,8 @@ exports.handler = async (event, context) => {
             //let placeholder = JSON.stringify(event.body.user.user)
             event.body.user = event.body.user.user
             console.log('adminlambda event', event)
-            var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
+            //var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
+            var user = await dynamodbfordummies.saveUser(event.body.user)
             console.log('adminlambda saveUser', user)
         }
     //returnObject.body = JSON.stringify(reply);
