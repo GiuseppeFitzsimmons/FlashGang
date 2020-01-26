@@ -83,9 +83,12 @@ exports.handler = async (event, context) => {
         }
     } else if (event.httpMethod.toLowerCase() === 'post')
         {
-        var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
-        console.log('adminlambda saveUser', user)
-    }
+            //let placeholder = JSON.stringify(event.body.user.user)
+            event.body.user = event.body.user.user
+            console.log('adminlambda event', event)
+            var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
+            console.log('adminlambda saveUser', user)
+        }
     //returnObject.body = JSON.stringify(reply);
     returnObject.headers = {
         "Access-Control-Allow-Origin": "*",

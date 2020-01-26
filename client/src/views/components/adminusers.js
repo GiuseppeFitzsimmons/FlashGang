@@ -94,6 +94,9 @@ class AdminUsers extends React.Component {
                 )
             }
         }
+        const closeModal = () => {
+            this.setState({modalShowing: false})
+        }
         generateUserList()
         console.log('adminusers', this.props.users)
         return (
@@ -101,6 +104,7 @@ class AdminUsers extends React.Component {
                 <AdminUsersEditor
                     modalShowing={this.state.modalShowing}
                     user={this.state.user}
+                    closeModal={closeModal}
                 />
                 <Grid>
                     Member

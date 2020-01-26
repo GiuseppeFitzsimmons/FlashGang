@@ -22,7 +22,7 @@ class AdminUsersEditor extends React.Component {
         this.setState({newFirstName: '', newLastName: '' })
     }
     componentDidUpdate(){
-        this.setState({newFirstName: '', newLastName: '' })
+        //this.setState({newFirstName: '', newLastName: '' })
     }
 
     render() {
@@ -57,7 +57,8 @@ class AdminUsersEditor extends React.Component {
                         if (this.state.newLastName.length > 0) {
                             this.props.user.newLastName = this.state.newLastName
                         }
-                        this.setState({ modalShowing: false })
+                        //this.setState({ modalShowing: false })
+                        this.props.closeModal()
                         this.props.saveUser(this.props.user)
                     }}
                 >
@@ -68,7 +69,8 @@ class AdminUsersEditor extends React.Component {
                     onClick={() => {
                         this.state.newFirstName = ''
                         this.state.newLastName = ''
-                        this.setState({ modalShowing: false })
+                        //this.setState({ modalShowing: false })
+                        this.props.closeModal()
                         
                     }}
                 >

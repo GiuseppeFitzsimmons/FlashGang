@@ -762,6 +762,7 @@ async function putUser(user) {
     await putItem(user, process.env.USER_TABLE_NAME);
 }
 async function saveUser(user){
+    //console.log('ddb saveUser user', user)
     user.lastModified = (new Date()).getTime();
     await putItem(user, process.env.USER_TABLE_NAME);
 }
