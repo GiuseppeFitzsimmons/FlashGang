@@ -16,13 +16,18 @@ import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 class AdminUsersEditor extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { modalShowing: this.props.modalShowing, editableUser: this.props.user, newFirstName: '', newLastName: '' }
+        this.state = {
+            modalShowing: this.props.modalShowing, editableUser: this.props.user,
+            newFirstName: '', newLastName: '', imageChanged: false
+        }
     }
-    componentDidMount(){
-        this.setState({newFirstName: '', newLastName: '' })
+    componentDidMount() {
+        this.setState({ newFirstName: '', newLastName: '' })
+        //console.log('picture', this.props.user)
     }
-    componentDidUpdate(){
+    componentDidUpdate() {
         //this.setState({newFirstName: '', newLastName: '' })
+        console.log('picture', this.props.user)
     }
 
     render() {
@@ -33,8 +38,8 @@ class AdminUsersEditor extends React.Component {
                 keepMounted
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
-                //user={this.state.user}
-                //var editableUser = {this.state.user}
+            //user={this.state.user}
+            //var editableUser = {this.state.user}
             >
                 <DialogContent>
                     <div>
@@ -46,6 +51,28 @@ class AdminUsersEditor extends React.Component {
                             }}
                         >
                         </TextField>
+                        <TextField
+                            placeholder={this.props.user.lastName}
+                            onChange={(event) => {
+                                this.state.newLastName = event.target.value
+                                console.log('newLastName ', this.state.newLastName)
+                            }}
+                        >
+                        </TextField>
+                        <Button
+                            onClick={() => {
+                                this.setState({ imageChanged: true })
+                                console.log('this.state.imageChanged', this.state.imageChanged)
+                            }}
+                        >
+                            <img
+                                src={this.props.user.picture}
+                                height='100'
+                                width='100'
+                                alt='Missing image'
+                            />
+                        </Button>
+
                     </div>
                 </DialogContent>
                 <FlashButton
@@ -56,6 +83,9 @@ class AdminUsersEditor extends React.Component {
                         }
                         if (this.state.newLastName.length > 0) {
                             this.props.user.newLastName = this.state.newLastName
+                        }
+                        if (this.state.imageChanged == true) {
+                            this.props.user.picture = '/random_profile_male_1.png'
                         }
                         //this.setState({ modalShowing: false })
                         this.props.closeModal()
@@ -69,9 +99,10 @@ class AdminUsersEditor extends React.Component {
                     onClick={() => {
                         this.state.newFirstName = ''
                         this.state.newLastName = ''
+                        this.state.imageChanged = false
                         //this.setState({ modalShowing: false })
                         this.props.closeModal()
-                        
+
                     }}
                 >
                     Cancel

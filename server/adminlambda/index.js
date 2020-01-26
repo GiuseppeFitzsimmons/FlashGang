@@ -33,10 +33,15 @@ exports.handler = async (event, context) => {
                 filteredUser.firstName = user.firstName
                 filteredUser.lastName = user.lastName
                 filteredUser.id = user.id
-                if (user.subscription) {
+                /*if (user.subscription) {
                     filteredUser.subscription = user.subscription
                 } else {
                     filteredUser.subscription = 'member'
+                }*/
+                if (user.picture) {
+                    filteredUser.picture = user.picture
+                } else {
+                    filteredUser.picture = null
                 }
                 filteredUsers.push(filteredUser)
             }
@@ -81,15 +86,14 @@ exports.handler = async (event, context) => {
                 }
             }*/
         }
-    } else if (event.httpMethod.toLowerCase() === 'post')
-        {
-            //let placeholder = JSON.stringify(event.body.user.user)
-            event.body.user = event.body.user.user
-            console.log('adminlambda event', event)
-            //var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
-            var user = await dynamodbfordummies.saveUser(event.body.user)
-            console.log('adminlambda saveUser', user)
-        }
+    } else if (event.httpMethod.toLowerCase() === 'post') {
+        //let placeholder = JSON.stringify(event.body.user.user)
+        event.body.user = event.body.user.user
+        console.log('adminlambda event', event)
+        //var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
+        var user = await dynamodbfordummies.saveUser(event.body.user)
+        console.log('adminlambda saveUser', user)
+    }
     //returnObject.body = JSON.stringify(reply);
     returnObject.headers = {
         "Access-Control-Allow-Origin": "*",
