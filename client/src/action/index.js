@@ -28,6 +28,7 @@ export const GET_IMAGES = 'GET_IMAGES';
 export const DELETE_IMAGES = 'DELETE_IMAGES';
 export const SESSION_EXPIRED = 'SESSION_EXPIRED';
 export const GET_ALL_USERS = 'GET_ALL_USERS';
+export const GET_ALL_DECKS = 'GET_ALL_DECKS';
 export const SAVE_USER = 'SAVE_USER'
 
 export function newDeck() {
@@ -152,6 +153,11 @@ export function deleteImages(images) {
 export function getAllUsers(filters) {
     console.log("Action GET_ALL_USERS")
     return { type: GET_ALL_USERS, users: {}, data: { filters } }
+
+}
+export function getAllDecks(filters) {
+    console.log("Action GET_ALL_DECKS")
+    return { type: GET_ALL_DECKS, decks: {}, data: { filters } }
 
 }
 export function saveUser(user) {

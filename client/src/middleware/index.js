@@ -5,7 +5,7 @@ import {
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
-    SAVE_USER
+    SAVE_USER, GET_ALL_DECKS
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -779,6 +779,7 @@ export function flashGangMiddleware({ dispatch }) {
                 dispatch({ type: LOADING, data: { loading: true } })
                 console.log('Middleware GET_ALL_USERS')
                 let questObject = {}
+                questObject.type = 'user'
                 questObject.resource = 'admin'
                 questObject.params = action.data.filters
                 let getResult = await getFromServer(questObject)
@@ -793,7 +794,29 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                     console.log("Error receiving users", getResult, action)
                 }
-                if (getResult.LastEvaluatedKey){
+                if (getResult.LastEvaluatedKey) {
+                    action.cursor = getResult.LastEvaluatedKey
+                }
+            } else if (action.type === GET_ALL_DECKS) {
+                dispatch({ type: LOADING, data: { loading: true } })
+                console.log('Middleware GET_ALL_DECKS')
+                let questObject = {}
+                questObject.type = 'deck'
+                questObject.resource = 'admin'
+                questObject.params = action.data.filters
+                let getResult = await getFromServer(questObject)
+                console.log('getResult', getResult)
+                if (getResult.decks) {
+                    action.decks = getResult.decks
+                    console.log('getResult.decks', getResult.decks)
+                } else {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error receiving users", getResult, action)
+                }
+                if (getResult.LastEvaluatedKey) {
                     action.cursor = getResult.LastEvaluatedKey
                 }
             } else if (action.type === SAVE_USER) {

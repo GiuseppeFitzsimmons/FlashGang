@@ -11,19 +11,12 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, GridList } from '@material-ui/core';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import { FlashTypography } from '../widgets/FlashBits';
-import FlashAppBar from '../widgets/flashappbar';
-import { RadioButton } from 'material-ui';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import AdminUsersEditor from './adminuserseditor'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
 
 
 
@@ -95,7 +88,7 @@ class AdminUsers extends React.Component {
             }
         }
         const closeModal = () => {
-            this.setState({modalShowing: false})
+            this.setState({ modalShowing: false })
         }
         generateUserList()
         console.log('adminusers', this.props.users)

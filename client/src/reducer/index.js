@@ -5,7 +5,7 @@ import {
     DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS,
     NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT,
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
-    SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER
+    SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS
 } from '../action';
 
 const initialState = {};
@@ -112,6 +112,9 @@ function rootReducer(state = initialState, action) {
             return state
         case GET_ALL_USERS:
             state = Object.assign({}, state, { users: action.users, loading: false, cursor: action.cursor, string: action.string })
+            return state
+        case GET_ALL_DECKS:
+            state = Object.assign({}, state, { decks: action.decks, loading: false, cursor: action.cursor, string: action.string })
             return state
         case SAVE_USER:
             state = Object.assign({}, state, { user: action.user })

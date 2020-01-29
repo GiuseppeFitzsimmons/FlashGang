@@ -8,12 +8,13 @@ import {
     Input
 } from "reactstrap";
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Grid, GridList } from '@material-ui/core';
+import { Button, Grid, GridList, DialogContent } from '@material-ui/core';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
-import AdminDecksEditor from './admindeckseditor'
 import FlashDeckEditor from './flashdeckeditor'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
 
 
 
@@ -70,17 +71,23 @@ class AdminDecks extends React.Component {
             }
         }
         const closeModal = () => {
-            this.setState({modalShowing: false})
+            this.setState({ modalShowing: false })
         }
         generateDeckList()
         console.log('adminusers', this.props.users)
         return (
             <>
-                <FlashDeckEditor
-                    modalShowing={this.state.modalShowing}
-                    deck={this.state.deck}
+                <Dialog
+                    open={this.state.modalShowing}
                     closeModal={closeModal}
-                />
+                >
+                    <DialogContent>
+                        <FlashDeckEditor
+                            flashDeck={this.state.deck}
+                        />
+                    </DialogContent>
+                </Dialog>
+
                 <Grid>
                     Suspended
                 <Checkbox
@@ -101,9 +108,9 @@ class AdminDecks extends React.Component {
                             if (this.props.cursor && this.props.cursor != null) {
                                 this.cursor = this.props.cursor.id
                                 console.log('cursor', this.cursor)
-                                this.props.getAllDecks({suspension: this.suspension, cursor: this.cursor })
+                                this.props.getAllDecks({ suspension: this.suspension, cursor: this.cursor })
                             } else {
-                                this.props.getAllDecks({suspension: this.suspension })
+                                this.props.getAllDecks({ suspension: this.suspension })
                             }
                         }}
                     >
