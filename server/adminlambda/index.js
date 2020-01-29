@@ -22,7 +22,8 @@ exports.handler = async (event, context) => {
     }
     if (token) {*/
     if (event.httpMethod.toLowerCase() === 'get') {
-        if (event.type === 'user') {
+        //if (event.type === 'user') {
+        if (1 === 1) {
             {
                 var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
                 console.log('adminlambda users', users.Items)
@@ -82,29 +83,27 @@ exports.handler = async (event, context) => {
                     }
                 }*/
             }
-        } else if (event.type === 'deck'){
+        } else if (event.type === 'deck') {
             {
-                var decks = await dynamodbfordummies.getAllDeck(event.queryStringParameters)
+                var decks = await dynamodbfordummies.getAllDecks(event.queryStringParameters)
                 console.log('adminlambda decks', decks.Items)
                 _body.decks = []
                 var filteredDecks = []
                 for (var i in decks.Items) {
                     let deck = decks.Items[i]
                     let filteredDeck = {}
-                    filteredUser.firstName = user.firstName
-                    filteredUser.lastName = user.lastName
-                    filteredUser.id = user.id
-                    if (user.picture) {
-                        filteredUser.picture = user.picture
-                    } else {
-                        filteredUser.picture = null
+                    filteredDeck.name = deck.name
+                    filteredDeck.description = deck.description
+                    filteredUser.owner = deck.owner
+                    for (var j in deck.flashCards) {
+                        filteredDeck.flashCards[j] = deck.flashCards[j]
                     }
-                    filteredUsers.push(filteredUser)
+                    filteredDeck.push(filteredDecks)
                 }
-                if (users.LastEvaluatedKey) {
-                    _body.LastEvaluatedKey = users.LastEvaluatedKey
+                if (decks.LastEvaluatedKey) {
+                    _body.LastEvaluatedKey = decks.LastEvaluatedKey
                 }
-                _body.users = filteredUsers
+                _body.decks = filteredDecks
                 returnObject.body = JSON.stringify(_body)
                 /*if (event.body.source) {
                     if (event.body.source.indexOf('data:image') == 0) {

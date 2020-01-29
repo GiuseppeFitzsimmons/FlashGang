@@ -55,16 +55,16 @@ class AdminDecks extends React.Component {
         }
         const generateDeckList = () => {
             if (this.props.users) {
-                this.deckArray = this.props.decks.map((user) =>
+                this.deckArray = this.props.decks.map((deck) =>
                     <div>
                         <FlashButton
                             buttonType='system'
                             onClick={() => {
                                 console.log('modalShowing', this.state.modalShowing)
-                                //openModal(deck)
+                                openModal(deck)
                             }}
                         >
-                            {/*deck*/}
+                            {deck}
                         </FlashButton>
                     </div>
                 )
@@ -74,7 +74,7 @@ class AdminDecks extends React.Component {
             this.setState({ modalShowing: false })
         }
         generateDeckList()
-        console.log('adminusers', this.props.users)
+        console.log('admindecks', this.props.decks)
         return (
             <>
                 <Dialog

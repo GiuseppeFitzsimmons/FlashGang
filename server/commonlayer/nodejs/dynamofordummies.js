@@ -908,6 +908,65 @@ async function getAllUsers(filters) {
     else return null
 }
 
+async function getAllDecks(filters) {
+    console.log('ddb getAllDecks called')
+    var documentClient = getDocumentDbClient();
+    var params = {
+        TableName: process.env.FLASHDECK_TABLE_NAME,
+        Limit: 10,
+    };
+    if (filters) {
+        let FilterAttributeValues = {}
+        if (filters.string) {
+            params.FilterExpression = {}
+            params.FilterAttributeValues = {}
+            params.ExpressionAttributeValues = {":string":filters.string}
+            params.FilterExpression = "contains(name, :string) or contains(description, :string)  or contains(owner, :string)"
+            //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
+            //params.FilterExpression = Attr('firstName').contains(filters.string)
+        }
+        if (filters.suspension == 'true') {
+            if (!params.ExpressionAttributeValues) {
+                params.ExpressionAttributeValues = {}
+            }
+            let suspensionAttributeValue = {}
+            let suspensionFilter = ''
+            if (filters.subscription) {
+                params.FilterExpression = '(' + params.FilterExpression + ')'
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression += ' and ' + suspensionFilter
+            } else {
+                params.FilterExpression = {}
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression = suspensionFilter
+            }
+            suspensionAttributeValue[':' + filters.suspension] = filters.suspension
+            params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
+        }
+        if (filters.cursor && filters.cursor != null) {
+            params.ExclusiveStartKey = { id: filters.cursor }
+        }
+    }
+    let stringifiedParams = JSON.stringify(params)
+    console.log('getAllDecks params', stringifiedParams)
+    let item = await new Promise((resolve, reject) => {
+        documentClient.scan(params, function (err, data) {
+            if (err) {
+                console.log("Error getting deck table", err);
+                reject(err);
+            } else {
+                console.log("success getting deck table", data);
+                resolve(data);
+            }
+        });
+    });
+    console.log('getAllDecks item', item)
+    if (item) {
+        return item
+    }
+    else return null
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -928,5 +987,6 @@ module.exports = {
     countFlashDecks,
     countFlashGangs,
     getProfile,
-    getAllUsers
+    getAllUsers,
+    getAllDecks
 }

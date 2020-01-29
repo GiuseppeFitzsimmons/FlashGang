@@ -255,6 +255,7 @@ async function getFromServer(questObject, method) {
     })
         .then(function (response) {
             responseCode = response.status;
+            console.log('middleware response', response)
             return response.json();
 
         })
@@ -779,9 +780,13 @@ export function flashGangMiddleware({ dispatch }) {
                 dispatch({ type: LOADING, data: { loading: true } })
                 console.log('Middleware GET_ALL_USERS')
                 let questObject = {}
-                questObject.type = 'user'
                 questObject.resource = 'admin'
-                questObject.params = action.data.filters
+                if (action.data.filters){
+                    questObject.params = action.data.filters
+                } else {
+                    questObject.params = {}
+                }
+                questObject.params.type = 'user'
                 let getResult = await getFromServer(questObject)
                 console.log('getResult', getResult)
                 if (getResult.users) {
@@ -801,9 +806,13 @@ export function flashGangMiddleware({ dispatch }) {
                 dispatch({ type: LOADING, data: { loading: true } })
                 console.log('Middleware GET_ALL_DECKS')
                 let questObject = {}
-                questObject.type = 'deck'
                 questObject.resource = 'admin'
-                questObject.params = action.data.filters
+                if (action.data.filters){
+                    questObject.params = action.data.filters
+                } else {
+                    questObject.params = {}
+                }
+                questObject.params.type = 'deck'
                 let getResult = await getFromServer(questObject)
                 console.log('getResult', getResult)
                 if (getResult.decks) {
