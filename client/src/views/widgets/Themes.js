@@ -110,7 +110,7 @@ const greenTheme = createMuiTheme({
       },
       MuiGridList: {
         root: {
-          margin: '0'
+          margin: '0px'
         }
       }
     },
@@ -119,7 +119,7 @@ const greenTheme = createMuiTheme({
       color: 'white'
     },
     actionButton: {
-      backgroundColor: lightGreen[300],
+      backgroundColor: lightGreen[500],
       color: 'white'
     },
     errorButton: {

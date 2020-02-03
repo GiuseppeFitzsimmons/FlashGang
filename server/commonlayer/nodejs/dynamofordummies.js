@@ -262,11 +262,11 @@ async function getUserDecks(userId, lastModified) {
         KeyConditionExpression: 'userId = :uid and lastModified > :ldate',
         IndexName: 'last_modified_index',
         ExpressionAttributeValues: {
-            ':ldate': lastModified,
+            ':ldate': 0,
             ':uid': userId
         }
     }
-
+    console.log("lastModifed", lastModified);
     var documentClient = getDocumentDbClient();
     let userDecks = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {

@@ -156,7 +156,7 @@ class GalleryStyled extends React.Component {
                         Upload
                 </FlashButton>
                     <DialogContent>
-                        <GridList cellHeight={160} cols={4} spacing={-32}>
+                        <GridList cellHeight={80} cols={4} spacing={4}>
                             {images.map((image, index) => (
                                 <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
                                     <ClickNHold
