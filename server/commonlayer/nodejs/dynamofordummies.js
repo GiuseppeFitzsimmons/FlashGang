@@ -909,7 +909,7 @@ async function getAllUsers(filters) {
 }
 
 async function getAllDecks(filters) {
-    console.log('ddb getAllDecks called')
+    console.log('ddb getAllDecks called', params)
     var documentClient = getDocumentDbClient();
     var params = {
         TableName: process.env.FLASHDECK_TABLE_NAME,

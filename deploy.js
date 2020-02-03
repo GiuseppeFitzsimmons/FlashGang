@@ -7,6 +7,7 @@ let stackName='flashgang-dev'
 let environment='dev'
 let install='false'
 let installArgument='';
+console.log('deploy.js in action')
 process.argv.forEach(function (val, index, array) {
     if (val=='--profile') {
         profileArgument='--profile '+array[index+1];
@@ -32,14 +33,14 @@ if (process.platform==='darwin') {
     profileArgument='--profile phillip'
 }
 process.chdir('server');
-let deployed=execSync(`node server-deploy.js --stack-name ${stackName} ${installArgument} --deploy-parameters ${deployParameters} ${profileArgument}`);
-console.log("done deploying server", deployed.toString());
+let deployed=execSync(`node server-deploy.js --stack-name ${stackName} ${installArgument} --deploy-parameters ${deployParameters} ${profileArgument}`,  {stdio: 'inherit'});
+//console.log("done deploying server", deployed.toString());
 process.chdir('..');
 console.log(process.cwd())
 
 if (installClient==='true') {
     const parameters=require(`./server/${deployParameters}`);
     process.chdir('client');
-    deployed=execSync(`node deploy.js --bucket ${parameters.Parameters.BucketName} ${profileArgument}`);
+    deployed=execSync(`node deploy.js --bucket ${parameters.Parameters.BucketName} ${profileArgument}`,  {stdio: 'inherit'});
 }
 

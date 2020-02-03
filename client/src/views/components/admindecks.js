@@ -54,7 +54,9 @@ class AdminDecks extends React.Component {
             this.string = value
         }
         const generateDeckList = () => {
-            if (this.props.users) {
+            if (this.props.decks) {
+                console.log('this.props.decks', this.props.decks)
+                var deckArray = []
                 this.deckArray = this.props.decks.map((deck) =>
                     <div>
                         <FlashButton
@@ -64,7 +66,7 @@ class AdminDecks extends React.Component {
                                 openModal(deck)
                             }}
                         >
-                            {deck}
+                            {deck.name}
                         </FlashButton>
                     </div>
                 )

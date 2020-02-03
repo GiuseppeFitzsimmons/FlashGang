@@ -68,6 +68,7 @@ class AdminUsers extends React.Component {
         }
         const generateUserList = () => {
             if (this.props.users) {
+                console.log('this.props.users', this.props.users)
                 this.userArray = this.props.users.map((user) =>
                     <div>
                         <FlashButton

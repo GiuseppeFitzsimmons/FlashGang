@@ -1,4 +1,4 @@
-
+console.log('server-deploy.js called')
 const fs = require('fs');
 const { execSync, exec, spawn } = require('child_process');
 let profileArgument = '';
@@ -118,25 +118,4 @@ async function startServer(deployParameters) {
         deployParameters=deployParameters.replace('--parameter-overrides ','');
     }
     execSync(crockCommand+' --parameter-overrides '+deployParameters, {stdio: 'inherit'})
-}
-function killOldProccesses() {
-    if (process.platform === 'darwin') {
-        try {
-            execSync("proc=$(lsof -ti:8080) && kill -9 $proc");
-        } catch (err) {
-        }
-        try {
-            execSync("proc=$(lsof -ti:8000) && kill -9 $proc");
-        } catch (err) {
-        }
-    } else {
-        try {
-            execSync("FOR /F \"tokens=4 delims= \" %%P IN ('netstat -a -n -o ^| findstr :8080') DO @ECHO TaskKill.exe /PID %%P");
-        } catch (err) {
-        }
-        try {
-            execSync("FOR /F \"tokens=4 delims= \" %%P IN ('netstat -a -n -o ^| findstr :8000') DO @ECHO TaskKill.exe /PID %%P");
-        } catch (err) {
-        }
-    }
 }

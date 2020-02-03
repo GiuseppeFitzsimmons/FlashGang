@@ -22,8 +22,8 @@ exports.handler = async (event, context) => {
     }
     if (token) {*/
     if (event.httpMethod.toLowerCase() === 'get') {
-        //if (event.type === 'user') {
-        if (1 === 1) {
+        if (event.queryStringParameters.type === 'user') {
+        //if (1 === 1) {
             {
                 var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
                 console.log('adminlambda users', users.Items)
@@ -83,7 +83,9 @@ exports.handler = async (event, context) => {
                     }
                 }*/
             }
-        } else if (event.type === 'deck') {
+        } 
+        //else if (1 === 2) {
+            if (event.queryStringParameters.type === 'deck') {
             {
                 var decks = await dynamodbfordummies.getAllDecks(event.queryStringParameters)
                 console.log('adminlambda decks', decks.Items)
@@ -91,14 +93,15 @@ exports.handler = async (event, context) => {
                 var filteredDecks = []
                 for (var i in decks.Items) {
                     let deck = decks.Items[i]
+                    console.log(deck)
                     let filteredDeck = {}
                     filteredDeck.name = deck.name
                     filteredDeck.description = deck.description
-                    filteredUser.owner = deck.owner
-                    for (var j in deck.flashCards) {
+                    filteredDeck.owner = deck.owner
+                    /*for (var j in deck.flashCards) {
                         filteredDeck.flashCards[j] = deck.flashCards[j]
-                    }
-                    filteredDeck.push(filteredDecks)
+                    }*/
+                    filteredDecks.push(filteredDeck)
                 }
                 if (decks.LastEvaluatedKey) {
                     _body.LastEvaluatedKey = decks.LastEvaluatedKey
