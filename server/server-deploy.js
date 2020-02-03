@@ -72,6 +72,10 @@ if (deployParametersFile) {
     }
     deployParameters = Object.keys(_secrets).map(key => key + '=' + _secrets[key]).join(' ');
     deployParameters = `--parameter-overrides "PointlessParam=pointess ${deployParameters}"`;
+    if (environment==='dev' || environment==='prod') {
+        //TODO fix this - CrockStack wants quotes, AWS doesn't. According to AWS documentation, CrockStack is right.
+        deployParameters = `--parameter-overrides PointlessParam=pointess ${deployParameters}`;
+    }
     console.log("deployParameters", deployParameters)
 } else {
     console.log("--deploy-parameters is a required argument");
@@ -87,9 +91,9 @@ if (local) {
 } else {
     var packageCommand = `sam package --template-file ${templateFile} --output-template-file packaged.yaml ${profileArgument} --s3-bucket wwdd-build-bucket-us-east-1`
     var deployCommand = `sam deploy --template-file packaged.yaml --stack-name ${stackName}  ${profileArgument} --region us-east-1 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND ${deployParameters}`
-    execSync(packageCommand);
+    //execSync(packageCommand);
     console.log(packageCommand);
-    execSync(deployCommand);
+    //execSync(deployCommand);
     console.log(deployCommand);
 }
 
