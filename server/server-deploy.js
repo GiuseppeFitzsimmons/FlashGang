@@ -72,6 +72,10 @@ if (deployParametersFile) {
     }
     deployParameters = Object.keys(_secrets).map(key => key + '=' + _secrets[key]).join(' ');
     deployParameters = `--parameter-overrides "PointlessParam=pointess ${deployParameters}"`;
+    if (environment==='dev' || environment==='prod') {
+        //TODO fix this - CrockStack wants quotes, AWS doesn't. According to AWS documentation, CrockStack is right.
+        deployParameters = `--parameter-overrides PointlessParam=pointess ${deployParameters}`;
+    }
     console.log("deployParameters", deployParameters)
 } else {
     console.log("--deploy-parameters is a required argument");
