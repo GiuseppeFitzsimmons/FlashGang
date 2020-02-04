@@ -6,7 +6,7 @@ function getSigningSecret() {
     //TODO something better than this
     return process.env.SIGNING_SECRET
 }
-function validateToken(event, ignoreExpiration) {
+function validateToken(event, ignoreExpiration, scope) {
     console.log("validateToken ender ignoreExpiration", event);
     signingSecret=getSigningSecret();
     var token = event.authorizationToken;
@@ -38,6 +38,11 @@ function validateToken(event, ignoreExpiration) {
     } catch (err) {
         console.log(err);
         throw fourOhOne();
+    }
+    if (scope) {
+        if (!decoded.scope.split(' ').find(s=>s==scope)) {
+            throw fourOhOne('invalid scope', scope);
+        }
     }
     if (decoded) {
         if (ignoreExpiration || new Date().getTime() < decoded.exp) {
@@ -95,7 +100,7 @@ module.exports = {
 function test() {
     process.env.SIGNING_SECRET='Q1fdqsfez1qLqLqV@&5YRv3duJtAtJi3MSpXI4R]XqiI]ckCorSSOZ35V38p@&5Yqsfz14CmMTxldkeSSc12SCOieD8è7èdfkmBnx';
     let pair=generateNewPair('phillip@flashgang.io', 'all', 1000000);
-    let jwt=validateToken({authorizationToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmbGFzaGdhbmciLCJzdWIiOiJwaGlsbGlwLmZpdHpzaW1tb25zQGdtYWlsLmNvbSIsInV1aWQiOiI2NDJlYzUxMS04ZDkzLTRjODctOWQ2NS05MWMxNGRkMDZhMzMiLCJzY29wZSI6ImFsbCIsImV4cCI6MTU3NjI1NDYwOTI5NiwiaWF0IjoxNTc2MjUzODg5fQ.ZJ2Rfw7YuCADwWHeiI3VnKBzCQ8Dxl3Bu0CHdA1VpE8'});
+    let jwt=validateToken({authorizationToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmbGFzaGdhbmciLCJzdWIiOiJwaGlsbGlwLmZpdHpzaW1tb25zQGdtYWlsLmNvbSIsInV1aWQiOiI2NDJlYzUxMS04ZDkzLTRjODctOWQ2NS05MWMxNGRkMDZhMzMiLCJzY29wZSI6ImFsbCIsImV4cCI6MTU3NjI1NDYwOTI5NiwiaWF0IjoxNTc2MjUzODg5fQ.ZJ2Rfw7YuCADwWHeiI3VnKBzCQ8Dxl3Bu0CHdA1VpE8'}, true, 'all');
     console.log(jwt);
 }
 test();

@@ -76,7 +76,11 @@ exports.handler = async (event, context) => {
                     }
                     await dynamodbfordummies.putUser(user);
                     user = await dynamodbfordummies.getUser(user.id);
-                    let tokenPair = tokenUtility.generateNewPair(user.id, 'all')
+                    let scope='all';
+                    if (user.subscription && user.subscription=='admin') {
+                        scope='all admin';
+                    }
+                    let tokenPair = tokenUtility.generateNewPair(user.id, scope);
                     let cookieValue = {
                         jwt: tokenPair.signedJwt,
                         refresh: tokenPair.signedRefresh,

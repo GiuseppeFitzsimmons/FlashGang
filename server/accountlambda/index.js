@@ -26,9 +26,10 @@ exports.handler = async (event, context) => {
         if (event.body.grant_type) {
             //Login sequence
             if (event.body.grant_type == 'password') {
-                let userId = event.body.id ? event.body.id.toLowerCase() : ''
+                let userId = event.body.id ? event.body.id.toLowerCase() : '';
+                let user;
                 if (userId != '') {
-                    let user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
+                    user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
                     let _compare = await new Promise((resolve, reject) => {
                         bcrypt.compare(event.body.password, user.password, function (err, res) {
                             if (err) {
@@ -43,7 +44,11 @@ exports.handler = async (event, context) => {
                         return false
                     });
                     if (_compare) {
-                        let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
+                        let scope='all';
+                        if (user.subscription && user.subscription==='admin') {
+                            scope='all admin'
+                        }
+                        let tokenPair = tokenUtility.generateNewPair(event.body.id, scope)
                         reply.token = tokenPair.signedJwt
                         reply.refresh = tokenPair.signedRefresh
                         reply.user = await dynamodbfordummies.getUser(event.body.id)
