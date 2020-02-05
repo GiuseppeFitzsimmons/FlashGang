@@ -233,7 +233,7 @@ export default class App extends React.Component {
     return (
       <Provider store={store}>
         <ThemeProvider theme={this.state.theme ? this.state.theme : greenTheme}>
-          <Box height={'1'} style={{ overflow: 'hidden' }}>
+          <Box height={'1'} style={{ overflowX: 'hidden', overflowY: 'scrolling' }}>
             <SynchroniseComponent
               callSynchronise={this.callSynchronise}
               onSessionExpired={this.onSessionExpired}

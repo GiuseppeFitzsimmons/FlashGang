@@ -7,7 +7,6 @@ function getSigningSecret() {
     return process.env.SIGNING_SECRET
 }
 function validateToken(event, ignoreExpiration, scope) {
-    console.log("validateToken ender ignoreExpiration", event);
     signingSecret=getSigningSecret();
     var token = event.authorizationToken;
     if ((!token || token == '') && event.headers) {
@@ -16,7 +15,6 @@ function validateToken(event, ignoreExpiration, scope) {
             token = event.headers.authorization;
         }
     }
-    console.log("validateToken", token, ignoreExpiration);
     if (!token) {
         err=new Error("Unauthorized");
         err.statusCode=401;

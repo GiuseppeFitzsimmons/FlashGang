@@ -22,7 +22,8 @@ const greenTheme = createMuiTheme({
           padding: "10px",
           height:'100%',
           borderColor: lightGreen[500],
-          borderWidth: '5px'
+          borderWidth: '5px',
+          overflowY: 'scrolling'
         }
       },
       MuiListItemAvatar: {

@@ -60,7 +60,7 @@ async function synchronise(dispatch) {
     }
     questObject.resource = 'synchronise'
     let postResult = await postToServer(questObject)
-    if (!postResult.errors && postResult.statusCode < 400) {
+    if (!postResult.errors && postResult.responseCode < 400) {
         if (postResult.flashDecks) {
             for (var i in postResult.flashDecks) {
                 let _deck = postResult.flashDecks[i]
@@ -96,7 +96,7 @@ async function synchronise(dispatch) {
         }
     } else {
         console.log("ERROR SYNCHRONISING", postResult);
-        if (postResult.statusCode >= 400) {
+        if (postResult.responseCode >= 400) {
             dispatch({ type: SESSION_EXPIRED })
         }
         /*for (e in postResult.errors) {
