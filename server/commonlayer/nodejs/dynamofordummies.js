@@ -315,17 +315,23 @@ const subscriptionLevels = {
     },
     associate: {
         maxDecks: 15,
-        maxCardsPerDeck: 99,
+        maxCardsPerDeck: 45,
         maxGangs: 5,
         maxMembersPerGang: 10
     },
-    admin: {
+    sottocappo: {
+        maxDecks: 25,
+        maxCardsPerDeck: 99,
+        maxGangs: 5,
+        maxMembersPerGang: 20
+    },
+    cappo: {
         maxDecks: 99,
         maxCardsPerDeck: 199,
         maxGangs: 30,
         maxMembersPerGang: 99
     },
-    superadmin: {
+    admin: {
         maxDecks: -1,
         maxCardsPerDeck: -1,
         maxGangs: -1,
