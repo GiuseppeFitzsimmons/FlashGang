@@ -967,6 +967,35 @@ async function getAllDecks(filters) {
     else return null
 }
 
+async function suspendDeck(flashDeck, userId) {
+    let now = new Date();
+    flashDeck.lastModified = now.getTime();
+    let currentFlashDeck = await getFlashDeck(flashDeck.id);
+    if (currentFlashDeck) {
+        //The owner can't be changed
+        flashDeck.owner = currentFlashDeck.owner;
+        //Only the owner can change the editability
+        if (flashDeck.owner != userId) {
+            flashDeck.editable = currentFlashDeck.editable
+        }
+    } else {
+        //flashDeck.owner = userId;
+    }
+    //Just setting it explicitely, in case the user didn't set it.
+    if (!flashDeck.editable) {
+        flashDeck.editable = false;
+    }
+    flashDeck.suspended = true
+    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
+    let flashDeckOwner = {
+        userId: userId,
+        flashDeckId: flashDeck.id,
+        lastModified: flashDeck.lastModified,
+        //rank: 'BOSS'
+    }
+    await putItem(flashDeckOwner, process.env.FLASHDECK_USER_TABLE_NAME)
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -988,5 +1017,6 @@ module.exports = {
     countFlashGangs,
     getProfile,
     getAllUsers,
-    getAllDecks
+    getAllDecks,
+    suspendDeck
 }

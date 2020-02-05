@@ -30,6 +30,7 @@ export const SESSION_EXPIRED = 'SESSION_EXPIRED';
 export const GET_ALL_USERS = 'GET_ALL_USERS';
 export const GET_ALL_DECKS = 'GET_ALL_DECKS';
 export const SAVE_USER = 'SAVE_USER'
+export const SUSPEND_DECK = 'SUSPEND_DECK'
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -163,5 +164,10 @@ export function getAllDecks(filters) {
 export function saveUser(user) {
     console.log("Action SAVE_USER")
     return { type: SAVE_USER, user: {user} }
+
+}
+export function suspendDeck(deck, id) {
+    console.log("Action SAVE_USER")
+    return { type: SUSPEND_DECK, deck: {deck}, userId: {id} }
 
 }

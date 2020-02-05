@@ -23,7 +23,6 @@ exports.handler = async (event, context) => {
     if (token) {*/
     if (event.httpMethod.toLowerCase() === 'get') {
         if (event.queryStringParameters.type === 'user') {
-        //if (1 === 1) {
             {
                 var users = await dynamodbfordummies.getAllUsers(event.queryStringParameters)
                 console.log('adminlambda users', users.Items)
@@ -83,9 +82,9 @@ exports.handler = async (event, context) => {
                     }
                 }*/
             }
-        } 
+        }
         //else if (1 === 2) {
-            if (event.queryStringParameters.type === 'deck') {
+        if (event.queryStringParameters.type === 'deck') {
             {
                 var decks = await dynamodbfordummies.getAllDecks(event.queryStringParameters)
                 console.log('adminlambda decks', decks.Items)
@@ -147,14 +146,17 @@ exports.handler = async (event, context) => {
         }
 
     } else if (event.httpMethod.toLowerCase() === 'post') {
-        //let placeholder = JSON.stringify(event.body.user.user)
-        event.body.user = event.body.user.user
-        console.log('adminlambda event', event)
-        //var user = await dynamodbfordummies.saveUser(event.queryStringParameters)
-        var user = await dynamodbfordummies.saveUser(event.body.user)
-        console.log('adminlambda saveUser', user)
+        if (event.body.type == 'suspendDeck') {
+            console.log('AAAAA DDB SUSPEND DECK', event.queryStringParameters)
+            var deck = await dynamodbfordummies.suspendDeck(event.queryStringParameters.deck)
+            console.log('suspending deck', deck)
+        } else {
+            /*event.body.user = event.body.user.user
+            console.log('adminlambda event', event)
+            var user = await dynamodbfordummies.saveUser(event.body.user)
+            console.log('adminlambda saveUser', user)*/
+        }
     }
-    //returnObject.body = JSON.stringify(reply);
     returnObject.headers = {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",

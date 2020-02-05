@@ -32,6 +32,9 @@ class Admin extends React.Component {
         this.state = { index: 0, open: false }
         var renderable = <>USER TAB CONTENT</>
     }
+    componentDidMount(){
+        //console.log('this.state', this.state)
+    }
     render() {
         const handleChange = (event, index) => {
             this.setState({ index: index }) 
