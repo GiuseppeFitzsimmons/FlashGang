@@ -23,6 +23,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Upgrade from './components/upgrade';
+import { FlashDeckListItem, FlashDeckListButton } from './components/flashgangmemberlistitem';
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -62,7 +63,7 @@ class FlashGangs extends React.Component {
       this.props.onFlashGangSelected(this.state.flashGang.id)
     }
   }
-  render() {
+  renderOld() {
     const flashGangs = this.props.flashGangs;
     const generateFlashGangList = () => {
       if (!flashGangs) {
@@ -142,6 +143,67 @@ class FlashGangs extends React.Component {
       </>
     )
   }
+  
+  render() {
+    const flashGangs = this.props.flashGangs;
+    const generateFlashGangList = () => {
+      if (!flashGangs) {
+        return (
+          <></>
+        )
+      }
+      var _display = flashGangs.map((flashGang, i) => {
+        console.log('flashGang', flashGang)
+        /*if (!flashGang.icon) {
+          flashGang.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
+        }*/
+        if (!flashGang.image) {
+          flashGang.image =  `/gangs-${Math.floor(Math.random() * Math.floor(20))}.jpg`
+          
+        }
+        return (
+          <>
+            {this.renderRSVPdialog()}
+            
+          <FlashDeckListItem flashDeck={flashGang}
+            onClick={() => {
+              if (flashGang.state == 'TO_INVITE' || flashGang.state == 'INVITED') {
+                this.openModal(flashGang)
+              } else {
+                this.props.onFlashGangSelected(flashGang.id)
+              }
+            }} />
+          </>
+        )
+      })
+      return (
+        <>
+          {_display}
+        </>
+      )
+    }
+    return (
+      <>
+        <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings}/>
+         <FlashDeckListButton
+            onClick={() => {
+              if (this.props.user.remainingFlashGangsAllowed > 0) {
+                this.props.createFlashGang()
+              } else {
+                this.upgrade.open('GANGS')
+              }
+            }}
+            main='New FlashGang'
+            sub='Click to create a FlashGang'/>
+          {generateFlashGangList()}
+        <Upgrade
+          parent={this}
+        >
+        </Upgrade>
+      </>
+    )
+  }
+  
   renderRSVPdialog() {
     var message = <>You have been invited to join <b>{this.state.flashGang.name}</b> <i>({this.state.flashGang.description})</i>. Would you like to accept?</>;
     if (this.state.flashGang.invitedBy) {

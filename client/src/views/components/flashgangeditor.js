@@ -24,6 +24,7 @@ import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlis
 import Upgrade from '../components/upgrade';
 import Confirmation from '../components/confirmation';
 import { withTheme } from '@material-ui/styles';
+import { Gallery } from '../components/gallery';
 
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
@@ -76,6 +77,11 @@ class FlashGangEditorStyled extends React.Component {
     render() {
         //const classes = useStyles();
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
+        
+        if (!flashGang.image) {
+            flashGang.image =  `/gangs-${Math.floor(Math.random() * Math.floor(20))}.jpg`
+            
+          }
         const isOwner = this.props.user && this.props.user.id == flashGang.owner
         return (
             <>
@@ -87,7 +93,8 @@ class FlashGangEditorStyled extends React.Component {
                     justify="flex-start"
                     alignItems="stretch"
                     style={{
-                        height: '100%'
+                        height: '100%',
+                        paddingTop:'8px'
                     }}
                 >
 
@@ -96,12 +103,19 @@ class FlashGangEditorStyled extends React.Component {
                         justify="space-between"
                         alignItems="stretch"
                         style={{
-                            height: '7%'
+                            height: '7%',
+                            marginBottom: '8px'
                         }}>
-                        <Grid item md={1} sm={2} xs={3}>
-                            <IconSelector icon={flashGang.icon} iconClient={flashGang} />
+                        <Grid item md={1} sm={1} xs={2}>
+                            <Gallery
+                                onImageSelected={image=>flashGang.image=image}
+                                image={flashGang.image}
+                                imageButton
+                                station='GANG'
+                                closeOnSelect
+                            />
                         </Grid>
-                        <Grid item md={11} sm={10} xs={9}>
+                        <Grid item md={11} sm={11} xs={10} style={{paddingLeft:'2px'}}>
                             <IntegratedInput
                                 label="Gang Name"
                                 id='gangName'
