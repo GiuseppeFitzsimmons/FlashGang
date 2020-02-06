@@ -94,6 +94,12 @@ class GalleryStyled extends React.Component {
     }
     render() {
         const images = this.props.images ? this.props.images : []
+        
+        if (this.props.station==='GANG') {
+            for (var i=0;i<21;i++) {
+                images.push({url: `gangs-${i}.jpg`});
+            }
+        }
         //console.log('allImages', allImages)
         var button=
             <FlashButton
