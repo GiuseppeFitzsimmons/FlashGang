@@ -332,10 +332,10 @@ const subscriptionLevels = {
         maxMembersPerGang: 99
     },
     admin: {
-        maxDecks: -1,
-        maxCardsPerDeck: -1,
-        maxGangs: -1,
-        maxMembersPerGang: -1
+        maxDecks: 100000,
+        maxCardsPerDeck: 200,
+        maxGangs: 100000,
+        maxMembersPerGang: 300
     }
 }
 function getProfile(subscriptionLevel) {

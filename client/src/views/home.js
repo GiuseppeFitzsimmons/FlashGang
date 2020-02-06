@@ -59,14 +59,7 @@ class Home extends React.Component {
     return (
       <>
         <FlashAppBar title='FlashGang!' station='HOME' goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
-        <Box
-          style={{
-            backgroundColor: 'rgba(255,255,255,0.4)',
-            padding: '2px',
-            height: '84%',
-            overflow: 'scroll'
-          }}
-        >
+        
           <FlashDeckListButton
             onClick={() => {
               if (this.props.user.remainingFlashDecksAllowed > 0) {
@@ -78,7 +71,6 @@ class Home extends React.Component {
             main='New FlashDeck'
             sub='Click to create a FlashDeck'/>
           {generateFlashDeckList()}
-        </Box>
         <Upgrade
           parent={this}
         >

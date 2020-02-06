@@ -391,7 +391,7 @@ class FlashDeckListItemStyled extends React.Component {
         var big = this.props.small ? 'h7' : 'h5';
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
-        var mininmumHeight = this.props.small ? '30%' : '11%';
+        var mininmumHeight = this.props.small ? '12%' : '8%';
         return (
 
             <Grid container spacing={0} style={{
@@ -408,7 +408,7 @@ class FlashDeckListItemStyled extends React.Component {
                         backgroundRepeat: 'no-repeat',
                         marginRight: '4px'
                     }}
-                        height={'20%'}>
+                        height={'10%'}>
                         {!this.props.flashDeck.image &&
                             <Icon style={{ fontSize: '15vw', color: 'green' }}>add_photo_alternate</Icon>
                         }
@@ -443,7 +443,7 @@ class FlashDeckListButtonStyled extends React.Component {
         var small = this.props.small ? 'h10' : 'h6';
         return (
 
-            <Grid container spacing={0} style={{ paddingTop: '4px', minHeight: '12%', width: '100%' }}
+            <Grid container spacing={0} style={{ paddingTop: '4px', minHeight: '8%', width: '100%' }}
 
                 onClick={this.props.onClick}>
                 <Grid item xs={12} sm={12} md={12} style={this.props.theme.actionListItem}>

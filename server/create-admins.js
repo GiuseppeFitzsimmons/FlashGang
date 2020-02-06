@@ -22,6 +22,7 @@ async function createAdminAccounts() {
     await createAdminAccount('phillip.fitzsimmons@gmail.com');
     
 }
+
 async function createAdminAccount(email) {
     console.log("creating admin account", email, process.env.USER_TABLE_NAME);
     const {putUser, getUser}=require('./commonlayer/nodejs/dynamofordummies');
