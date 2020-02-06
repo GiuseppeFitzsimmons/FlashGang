@@ -668,6 +668,7 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
+    console.log("getDocumentDbClient", process.env.REGION);
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
             const _config = {
@@ -680,6 +681,17 @@ function getDocumentDbClient() {
             }
             AWS.config.update(_config);
         }
+    }
+    if (process.env.RUNNING_LOCAL_REGION) {
+        const _config = {
+            region:process.env.RUNNING_LOCAL_REGION
+        }
+        if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
+            _config.accessKeyId = process.env.ACCESS_KEY_ID,
+                _config.secretAccessKey = process.env.SECRET_ACCESS_KEY
+        }
+        console.log(_config);
+        AWS.config.update(_config);
     }
     var documentClient = new AWS.DynamoDB.DocumentClient();
     return documentClient;
