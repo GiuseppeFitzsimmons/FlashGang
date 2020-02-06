@@ -985,33 +985,77 @@ async function getAllDecks(filters) {
     else return null
 }
 
-async function suspendDeck(flashDeck, userId) {
+async function getAllGangs(filters) {
+    console.log('ddb getAllGangs called', params)
+    var documentClient = getDocumentDbClient();
+    var params = {
+        TableName: process.env.FLASHGANG_TABLE_NAME,
+        Limit: 10,
+    };
+    if (filters) {
+        let FilterAttributeValues = {}
+        if (filters.string) {
+            params.FilterExpression = {}
+            params.FilterAttributeValues = {}
+            params.ExpressionAttributeValues = {":string":filters.string}
+            params.FilterExpression = "contains(name, :string) or contains(description, :string)  or contains(owner, :string)"
+            //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
+            //params.FilterExpression = Attr('firstName').contains(filters.string)
+        }
+        if (filters.suspension == 'true') {
+            if (!params.ExpressionAttributeValues) {
+                params.ExpressionAttributeValues = {}
+            }
+            let suspensionAttributeValue = {}
+            let suspensionFilter = ''
+            if (filters.subscription) {
+                params.FilterExpression = '(' + params.FilterExpression + ')'
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression += ' and ' + suspensionFilter
+            } else {
+                params.FilterExpression = {}
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression = suspensionFilter
+            }
+            suspensionAttributeValue[':' + filters.suspension] = filters.suspension
+            params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
+        }
+        if (filters.cursor && filters.cursor != null) {
+            params.ExclusiveStartKey = { id: filters.cursor }
+        }
+    }
+    let stringifiedParams = JSON.stringify(params)
+    console.log('getAllGangs params', stringifiedParams)
+    let item = await new Promise((resolve, reject) => {
+        documentClient.scan(params, function (err, data) {
+            if (err) {
+                console.log("Error getting gang table", err);
+                reject(err);
+            } else {
+                console.log("success getting gang table", data);
+                resolve(data);
+            }
+        });
+    });
+    console.log('getAllGangs item', item)
+    if (item) {
+        return item
+    }
+    else return null
+}
+
+async function suspendDeck(flashDeck) {
     let now = new Date();
     flashDeck.lastModified = now.getTime();
-    let currentFlashDeck = await getFlashDeck(flashDeck.id);
-    if (currentFlashDeck) {
-        //The owner can't be changed
-        flashDeck.owner = currentFlashDeck.owner;
-        //Only the owner can change the editability
-        if (flashDeck.owner != userId) {
-            flashDeck.editable = currentFlashDeck.editable
-        }
-    } else {
-        //flashDeck.owner = userId;
-    }
-    //Just setting it explicitely, in case the user didn't set it.
-    if (!flashDeck.editable) {
-        flashDeck.editable = false;
-    }
     flashDeck.suspended = true
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
-    let flashDeckOwner = {
-        userId: userId,
-        flashDeckId: flashDeck.id,
-        lastModified: flashDeck.lastModified,
-        //rank: 'BOSS'
-    }
-    await putItem(flashDeckOwner, process.env.FLASHDECK_USER_TABLE_NAME)
+}
+
+async function suspendGang(flashDeck) {
+    //let now = new Date();
+    //flashDeck.lastModified = now.getTime();
+    flashDeck.suspended = true
+    await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
 }
 
 module.exports = {
@@ -1036,5 +1080,8 @@ module.exports = {
     getProfile,
     getAllUsers,
     getAllDecks,
-    suspendDeck
+    suspendDeck,
+    getFlashDeck,
+    getFlashGang,
+    suspendGang
 }

@@ -22,7 +22,8 @@ import { RadioButton } from 'material-ui';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AdminUsers from './adminusers';
-import AdminDecks from './admindecks'
+import AdminDecks from './admindecks';
+import AdminGangs from './admingangs'
 
 
 
@@ -46,7 +47,7 @@ class Admin extends React.Component {
                 break;
             case 1:
                 console.log('Index is 1')
-                this.renderable = <> GANG TAB CONTENT </>
+                this.renderable = <AdminGangs/>
                 break;
             case 2:
                 console.log('Index is 2')

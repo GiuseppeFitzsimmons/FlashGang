@@ -97,9 +97,13 @@ exports.handler = async (event, context) => {
                     filteredDeck.name = deck.name
                     filteredDeck.description = deck.description
                     filteredDeck.owner = deck.owner
-                    /*for (var j in deck.flashCards) {
-                        filteredDeck.flashCards[j] = deck.flashCards[j]
-                    }*/
+                    filteredDeck.id = deck.id
+                    if (deck.flashCards) {
+                        for (var j in deck.flashCards) {
+                            filteredDeck.flashCards[j] = deck.flashCards[j]
+                        }
+                    }
+                    console.log('filteredDeck', filteredDeck)
                     filteredDecks.push(filteredDeck)
                 }
                 if (decks.LastEvaluatedKey) {
@@ -107,55 +111,49 @@ exports.handler = async (event, context) => {
                 }
                 _body.decks = filteredDecks
                 returnObject.body = JSON.stringify(_body)
-                /*if (event.body.source) {
-                    if (event.body.source.indexOf('data:image') == 0) {
-                        var imageData = event.body.source.split(',');
-                        var base64Data = imageData[1];
-                        var imageType = imageData[0].toLowerCase().replace("data:image/", '').replace(';base64', '');
-                        var subPath = `/images/${token.sub}/${uuidv4()}.${imageType}`
-                        var path = `${process.env.IMAGE_PREFIX}${subPath}`
-                        var s3 = gets3()
-                        var bucketParams = {
-                            Body: new Buffer(base64Data, 'base64'),
-                            Bucket: process.env.IMAGE_BUCKET,
-                            Key: path,
-                            ContentEncoding: 'base64',
-                            ContentType: `image/${imageType}`
-                        };
-                        //fs.writeFileSync('avatartest.jpg',base64Data, 'base64');
-                        let s3result = await new Promise((resolve, reject) => {
-                            s3.putObject(bucketParams, function (err, data) {
-                                if (err) {
-                                    console.log("Error uploading IMAGE", err, err.stack);
-                                    reject(err);
-                                } else {
-                                    console.log("Success uploading IMAGE", data);
-                                    resolve(data);
-                                }
-                            });
-                        })
-                        if (s3result.ETag) {
-                            //TODO at some point in the future we should have a way that cleans up unused images.
-                            reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
-                            //await dynamodbfordummies.putImage(token.sub, reply.url)
-                        }
-                        console.log("s3result", s3result);
-                    }
-                }*/
+            }
+        } else if (event.queryStringParameters.type === 'gabg') {
+            {
+                var gangs = await dynamodbfordummies.getAllGangs(event.queryStringParameters)
+                console.log('adminlambda gangs', decks.Items)
+                _body.gangs = []
+                var filteredGangs = []
+                for (var i in gangs.Items) {
+                    let gang = gangs.Items[i]
+                    console.log(deck)
+                    let filteredGang = {}
+                    filteredGang.name = gang.name
+                    filteredGang.description = gang.description
+                    filteredGang.owner = gang.owner
+                    filteredGang.id = gang.id
+                    console.log('filteredGang', filteredGang)
+                    filteredGangs.push(filteredGang)
+                }
+                if (gangs.LastEvaluatedKey) {
+                    _body.LastEvaluatedKey = gangs.LastEvaluatedKey
+                }
+                _body.decks = filteredGangs
+                returnObject.body = JSON.stringify(_body)
             }
         }
 
     } else if (event.httpMethod.toLowerCase() === 'post') {
         if (event.body.type == 'suspendDeck') {
-            console.log('AAAAA DDB SUSPEND DECK', event.queryStringParameters)
-            var deck = await dynamodbfordummies.suspendDeck(event.queryStringParameters.deck)
+            event.body.deck = event.body.deck.deck
+            var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
+            var deck = await dynamodbfordummies.suspendDeck(_deck)
             console.log('suspending deck', deck)
-        } else {
+        } else if (event.body.type == 'suspendGang') {
+            event.body.gang = event.body.gang.gang
+            var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
+            var gang = await dynamodbfordummies.suspendGang(_gang)
+            console.log('suspending gang', gang)
+        }
+        
             /*event.body.user = event.body.user.user
             console.log('adminlambda event', event)
             var user = await dynamodbfordummies.saveUser(event.body.user)
             console.log('adminlambda saveUser', user)*/
-        }
     }
     returnObject.headers = {
         "Access-Control-Allow-Origin": "*",

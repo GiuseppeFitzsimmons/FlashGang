@@ -5,7 +5,7 @@ import {
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
-    SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK
+    SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -781,7 +781,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware GET_ALL_USERS')
                 let questObject = {}
                 questObject.resource = 'admin'
-                if (action.data.filters){
+                if (action.data.filters) {
                     questObject.params = action.data.filters
                 } else {
                     questObject.params = {}
@@ -807,7 +807,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware GET_ALL_DECKS')
                 let questObject = {}
                 questObject.resource = 'admin'
-                if (action.data.filters){
+                if (action.data.filters) {
                     questObject.params = action.data.filters
                 } else {
                     questObject.params = {}
@@ -824,6 +824,32 @@ export function flashGangMiddleware({ dispatch }) {
                         action.errors.push(getResult.error);
                     }
                     console.log("Error receiving users", getResult, action)
+                }
+                if (getResult.LastEvaluatedKey) {
+                    action.cursor = getResult.LastEvaluatedKey
+                }
+            } else if (action.type === GET_ALL_GANGS) {
+                dispatch({ type: LOADING, data: { loading: true } })
+                console.log('Middleware GET_ALL_GANGS')
+                let questObject = {}
+                questObject.resource = 'admin'
+                if (action.data.filters) {
+                    questObject.params = action.data.filters
+                } else {
+                    questObject.params = {}
+                }
+                questObject.params.type = 'gang'
+                let getResult = await getFromServer(questObject)
+                console.log('getResult', getResult)
+                if (getResult.gangs) {
+                    action.gangs = getResult.gangs
+                    console.log('getResult.gangs', getResult.gangs)
+                } else {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error receiving gangs", getResult, action)
                 }
                 if (getResult.LastEvaluatedKey) {
                     action.cursor = getResult.LastEvaluatedKey
@@ -851,6 +877,8 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params.type = 'suspendDeck'
                 questObject.resource = 'admin'
                 questObject.params.deck = action.deck
+                questObject.params.deck.id = action.deck.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
                     action.errors = getResult.errors ? getResult.errors : [];
@@ -861,6 +889,25 @@ export function flashGangMiddleware({ dispatch }) {
                     //action.user = user
                 }
                 console.log("Error suspending deck", getResult, action)
+            } else if (action.type === SUSPEND_GANG) {
+                console.log('Middleware SUSPEND_GANG')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'suspendGang'
+                questObject.resource = 'admin'
+                questObject.params.gang = action.gang
+                questObject.params.gang.id = action.gang.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error suspending gang", getResult, action)
             }
             return next(action);
         }
