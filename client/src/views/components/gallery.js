@@ -217,7 +217,7 @@ class GalleryStyled extends React.Component {
                         <FlashButton disabled={!this.state.selecting} onClick={this.handleDelete} color="primary" buttonType='action'>
                             Delete
                         </FlashButton>
-                        <FlashButton onClick={this.handleCancel} color="primary">
+                        <FlashButton onClick={this.handleCancel} color="primary" buttonType='action'>
                             Close
                         </FlashButton>
                     </DialogActions>
