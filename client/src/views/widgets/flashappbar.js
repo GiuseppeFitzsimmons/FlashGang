@@ -12,6 +12,8 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Icon from '@material-ui/core/Icon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
+import ListItem from '@material-ui/core/ListItem';
+import { Button, Grid, GridList } from '@material-ui/core';
 
 const someImages = require('../../utility/smimages')
 
@@ -29,18 +31,28 @@ export default class FlashAppBar extends React.Component {
   };
   listItem = (action, image, primary, secondary) => {
     return (
-      <FlashListItem alignItems="flex-start"
+      <Grid container
         onClick={action}
-        button
+        direction='row'
+        justify="space-evenly"
       >
-        <Avatar
-          src={image}
-          style={{borderRadius: '50%'}}/>
-        <ListItemText
-          primary={primary}
-          secondary={secondary}
-        />
-      </FlashListItem>
+        <Grid item md={2} sm={2} xs={2}
+        justify="center"
+        >
+          <Avatar
+            src={image}
+            style={{ borderRadius: '50%', width:'42px' }} />
+        </Grid>
+        <Grid item md={1} sm={1} xs={1}/>
+        <Grid item md={9} sm={9} xs={9}
+        justify="center"
+        >
+          <ListItemText
+            primary={primary}
+            secondary={secondary}
+          />
+        </Grid>
+      </Grid>
     )
   }
   render() {
@@ -49,37 +61,36 @@ export default class FlashAppBar extends React.Component {
         this.listItem(this.props.goSettings,
           this.props.user && this.props.user.picture ? this.props.user.picture : someImages.getRandomGangsterImage(),
           "Settings",
-          "Click here to go to settings"
+          "Express yourself"
         )
       }
       {this.props.onLogOut &&
         this.listItem(this.props.onLogOut,
           '/exit.jpg',
           "Log out",
-          "Click here to log out"
+          "Come back soon"
         )
       }
       {this.props.goHome &&
         this.listItem(this.props.goHome,
           someImages.getRandomSubjectImage(),
-          "Flash decks",
-          "Click here to go home"
+          "Home",
+          "Go to your fashdecks"
         )
       }
       {this.props.goGangs &&
         this.listItem(this.props.goGangs,
           someImages.getRandomGangImage(),
           "Flash gangs",
-          "Click here to go see your gangs"
+          "Manage your gangs"
         )
       }
     </>
     return (
       <div style={{
-        marginBottom: '48px'
+        marginBottom: '60px'
       }}>
-        <AppBar position="fixed" style={{
-        }}>
+        <AppBar position="fixed">
           <Toolbar>
             <IconButton
               edge="start"
@@ -104,9 +115,9 @@ export default class FlashAppBar extends React.Component {
           </Toolbar>
         </AppBar>
         <Drawer open={this.state.openDrawer} onClose={this.toggleDrawer(false)}>
-          <List>
+          <div style={{margin:'8px'}}>
             {renderable}
-          </List>
+            </div>
         </Drawer>
       </div>
     );

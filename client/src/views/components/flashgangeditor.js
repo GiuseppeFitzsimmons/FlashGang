@@ -88,7 +88,10 @@ class FlashGangEditorStyled extends React.Component {
         return (
             <>
                 <FlashAppBar title='FlashGang!' station='GANGS'
-                    goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
+                    goHome={this.props.goHome} 
+                    onLogOut={this.props.onLogOut} 
+                    goSettings={this.props.goSettings} 
+                    user={this.props.user} />
 
                 <Grid container
                     direction="column"

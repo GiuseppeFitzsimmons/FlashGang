@@ -13,7 +13,7 @@ import Slider from '@material-ui/core/Slider';
 import Confirmation from '../components/confirmation';
 import { Gallery } from '../components/gallery';
 
-const someImage=require('../../utility/smimages')
+const someImage = require('../../utility/smimages')
 
 const marks = [
   {
@@ -71,7 +71,7 @@ class FlashDeckEditor extends React.Component {
   render() {
     const flashDeck = this.props.flashDeck
     if (!flashDeck.image) {
-      flashDeck.image=someImage.getRandomSubjectImage();
+      flashDeck.image = someImage.getRandomSubjectImage();
     }
     var editable = this.props.user.id == flashDeck.owner
     const theme = this.theme;
@@ -91,22 +91,22 @@ class FlashDeckEditor extends React.Component {
           <Grid item xs='2'>
             {/*<IconSelector icon={flashDeck.icon} iconClient={flashDeck} />*/}
             <Gallery
-                    onImageSelected={(image)=>{
-                        flashDeck.image=image;
-                        flashDeck.dirty=true;
-                        this.forceUpdate();
-                      }
-                    }
-                    onImageUnselected={(image)=>{
-                      delete flashDeck.image;
-                      flashDeck.dirty=true;
-                      this.forceUpdate();
-                    }}
-                    imageButton
-                    closeOnSelect
-                    image={flashDeck.image}
-                    station='DECK'
-                />
+              onImageSelected={(image) => {
+                flashDeck.image = image;
+                flashDeck.dirty = true;
+                this.forceUpdate();
+              }
+              }
+              onImageUnselected={(image) => {
+                delete flashDeck.image;
+                flashDeck.dirty = true;
+                this.forceUpdate();
+              }}
+              imageButton
+              closeOnSelect
+              image={flashDeck.image}
+              station='DECK'
+            />
           </Grid>
           <Grid item xs='9'>
             <IntegratedInput

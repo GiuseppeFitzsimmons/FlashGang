@@ -88,7 +88,12 @@ class FlashGangs extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings}/>
+        <FlashAppBar title='FlashGang!' 
+          station='GANGS' 
+          goHome={this.props.goHome} 
+          onLogOut={this.props.onLogOut} 
+          goSettings={this.props.goSettings}
+          user={this.props.user} />
          <FlashDeckListButton
             onClick={() => {
               if (this.props.user.remainingFlashGangsAllowed > 0) {

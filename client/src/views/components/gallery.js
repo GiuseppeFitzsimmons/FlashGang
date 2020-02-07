@@ -102,6 +102,9 @@ class GalleryStyled extends React.Component {
         } else if (this.props.station==='DECK') {
             const subjectImages=someImages.getSubjectImages();
             images=subjectImages.concat(images);
+        } else if (this.props.station==='GANGSTER') {
+            const gangsterImages=someImages.getGangsterImages();
+            images=gangsterImages.concat(images);
         }
         //console.log('allImages', allImages)
         var button=

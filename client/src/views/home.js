@@ -58,7 +58,13 @@ class Home extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title='FlashGang!' station='HOME' goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
+        <FlashAppBar title='FlashGang!' 
+          station='HOME' 
+          goGangs={this.props.goGangs} 
+          onLogOut={this.props.onLogOut} 
+          goSettings={this.props.goSettings}
+          user={this.props.user} 
+          />
         
           <FlashDeckListButton
             onClick={() => {
