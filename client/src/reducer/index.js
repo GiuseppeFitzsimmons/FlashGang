@@ -9,7 +9,7 @@ import {
     SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG
 } from '../action';
 
-const initialState = {};
+const initialState = {sessionExpired: false};
 var user
 
 function rootReducer(state = initialState, action) {
