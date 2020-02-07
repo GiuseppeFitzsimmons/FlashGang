@@ -11,6 +11,9 @@ import { FlashListItem } from './FlashBits';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Icon from '@material-ui/core/Icon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+
+const someImages = require('../../utility/smimages')
 
 export default class FlashAppBar extends React.Component {
   constructor(props) {
@@ -24,59 +27,51 @@ export default class FlashAppBar extends React.Component {
 
     this.setState({ ...this.state, openDrawer: open });
   };
+  listItem = (action, image, primary, secondary) => {
+    return (
+      <FlashListItem alignItems="flex-start"
+        onClick={action}
+        button
+      >
+        <Avatar
+          src={image}
+          style={{borderRadius: '50%'}}/>
+        <ListItemText
+          primary={primary}
+          secondary={secondary}
+        />
+      </FlashListItem>
+    )
+  }
   render() {
     let renderable = <>
-      <FlashListItem alignItems="flex-start"
-        onClick={this.props.goSettings}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Settings"
-          secondary="Click here to go to settings"
-        />
-      </FlashListItem>
-      <FlashListItem alignItems="flex-start"
-        onClick={this.props.onLogOut}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Log out"
-          secondary="Click here to log out"
-        />
-      </FlashListItem>
-      {(this.props.station == 'DECK' || this.props.station == 'GANGS') &&
-        <FlashListItem alignItems="flex-start"
-          onClick={this.props.goHome}
-          button
-        >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>home</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Flash decks"
-          secondary="Click here to go home"
-        />
-      </FlashListItem>
+      {this.props.goSettings &&
+        this.listItem(this.props.goSettings,
+          this.props.user && this.props.user.picture ? this.props.user.picture : someImages.getRandomGangsterImage(),
+          "Settings",
+          "Click here to go to settings"
+        )
       }
-      {(this.props.station == 'DECK' || this.props.station == 'HOME') &&
-        <FlashListItem alignItems="flex-start"
-        onClick={this.props.goGangs}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>home</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Flash gangs"
-          secondary="Click here to go see your gangs"
-        />
-      </FlashListItem>
+      {this.props.onLogOut &&
+        this.listItem(this.props.onLogOut,
+          '/exit.jpg',
+          "Log out",
+          "Click here to log out"
+        )
+      }
+      {this.props.goHome &&
+        this.listItem(this.props.goHome,
+          someImages.getRandomSubjectImage(),
+          "Flash decks",
+          "Click here to go home"
+        )
+      }
+      {this.props.goGangs &&
+        this.listItem(this.props.goGangs,
+          someImages.getRandomGangImage(),
+          "Flash gangs",
+          "Click here to go see your gangs"
+        )
       }
     </>
     return (

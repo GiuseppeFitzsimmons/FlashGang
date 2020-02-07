@@ -16,6 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickNHold from 'react-click-n-hold';
 
 const loadImage = require('blueimp-load-image');
+const someImages=require('../../utility/smimages');
 
 //const allImages = [];
 const holder = {}
@@ -93,12 +94,14 @@ class GalleryStyled extends React.Component {
         document.getElementById("file-upload").reset();
     }
     render() {
-        const images = this.props.images ? this.props.images : []
+        var images = this.props.images ? this.props.images : []
         
         if (this.props.station==='GANG') {
-            for (var i=0;i<21;i++) {
-                images.push({url: `gangs-${i}.jpg`});
-            }
+            const gangImages=someImages.getGangImages();
+            images=gangImages.concat(images);
+        } else if (this.props.station==='DECK') {
+            const subjectImages=someImages.getSubjectImages();
+            images=subjectImages.concat(images);
         }
         //console.log('allImages', allImages)
         var button=

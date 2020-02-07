@@ -52,7 +52,7 @@ class Settings extends React.Component {
                 <FlashAppBar title='FlashGang Settings' station='SETTINGS'
                     goGangs={this.props.goGangs}
                     onLogOut={this.props.onLogOut}
-                    goSettings={this.props.goSettings} />
+                    goHome={this.props.goHome} />
                 <Grid container
                     direction="row"
                     justify="center"

@@ -13,6 +13,8 @@ import Slider from '@material-ui/core/Slider';
 import Confirmation from '../components/confirmation';
 import { Gallery } from '../components/gallery';
 
+const someImage=require('../../utility/smimages')
+
 const marks = [
   {
     value: 0,
@@ -68,6 +70,9 @@ class FlashDeckEditor extends React.Component {
   }
   render() {
     const flashDeck = this.props.flashDeck
+    if (!flashDeck.image) {
+      flashDeck.image=someImage.getRandomSubjectImage();
+    }
     var editable = this.props.user.id == flashDeck.owner
     const theme = this.theme;
     console.log('user id', this.props.user.id, 'owner', flashDeck.owner)
@@ -100,6 +105,7 @@ class FlashDeckEditor extends React.Component {
                     imageButton
                     closeOnSelect
                     image={flashDeck.image}
+                    station='DECK'
                 />
           </Grid>
           <Grid item xs='9'>

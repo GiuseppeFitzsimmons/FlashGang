@@ -16,7 +16,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import { FlashListItem } from './FlashBits'
-import { FlashDeckListItem } from '../components/flashgangmemberlistitem';
+import { FlashDeckListItem, FlashDeckListButton } from '../components/flashgangmemberlistitem';
 
 
 class DeckSelector extends React.Component {
@@ -83,21 +83,13 @@ class DeckSelector extends React.Component {
     }
     return (
       <>
-        <FlashListItem alignItems="flex-start"
+
+        <FlashDeckListButton
           onClick={
             () => this.setState({ open: true })
           }
-          buttonType='action'
-          button
-        >
-          <ListItemAvatar>
-            <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-          </ListItemAvatar>
-          <ListItemText
-            primary="Select FlashDecks"
-            secondary="Click here to manage your gang's FlashDecks"
-          />
-        </FlashListItem>
+          main='Select FlashDecks'
+          sub="Manage your gang's FlashDecks"/>
         <Dialog
           disableBackdropClick
           disableEscapeKeyDown

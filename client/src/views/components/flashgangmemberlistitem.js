@@ -20,6 +20,7 @@ import ClickNHold from 'react-click-n-hold';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
+const someImage=require('../../utility/smimages');
 
 const styles = theme => ({
     paper: {
@@ -55,7 +56,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                 editLevel = 0;
             }
         }
-        this.props.gangMember.picture = this.props.gangMember.picture ? this.props.gangMember.picture : randomProfiles[Math.floor(Math.random() * Math.floor(randomProfiles.length))]
+        this.props.gangMember.picture = this.props.gangMember.picture ? this.props.gangMember.picture : someImage.getRandomGangsterImage()
         var name = this.props.gangMember.firstName;
         if (name) {
             if (this.props.gangMember.lastName) {
@@ -197,6 +198,9 @@ class FlashDeckListItemStyled extends React.Component {
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
         var mininmumHeight = this.props.small ? '12%' : '8%';
+        if (!this.props.flashDeck.image) {
+            this.props.flashDeck.image=someImage.getRandomSubjectImage();
+        }
         return (
 
             <Grid container spacing={0} style={{
@@ -214,9 +218,6 @@ class FlashDeckListItemStyled extends React.Component {
                         marginRight: '4px'
                     }}
                         height={'10%'}>
-                        {!this.props.flashDeck.image &&
-                            <Icon style={{ fontSize: '15vw', color: 'green' }}>add_photo_alternate</Icon>
-                        }
                     </Container>
                 </Grid>
                 <Grid container direction='column' xs={10} sm={10} md={11}
