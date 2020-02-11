@@ -32,7 +32,8 @@ export const GET_ALL_DECKS = 'GET_ALL_DECKS';
 export const SAVE_USER = 'SAVE_USER';
 export const SUSPEND_DECK = 'SUSPEND_DECK';
 export const SUSPEND_GANG = 'SUSPEND_GANG';
-export const GET_ALL_GANGS = 'GET_ALL_GANGS'
+export const GET_ALL_GANGS = 'GET_ALL_GANGS';
+export const LOG_OUT = 'LOG_OUT'
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -176,5 +177,10 @@ export function saveUser(user) {
 export function suspendDeck(deck, id) {
     console.log("Action SAVE_USER")
     return { type: SUSPEND_DECK, deck: {deck} }
+
+}
+export function logout() {
+    console.log("Action LOG_OUT")
+    return { type: LOG_OUT }
 
 }

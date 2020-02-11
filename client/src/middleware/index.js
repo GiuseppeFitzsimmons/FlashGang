@@ -5,7 +5,7 @@ import {
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
-    SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG
+    SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -908,6 +908,9 @@ export function flashGangMiddleware({ dispatch }) {
                     //action.user = user
                 }
                 console.log("Error suspending gang", getResult, action)
+            } else if (action.type === LOG_OUT) {
+                localStorage.removeItem("flashJwt")
+                localStorage.removeItem("flashJwtRefresh");
             }
             return next(action);
         }

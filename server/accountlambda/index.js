@@ -28,7 +28,10 @@ exports.handler = async (event, context) => {
             if (event.body.grant_type == 'password') {
                 let userId = event.body.id ? event.body.id.toLowerCase() : '';
                 let user;
-                if (userId != '') {
+                if (!event.body.password || event.body.password=='') {
+                    reply.errors = { fields: [{ password: `Password cannot be empty` }] }
+                    returnObject.statusCode = 401
+                } else if (userId != '') {
                     user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
                     let _compare = await new Promise((resolve, reject) => {
                         bcrypt.compare(event.body.password, user.password, function (err, res) {

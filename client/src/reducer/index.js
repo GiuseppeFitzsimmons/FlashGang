@@ -6,7 +6,7 @@ import {
     NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT,
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
     SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
-    SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG
+    SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT
 } from '../action';
 
 const initialState = {sessionExpired: false};
@@ -108,7 +108,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashDecks: action.data.flashDecks })
             return state
         case SESSION_EXPIRED:
-            console.log("SESSION_EXPIRED", action);
+            console.log("SESSIONBUG SESSION_EXPIRED", action);
             state = Object.assign({}, state, { sessionExpired: true })
             return state
         case GET_ALL_USERS:
@@ -128,6 +128,9 @@ function rootReducer(state = initialState, action) {
             return state
         case SUSPEND_GANG:
             state = Object.assign({}, state, { gang: action.gang })
+            return state
+        case LOG_OUT:
+            state = Object.assign({}, state, { sessionExpired: false })
             return state
         default:
             console.log('state', state)
