@@ -196,12 +196,15 @@ class GalleryStyled extends React.Component {
                                                     }
                                                     this.setState({ selecting: _isSelecting })
                                                 } else {
-                                                    this.imageSelected(image.url);
+                                                    if (!image.loading) {
+                                                        this.imageSelected(image.url);
+                                                    }
                                                 }
                                             }
                                         }}>
                                         <>
                                             <ImageUploadComponentRedux
+                                                imageRecord={image}
                                                 source={image.url}
                                                 id={index}
                                                 isSelected={image.isSelected}
@@ -231,15 +234,25 @@ class ImageUploadComponent extends React.Component {
     constructor(props) {
         super(props)
     }
+    componentDidUpdate() {
+        if (this.props.imageRecord) {
+            this.props.imageRecord.url=this.props.source;
+            this.props.imageRecord.loading=this.props.loading;
+        }
+    }
     componentDidMount() {
+    }
+    render() {
+        console.log("UPLOADBUG componentDidUpdate, ", this.props.source);
         if (this.props.source) {
             let isBinary = this.props.source.indexOf('data:image') == 0
             if (isBinary) {
                 this.props.uploadImage(this.props.source, this.props.id)
             }
         }
-    }
-    render() {
+        if (this.props.imageRecord) {
+            this.props.imageRecord.url=this.props.source;
+        }
         return (
             <>
                 {
@@ -288,6 +301,7 @@ class ImageUploadComponent extends React.Component {
 }
 function mapStateToProps(state, props) {
     if (state.id == props.id) {
+        console.log("UPLOADBUG mapStateToProps", state, props);
         return { loading: state.loading, source: state.url, errors: state.errors }
     }
     return {};

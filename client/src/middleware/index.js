@@ -716,7 +716,7 @@ export function flashGangMiddleware({ dispatch }) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
             } else if (action.type === UPLOAD_IMAGE) {
-                console.log('Middleware UPLOAD_IMAGE')
+                console.log('Middleware UPLOAD_IMAGE', action)
                 dispatch({ type: LOADING, data: { loading: true, id: action.data.id } })
                 let questObject = {}
                 questObject.params = { source: action.data.source }

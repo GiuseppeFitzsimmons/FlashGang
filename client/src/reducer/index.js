@@ -95,7 +95,8 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashGang: null })
             return state
         case UPLOAD_IMAGE:
-            state = Object.assign({}, state, { loading: false, url: action.url, id: action.id, errors: action.errors })
+            state = Object.assign({}, state, { loading: false, url: action.url, id: action.id, errors: action.errors });
+            console.log("UPLOAD_IMAGE", state);
             return state
         case GET_IMAGES:
             state = Object.assign({}, state, { images: action.images })
