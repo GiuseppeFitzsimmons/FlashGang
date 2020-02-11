@@ -1051,10 +1051,11 @@ async function suspendDeck(flashDeck) {
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
 }
 
-async function suspendGang(flashDeck) {
-    //let now = new Date();
-    //flashDeck.lastModified = now.getTime();
-    flashDeck.suspended = true
+async function suspendGang(flashGang) {
+    console.log('suspendGang flashGang', flashGang)
+    let now = new Date();
+    flashGang.lastModified = now.getTime();
+    flashGang.suspended = true
     await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
 }
 
@@ -1083,5 +1084,6 @@ module.exports = {
     suspendDeck,
     getFlashDeck,
     getFlashGang,
-    suspendGang
+    suspendGang,
+    getAllGangs
 }

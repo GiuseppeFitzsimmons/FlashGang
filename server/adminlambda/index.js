@@ -99,6 +99,7 @@ exports.handler = async (event, context) => {
                     filteredDeck.owner = deck.owner
                     filteredDeck.id = deck.id
                     if (deck.flashCards) {
+                        filteredDeck.flashCards = []
                         for (var j in deck.flashCards) {
                             filteredDeck.flashCards[j] = deck.flashCards[j]
                         }
@@ -112,10 +113,10 @@ exports.handler = async (event, context) => {
                 _body.decks = filteredDecks
                 returnObject.body = JSON.stringify(_body)
             }
-        } else if (event.queryStringParameters.type === 'gabg') {
+        } else if (event.queryStringParameters.type === 'gang') {
             {
                 var gangs = await dynamodbfordummies.getAllGangs(event.queryStringParameters)
-                console.log('adminlambda gangs', decks.Items)
+                console.log('adminlambda gangs', gangs.Items)
                 _body.gangs = []
                 var filteredGangs = []
                 for (var i in gangs.Items) {
@@ -132,7 +133,7 @@ exports.handler = async (event, context) => {
                 if (gangs.LastEvaluatedKey) {
                     _body.LastEvaluatedKey = gangs.LastEvaluatedKey
                 }
-                _body.decks = filteredGangs
+                _body.gangs = filteredGangs
                 returnObject.body = JSON.stringify(_body)
             }
         }
@@ -142,12 +143,12 @@ exports.handler = async (event, context) => {
             event.body.deck = event.body.deck.deck
             var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
             var deck = await dynamodbfordummies.suspendDeck(_deck)
-            console.log('suspending deck', deck)
+            //console.log('suspending deck', deck)
         } else if (event.body.type == 'suspendGang') {
             event.body.gang = event.body.gang.gang
             var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
             var gang = await dynamodbfordummies.suspendGang(_gang)
-            console.log('suspending gang', gang)
+            //console.log('suspending gang', gang)
         }
         
             /*event.body.user = event.body.user.user

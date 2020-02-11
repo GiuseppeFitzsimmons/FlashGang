@@ -173,8 +173,13 @@ export function saveUser(user) {
     return { type: SAVE_USER, user: {user} }
 
 }
-export function suspendDeck(deck, id) {
-    console.log("Action SAVE_USER")
+export function suspendDeck(deck) {
+    console.log("Action SUSPEND_DECK")
     return { type: SUSPEND_DECK, deck: {deck} }
+
+}
+export function suspendGang(gang) {
+    console.log("Action SUSPEND_GANG")
+    return { type: SUSPEND_GANG, gang: {gang} }
 
 }
