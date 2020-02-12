@@ -748,6 +748,9 @@ export function flashGangMiddleware({ dispatch }) {
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
+                    if (getResult.code=='exp') {
+                        dispatch({ type: SESSION_EXPIRED })
+                    }
                     console.log("Error receiving images", getResult, action)
                 }
             } else if (action.type === DELETE_IMAGES) {
@@ -764,8 +767,10 @@ export function flashGangMiddleware({ dispatch }) {
                 let questObject = {}
                 questObject.params = {}
                 questObject.resource = 'gallery'
-                questObject.delete = true
+                //Commenting out delete is a workaround - Crockstack doesn't support body when method is delete
+                //questObject.delete = true
                 questObject.params.images = imagesToDelete
+                console.log('Middleware DELETE_IMAGES questObject', questObject)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
                     action.errors = getResult.errors ? getResult.errors : [];
