@@ -13,6 +13,7 @@ import { FlashButton } from '../widgets/FlashBits'
 import { FlashTypography } from '../widgets/FlashBits';
 import { CSSTransition } from 'react-transition-group';
 import '../../App.css';
+import { QuestionImage } from '../widgets/question-image'
 
 class FlashCardScoreStyled extends React.Component {
     componentDidMount() {
@@ -118,13 +119,7 @@ class FlashCardScoreStyled extends React.Component {
                     <FlashTypography variant="h4" gutterBottom infolabel>
                         {
                             card.image &&
-                            <div
-                                style={{
-                                    textAlign: 'center'
-                                }}
-                            >
-                                <img src={card.image} height='132px' />
-                            </div>
+                            <QuestionImage image={card.image}/>
                         }
                         <div class='score-showing'>
                         {card.question}
@@ -135,6 +130,7 @@ class FlashCardScoreStyled extends React.Component {
                     <FlashButton
                         onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
                         buttonType='action'
+                        style={{ width: '100%' }}
                     >
                         Next Card
                     </FlashButton>
