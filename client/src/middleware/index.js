@@ -97,7 +97,9 @@ async function synchronise(dispatch) {
     } else {
         console.log("ERROR SYNCHRONISING", postResult);
         if (postResult.responseCode >= 400) {
-            dispatch({ type: SESSION_EXPIRED })
+            if (dispatch) {
+                dispatch({ type: SESSION_EXPIRED })
+            }
         }
         /*for (e in postResult.errors) {
             let error=postResult.errors[e];

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTheme } from '@material-ui/styles';
 import { AwesomeButton } from "react-awesome-button";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,7 +14,7 @@ import { FlashTypography } from '../widgets/FlashBits';
 import { CSSTransition } from 'react-transition-group';
 import '../../App.css';
 
-export default class FlashCardScore extends React.Component {
+class FlashCardScoreStyled extends React.Component {
     componentDidMount() {
         setTimeout(() => {
             if (document.getElementById('block1')) {
@@ -79,7 +80,7 @@ export default class FlashCardScore extends React.Component {
                         this.props.flashDeck.testType != 'CRAM' &&
                         <>
                             <div class='score-showing score-not-showing' id='block2'>
-                                <FlashTypography variant="h6" gutterBottom>
+                                <FlashTypography variant="h6" gutterBottom infolabel>
                                     The correct answer was:
                             </FlashTypography>
                                 <FlashTypography variant="h5" gutterBottom correct>
@@ -96,7 +97,7 @@ export default class FlashCardScore extends React.Component {
                         </>
                     }
                     <div class='score-showing score-not-showing' id='block4'>
-                        <FlashTypography variant="h6" gutterBottom>
+                        <FlashTypography variant="h6" gutterBottom infolabel>
                             Your answer was:
                     </FlashTypography>
                         <FlashTypography variant="h5" gutterBottom incorrect>
@@ -108,10 +109,13 @@ export default class FlashCardScore extends React.Component {
         return (
             <Grid container
                 direction="row"
-                justify="space-between"
-                alignItems="flex-end">
+                justify="space-evenly"
+                alignItems="flex-start"
+                alignContent="space-between"
+                style={{height:'100%'}}
+                >
                 <Grid item xs={12} sm={12}>
-                    <FlashTypography variant="h4" gutterBottom>
+                    <FlashTypography variant="h4" gutterBottom infolabel>
                         {
                             card.image &&
                             <div
@@ -139,3 +143,5 @@ export default class FlashCardScore extends React.Component {
         )
     }
 }
+const FlashCardScore = withTheme(FlashCardScoreStyled);
+export default FlashCardScore;

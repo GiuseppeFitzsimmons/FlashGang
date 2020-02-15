@@ -268,7 +268,7 @@ Resources:
     DependsOn: ReactDeployer
     Properties:
       ServiceToken: !GetAtt ReactDeployer.Arn
-      Bucket: !S3Bucket
+      Bucket: !Ref S3Bucket
       TargetDirectory: flashgang
 
   CommonLayer:
