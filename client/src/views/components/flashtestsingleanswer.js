@@ -26,7 +26,7 @@ export default class FlashTestSingleAnswer extends React.Component {
                         <QuestionImage image={card.image}/>
                     }
                     <div class='score-showing'>
-                        <FlashTypography variant="h5" gutterBottom>
+                        <FlashTypography variant="h5" gutterBottom infoLabel>
                             {card.question}
                         </FlashTypography>
                     </div>

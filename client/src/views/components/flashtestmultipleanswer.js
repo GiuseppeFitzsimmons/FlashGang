@@ -15,6 +15,7 @@ import Radio from '@material-ui/core/Radio';
 import Checkbox from '@material-ui/core/Checkbox';
 import Icon from '@material-ui/core/Icon';
 import { QuestionImage } from '../widgets/question-image'
+import { FlashTypography } from '../widgets/FlashBits';
 
 export default class FlashTestMultipleAnswer extends React.Component {
     constructor(props) {
@@ -72,7 +73,9 @@ export default class FlashTestMultipleAnswer extends React.Component {
                         card.image &&
                         <QuestionImage image={card.image}/>
                     }
-                    {card.question}
+                    <FlashTypography variant="h5" gutterBottom infoLabel>
+                        {card.question}
+                    </FlashTypography>
                     <RadioGroup aria-label="testtype" name="testtype"
                     //value=""
                     //onChange={(event) => { card.userAnswer = event.target.value }}

@@ -14,12 +14,28 @@ import { bindActionCreators } from 'redux'
 import * as Actions from '../../action'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickNHold from 'react-click-n-hold';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 const loadImage = require('blueimp-load-image');
 const someImages=require('../../utility/smimages');
 
 //const allImages = [];
 const holder = {}
+const getGridListCols = () => {
+    if (window.innerWidth>600) {
+      return 5;
+    }
+
+    if (window.innerWidth>500) {
+      return 4;
+    }
+
+    if (window.innerWidth>300) {
+      return 2;
+    }
+
+    return 2;
+  }
 
 class GalleryStyled extends React.Component {
     constructor(props) {
@@ -93,6 +109,7 @@ class GalleryStyled extends React.Component {
         }
         document.getElementById("file-upload").reset();
     }
+    
     render() {
         var images = this.props.images ? this.props.images : []
         
@@ -165,10 +182,10 @@ class GalleryStyled extends React.Component {
                         disabled={!this.props.images}
                         onClick={() => document.getElementById("input-file-upload").click()}
                     >
-                        Upload
-                </FlashButton>
+                            Upload
+                    </FlashButton>
                     <DialogContent>
-                        <GridList cellHeight={80} cols={4} spacing={4}>
+                        <GridList cols={getGridListCols()} spacing={4}>
                             {images.map((image, index) => (
                                 <GridListTile key={index} id={index} cols={1} imgFullWidth={true}>
                                     <ClickNHold
@@ -243,7 +260,6 @@ class ImageUploadComponent extends React.Component {
     componentDidMount() {
     }
     render() {
-        console.log("UPLOADBUG componentDidUpdate, ", this.props.source);
         if (this.props.source) {
             let isBinary = this.props.source.indexOf('data:image') == 0
             if (isBinary) {

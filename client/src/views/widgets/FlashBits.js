@@ -77,7 +77,6 @@ class FlashTypographyStyled extends Component {
             additionalStyle = this.props.theme.sublabel
         } else if (this.props.infolabel) {
             additionalStyle = this.props.theme.infolabel;
-            console.log("INFOLABEL is true", additionalStyle);
         }
         return (
             <Typography {...this.props} style={additionalStyle} />
