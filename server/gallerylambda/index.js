@@ -17,10 +17,10 @@ exports.handler = async (event, context) => {
     try {
         token = tokenUtility.validateToken(event)
     } catch (badtoken) {
-        console.log("BADTOKEN", badtoken)
         reply = badtoken;
         returnObject.statusCode = badtoken.statusCode;
     }
+    console.log("GALLERY LAMBDA event", event);
     if (token) {
         if (event.httpMethod.toLowerCase() === 'post') {
             {
@@ -58,10 +58,13 @@ exports.handler = async (event, context) => {
                         }
                         console.log("s3result", s3result);
                     }
+                } else if (event.body.images) {
+                    //This is a workaround - delete wasn't working because we don't support body when method is delete
+                    let _code=await deleteImages(event);
+                    returnObject.statusCode=_code;
                 }
                 //await dynamodbfordummies.putItem(user, process.env.IMAGE_TABLE)
                 //reply.user = await dynamodbfordummies.getUser(user.id)
-
             }
         } else if (event.httpMethod.toLowerCase() === 'get') {
             var s3 = gets3()
@@ -95,46 +98,48 @@ exports.handler = async (event, context) => {
                 console.log('reply.images', reply.images)
             }
         } else if (event.httpMethod.toLowerCase() === 'delete') {
-            var s3 = gets3()
-            var objectsToDelete = []
-            for (var i in event.body.images) {
-                var splitted = event.body.images[i].split('/')
-                objectsToDelete.push({ Key: `flashgang/images/${splitted[splitted.length - 2]}/${splitted[splitted.length - 1]}` })
-            }
-            var params = {
-                Bucket: process.env.IMAGE_BUCKET,
-                Delete: {
-                    Objects: objectsToDelete
-                }
-            };
-            let s3result = await new Promise((resolve, reject) => {
-                s3.deleteObjects(params, function (err, data) {
-                    if (err) {
-                        console.log(err, err.stack)
-                        reject({ err })
-                    }
-                    else {
-                        console.log(data)
-                        resolve({ data })
-                    }
-                });
-            })
-            if (s3result.err) {
-                returnObject.statusCode = 400
-                reply = {
-                    errors: []
-                }
-            }
+            deleteImages(event);
         }
+        returnObject.body = JSON.stringify(reply);
+        returnObject.headers = {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+            "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
+        }
+        console.log("GalleryLambda ", returnObject);
+        return returnObject
     }
-    returnObject.body = JSON.stringify(reply);
-    returnObject.headers = {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-        "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
+    async function deleteImages(event) {
+
+        var s3 = gets3()
+        var objectsToDelete = []
+        for (var i in event.body.images) {
+            var splitted = event.body.images[i].split('/')
+            objectsToDelete.push({ Key: `flashgang/images/${splitted[splitted.length - 2]}/${splitted[splitted.length - 1]}` })
+        }
+        var params = {
+            Bucket: process.env.IMAGE_BUCKET,
+            Delete: {
+                Objects: objectsToDelete
+            }
+        };
+        let s3result = await new Promise((resolve, reject) => {
+            s3.deleteObjects(params, function (err, data) {
+                if (err) {
+                    console.log(err, err.stack)
+                    reject({ err })
+                }
+                else {
+                    console.log(data)
+                    resolve({ data })
+                }
+            });
+        })
+        if (s3result.err) {
+            return 400;
+        }
+        return 200;
     }
-    console.log("GalleryLambda ", returnObject);
-    return returnObject
 }
 
 function gets3() {

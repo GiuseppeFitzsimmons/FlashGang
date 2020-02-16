@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashButton } from '../widgets/FlashBits'
 import { FlashTypography } from '../widgets/FlashBits';
+import { QuestionImage } from '../widgets/question-image'
 
 export default class FlashTestSingleAnswer extends React.Component {
     render() {
@@ -22,13 +23,7 @@ export default class FlashTestSingleAnswer extends React.Component {
                 <Grid item xs={12} sm={12}>
                     {
                         card.image &&
-                        <div
-                            style={{
-                                textAlign: 'center'
-                            }}
-                        >
-                            <img src={card.image} height='132px' />
-                        </div>
+                        <QuestionImage image={card.image}/>
                     }
                     <div class='score-showing'>
                         <FlashTypography variant="h5" gutterBottom>
@@ -52,6 +47,7 @@ export default class FlashTestSingleAnswer extends React.Component {
                     <FlashButton
                         onClick={() => { this.props.onNextCard(this.props.flashDeck) }}
                         buttonType='action'
+                        style={{ width: '100%' }}
                     >
                         Next Card
                     </FlashButton>

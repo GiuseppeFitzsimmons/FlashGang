@@ -20,10 +20,13 @@ import Icon from '@material-ui/core/Icon';
 import { MdDelete } from 'react-icons/md';
 import DeckSelector from '../widgets/deckselector';
 import { IconSelector } from '../widgets/iconselector';
-import { FlashGangMemberListItem, FlashDeckListItem } from './flashgangmemberlistitem';
+import { FlashGangMemberListItem, FlashDeckListItem, FlashDeckListButton } from './flashgangmemberlistitem';
 import Upgrade from '../components/upgrade';
 import Confirmation from '../components/confirmation';
 import { withTheme } from '@material-ui/styles';
+import { Gallery } from '../components/gallery';
+
+const someImages=require('../../utility/smimages');
 
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
@@ -76,18 +79,27 @@ class FlashGangEditorStyled extends React.Component {
     render() {
         //const classes = useStyles();
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
+        
+        if (!flashGang.image) {
+            //flashGang.image =  `/gangs-${Math.floor(Math.random() * Math.floor(20))}.jpg`
+            flashGang.image = someImages.getRandomGangImage();
+          }
         const isOwner = this.props.user && this.props.user.id == flashGang.owner
         return (
             <>
                 <FlashAppBar title='FlashGang!' station='GANGS'
-                    goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
+                    goHome={this.props.goHome} 
+                    onLogOut={this.props.onLogOut} 
+                    goSettings={this.props.goSettings} 
+                    user={this.props.user} />
 
                 <Grid container
                     direction="column"
                     justify="flex-start"
                     alignItems="stretch"
                     style={{
-                        height: '100%'
+                        height: '100%',
+                        paddingTop:'8px'
                     }}
                 >
 
@@ -96,12 +108,19 @@ class FlashGangEditorStyled extends React.Component {
                         justify="space-between"
                         alignItems="stretch"
                         style={{
-                            height: '7%'
+                            height: '7%',
+                            marginBottom: '8px'
                         }}>
-                        <Grid item md={1} sm={2} xs={3}>
-                            <IconSelector icon={flashGang.icon} iconClient={flashGang} />
+                        <Grid item md={1} sm={1} xs={2}>
+                            <Gallery
+                                onImageSelected={image=>flashGang.image=image}
+                                image={flashGang.image}
+                                imageButton
+                                station='GANG'
+                                closeOnSelect
+                            />
                         </Grid>
-                        <Grid item md={11} sm={10} xs={9}>
+                        <Grid item md={11} sm={11} xs={10} style={{paddingLeft:'2px'}}>
                             <IntegratedInput
                                 label="Gang Name"
                                 id='gangName'
@@ -158,7 +177,7 @@ class FlashGangEditorStyled extends React.Component {
                             overflowX: 'hidden'
                         }}
                     >
-                        <FlashListItem alignItems="flex-start"
+                        <FlashDeckListButton
                             onClick={
                                 () => {
                                     if (this.props.flashGang.remainingMembersAllowed > 0) {
@@ -167,17 +186,8 @@ class FlashGangEditorStyled extends React.Component {
                                         this.upgrade.open('GANG')
                                     }
                                 }}
-                            buttonType='action'
-                            button
-                        >
-                            <ListItemAvatar>
-                                <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary="New"
-                                secondary="Click here to invite a gang member"
-                            />
-                        </FlashListItem>
+                            main='New Member'
+                            sub='Click here to invite a gang member'/>
                         {this.generateFlashGangMemberList()}
                     </Box>
                     <Box
@@ -240,9 +250,6 @@ class FlashGangEditorStyled extends React.Component {
             )
         }
         var _display = flashGang.members.map((member, i) => {
-            if (!member.icon) {
-                member.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
-            }
             return (
                 <>
                     <FlashGangMemberListItem

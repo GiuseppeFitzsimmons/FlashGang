@@ -5,7 +5,7 @@ import {
     LOAD_DECKS, LOAD_FLASHDECK, SCORE_CARD, DELETE_DECK, DELETE_CARD,
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
-    SAVE_USER, GET_ALL_DECKS
+    SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -97,7 +97,9 @@ async function synchronise(dispatch) {
     } else {
         console.log("ERROR SYNCHRONISING", postResult);
         if (postResult.responseCode >= 400) {
-            dispatch({ type: SESSION_EXPIRED })
+            if (dispatch) {
+                dispatch({ type: SESSION_EXPIRED })
+            }
         }
         /*for (e in postResult.errors) {
             let error=postResult.errors[e];
@@ -716,7 +718,7 @@ export function flashGangMiddleware({ dispatch }) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
             } else if (action.type === UPLOAD_IMAGE) {
-                console.log('Middleware UPLOAD_IMAGE')
+                console.log('Middleware UPLOAD_IMAGE', action)
                 dispatch({ type: LOADING, data: { loading: true, id: action.data.id } })
                 let questObject = {}
                 questObject.params = { source: action.data.source }
@@ -748,6 +750,9 @@ export function flashGangMiddleware({ dispatch }) {
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
+                    if (getResult.code=='exp') {
+                        dispatch({ type: SESSION_EXPIRED })
+                    }
                     console.log("Error receiving images", getResult, action)
                 }
             } else if (action.type === DELETE_IMAGES) {
@@ -764,8 +769,10 @@ export function flashGangMiddleware({ dispatch }) {
                 let questObject = {}
                 questObject.params = {}
                 questObject.resource = 'gallery'
-                questObject.delete = true
+                //Commenting out delete is a workaround - Crockstack doesn't support body when method is delete
+                //questObject.delete = true
                 questObject.params.images = imagesToDelete
+                console.log('Middleware DELETE_IMAGES questObject', questObject)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
                     action.errors = getResult.errors ? getResult.errors : [];
@@ -781,7 +788,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware GET_ALL_USERS')
                 let questObject = {}
                 questObject.resource = 'admin'
-                if (action.data.filters){
+                if (action.data.filters) {
                     questObject.params = action.data.filters
                 } else {
                     questObject.params = {}
@@ -807,7 +814,7 @@ export function flashGangMiddleware({ dispatch }) {
                 console.log('Middleware GET_ALL_DECKS')
                 let questObject = {}
                 questObject.resource = 'admin'
-                if (action.data.filters){
+                if (action.data.filters) {
                     questObject.params = action.data.filters
                 } else {
                     questObject.params = {}
@@ -828,6 +835,32 @@ export function flashGangMiddleware({ dispatch }) {
                 if (getResult.LastEvaluatedKey) {
                     action.cursor = getResult.LastEvaluatedKey
                 }
+            } else if (action.type === GET_ALL_GANGS) {
+                dispatch({ type: LOADING, data: { loading: true } })
+                console.log('Middleware GET_ALL_GANGS')
+                let questObject = {}
+                questObject.resource = 'admin'
+                if (action.data.filters) {
+                    questObject.params = action.data.filters
+                } else {
+                    questObject.params = {}
+                }
+                questObject.params.type = 'gang'
+                let getResult = await getFromServer(questObject)
+                console.log('getResult', getResult)
+                if (getResult.gangs) {
+                    action.gangs = getResult.gangs
+                    console.log('getResult.gangs', getResult.gangs)
+                } else {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error receiving gangs", getResult, action)
+                }
+                if (getResult.LastEvaluatedKey) {
+                    action.cursor = getResult.LastEvaluatedKey
+                }
             } else if (action.type === SAVE_USER) {
                 console.log('Middleware SAVE_USER')
                 let questObject = {}
@@ -844,6 +877,47 @@ export function flashGangMiddleware({ dispatch }) {
                     //action.user = user
                 }
                 console.log("Error saving user", getResult, action)
+            } else if (action.type === SUSPEND_DECK) {
+                console.log('Middleware SUSPEND_DECK')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'suspendDeck'
+                questObject.resource = 'admin'
+                questObject.params.deck = action.deck
+                questObject.params.deck.id = action.deck.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error suspending deck", getResult, action)
+            } else if (action.type === SUSPEND_GANG) {
+                console.log('Middleware SUSPEND_GANG')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'suspendGang'
+                questObject.resource = 'admin'
+                questObject.params.gang = action.gang
+                questObject.params.gang.id = action.gang.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error suspending gang", getResult, action)
+            } else if (action.type === LOG_OUT) {
+                localStorage.removeItem("flashJwt")
+                localStorage.removeItem("flashJwtRefresh");
             }
             return next(action);
         }

@@ -10,21 +10,24 @@ import { makeStyles } from '@material-ui/core/styles';
 import { spacing } from '@material-ui/system';
 import { FlashButton } from '../widgets/FlashBits'
 import Avatar from '@material-ui/core/Avatar';
-import FlashAppBar from '../widgets/flashappbar'
+import FlashAppBar from '../widgets/flashappbar';
+import { Gallery } from './gallery';
+
+const someImages = require('../../utility/smimages')
 
 class Settings extends React.Component {
     constructor(props) {
         super(props)
         this.state = { user: {} }
-        this.handleFileChange=this.handleFileChange.bind(this)
+        //this.handleFileChange=this.handleFileChange.bind(this)
     }
     componentDidMount() {
-        this.setState({ user: this.state.user })
+        //this.setState({ user: this.state.user })
         if (this.props.navEvent) {
-            this.props.navEvent.backButton=this.props.goHome;
-          }
+            this.props.navEvent.backButton = this.props.goHome;
+        }
     }
-    handleFileChange(e) {
+    /*handleFileChange(e) {
         let file = e.target.files; // FileList
         const settings=this;
         if (file) {
@@ -45,35 +48,40 @@ class Settings extends React.Component {
             }
         }
         document.getElementById("file-upload").reset();
-    }
+    }*/
     render() {
+        if (!this.state.user.picture) {
+            this.state.user.picture = this.props.user.picture ? this.props.user.picture : someImages.getRandomGangsterImage();
+        }
         return (
             <>
                 <FlashAppBar title='FlashGang Settings' station='SETTINGS'
                     goGangs={this.props.goGangs}
                     onLogOut={this.props.onLogOut}
-                    goSettings={this.props.goSettings} />
+                    goHome={this.props.goHome}
+                    user={this.props.user} />
                 <Grid container
                     direction="row"
                     justify="center"
                     alignItems="stretch">
 
 
-                    <Grid container
-                        justify="center"
-                        alignItems="stretch">
-                        <Avatar
-                            src={this.state.user && this.state.user.picture ? this.state.user.picture : this.props.user.picture}
-                            style={{ border: 'solid rgba(0,0,0,.5)', marginTop:'8px' }}
-                            onClick={() => document.getElementById("input-file-upload").click()}
+                    <Grid item xs={2} sm={2} md={1}>
+                        <Gallery
+                            onImageSelected={(image) => {
+                                this.state.user.picture = image;
+                                this.forceUpdate();
+                            }}
+                            imageButton
+                            closeOnSelect
+                            image={this.state.user.picture}
+                            station='GANGSTER'
                         />
-                        <form id="file-upload" autocomplete="off" style={{ display: 'none' }}>
-                            <input id="input-file-upload" type="file" onChange={this.handleFileChange} accept="image/png, image/jpeg"/>
-                        </form>
                     </Grid>
-                    <Grid item item xs={10} sm={11} md={11}
+                    <Grid item xs={8} sm={8} md={7}
                         justify="center"
-                        alignItems="stretch">
+                        alignItems="stretch"
+                        style={{marginLeft:'2px'}}>
                         <IntegratedInput
                             label={'First Name'}
                             onChange={
@@ -119,6 +127,7 @@ class Settings extends React.Component {
                         <FlashButton
                             onClick={() => { this.props.setSettings(this.state.user) }}
                             buttonType='system'
+                            square
                             style={{ width: '100%' }}
                         >
                             Save

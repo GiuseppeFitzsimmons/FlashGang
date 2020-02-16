@@ -13,9 +13,10 @@ class SynchroniseComponent extends React.Component {
         }
     }
     componentDidUpdate() {
-        if (this.props.session && this.props.session.expired && this.props.onSessionExpired) {
+        if (this.props.session && this.props.session.expired===true) {
+            console.log("SESSIONBUG Synchronise component componentDidUpdate expired", this.props);
             this.props.session.expired=false;
-            this.props.onSessionExpired();
+            this.props.onSessionExpired(this.props.logout);
         }
     }
 
@@ -29,6 +30,7 @@ class SynchroniseComponent extends React.Component {
 }
 
 function mapStateToProps(state, props) {
+    console.log("SESSIONBUG Synchronise component mapStateToProps", state);
     return {
         session: {expired: state.sessionExpired}
     }

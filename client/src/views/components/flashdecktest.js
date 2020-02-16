@@ -19,6 +19,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import { FlashTypography } from '../widgets/FlashBits';
 import Divider from '@material-ui/core/Divider';
 import HighScores from './highscores'
+import { Tooltip } from 'reactstrap';
+import Icon from '@material-ui/core/Icon';
 
 
 
@@ -58,17 +60,48 @@ class FlashDeckTest extends React.Component {
                         Test mode
                     </FlashTypography>
                     <RadioGroup aria-label="testtype" name="testtype" onChange={this.setTestType}>
-                        <FormControlLabel value="REVISION" control={<Radio />} label="Revision" name="FormControlLabelButton" />
-                        <FormControlLabel value="CRAM" control={<Radio />} label="Cram" name="FormControlLabelButton" />
-                        <FormControlLabel value="EXAM" control={<Radio />} label="Exam" name="FormControlLabelButton" />
+                        <FormControlLabel value="REVISION" control={<Radio />} label={
+                            <Explanation 
+                                label='Revision'
+                                id='revision'
+                                explanation="With revision, the test is only over when you've answered every question correctly."/>
+                            }
+                             name="FormControlLabelButton"/>
+                        
+                        <FormControlLabel value="CRAM" control={<Radio />} label={
+                            <Explanation 
+                                label='Cram'
+                                id='cram'
+                                explanation="In cram mode, you get one chance to answer each question, in random order, and you see your score as you go."/>
+                            }
+                            name="FormControlLabelButton" />
+                        <FormControlLabel value="EXAM" control={<Radio />}  label={
+                            <Explanation 
+                                label='Exam'
+                                id='exam'
+                                explanation="In exam mode, you get one chance to answer each question, in random order, and you see your at the end of the test."/>
+                            }
+                            name="FormControlLabelButton" />
                     </RadioGroup>
                     <Divider />
                     <FlashTypography variant="h6" gutterBottom>
                         Answer type
                     </FlashTypography>
                     <RadioGroup aria-label="answertype" name="answertype" onChange={this.setAnswerType}>
-                        <FormControlLabel value="SINGLE" control={<Radio />} label="Single answer" name="FormControlLabelButton" />
-                        <FormControlLabel value="MULTIPLE" control={<Radio />} label="Multiple choice" name="FormControlLabelButton" />
+                        <FormControlLabel value="SINGLE" control={<Radio />} label={
+                            <Explanation 
+                                label='Single answer'
+                                id='single-answer'
+                                explanation="If you choose 'Single answer', you need to enter your answer in text."/>
+                            }
+                            name="FormControlLabelButton" />
+                        <FormControlLabel value="MULTIPLE" control={<Radio />} label={
+                            <Explanation 
+                                label='Multiple choice'
+                                id='multiple-choice'
+                                explanation="With multiple choice, you select the right answer (or answers) from a list of options."/>
+                            }
+                            name="FormControlLabelButton" />
                     </RadioGroup>
                     <Divider />
                     <Grid container
@@ -110,6 +143,39 @@ class FlashDeckTest extends React.Component {
                     />
                 </Grid>
             </>
+        )
+    }
+}
+class Explanation extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state={
+            isOpen:false
+        }
+    }
+    render() {
+        return (
+            <div id={this.props.id} style={{overflow:'hidden', whiteSpace:'nowrap'}}> {this.props.label}
+                <div style={{color:'rgb(0,0,0,0.8)', display:'inline', marginLeft:'6px', marginTop:'14px'}} 
+                    onClick={e=>{
+                        e.preventDefault();
+                        this.setState({isOpen:!this.state.isOpen})
+                        }
+                    }>
+                        <Icon style={{ fontSize: 16 }}>info</Icon>
+                </div>
+            <Tooltip isOpen={this.state.isOpen} placement="bottom-start"
+                target={this.props.id} 
+                style={{backgroundColor:'rgb(255,255,255,0.8)', padding:'6px', margin:'8px'}}
+                onClick={e=>{
+                    e.preventDefault();
+                    this.setState({isOpen:!this.state.isOpen})
+                    }
+                }
+            >
+        {this.props.explanation}
+        </Tooltip>
+        </div>
         )
     }
 }

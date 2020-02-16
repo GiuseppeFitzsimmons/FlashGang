@@ -56,7 +56,7 @@ class ErrorDialog extends React.Component {
                     <FlashButton onClick={()=>{
                         this.handleClose()
                         this.props.onClose()
-                    }} color="primary" buttonType='system'>
+                    }} color="primary" buttonType='action'>
                         Ok
                     </FlashButton>
                 </DialogActions>

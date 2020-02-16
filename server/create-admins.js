@@ -10,17 +10,19 @@ async function createAdminAccounts() {
     let _secrets = JSON.parse(fs.readFileSync('deploy-parameters-secrets.json'));
     process.env.REGION='us-east-1';
     process.env.USER_TABLE_NAME=stackName+'-user-table';
-    console.log("LOCAL", environment, process.env.USER_TABLE_NAME, process.env.USER_TABLE_NAME)
+    console.log(environment, process.env.USER_TABLE_NAME, process.env.USER_TABLE_NAME)
     if (environment==='local') {
         process.env.DYNAMODB_ENDPOINT=_json.Parameters.DYNAMODB_ENDPOINT;
     } else {
-        process.env.ACCESS_KEY_ID=_secrets.AccessKeyId;
-        process.env.SECRET_ACCESS_KEY=_secrets.SecretAccessKey;
+        process.env.RUNNING_LOCAL_REGION='us-east-1';
+        process.env.ACCESS_KEY_ID=_secrets.Parameters.AccessKeyId;
+        process.env.SECRET_ACCESS_KEY=_secrets.Parameters.SecretAccessKey;
     }
     await createAdminAccount('fitzsimmonsgiuseppe@gmail.com');
     await createAdminAccount('phillip.fitzsimmons@gmail.com');
     
 }
+
 async function createAdminAccount(email) {
     console.log("creating admin account", email, process.env.USER_TABLE_NAME);
     const {putUser, getUser}=require('./commonlayer/nodejs/dynamofordummies');
@@ -33,7 +35,6 @@ async function createAdminAccount(email) {
     }
     if (!admin.subscription || admin.subscription!='admin') {
         admin.subscription='admin'
-        console.log("Well this sin't wor")
         await putUser(admin);
     }
 }

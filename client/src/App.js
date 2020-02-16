@@ -97,11 +97,13 @@ export default class App extends React.Component {
     //window.location.href = '/'
     this.setState({ mode: '', flashDeckId: null })
   }
-  onSessionExpired() {
-    localStorage.removeItem("flashJwt")
-    localStorage.removeItem("flashJwtRefresh");
-    alert("Session has expired, please log in again");
-    this.setState({ mode: '', flashDeckId: null });
+  onSessionExpired(logout) {
+    console.log("SESSIONBUG onSessionExpired is called");
+    //localStorage.removeItem("flashJwt")
+    //localStorage.removeItem("flashJwtRefresh");
+    logout();
+//    alert("Session has expired, please log in again");
+    this.setState({ mode: '', flashDeckId: null, error: "Session has expired, please log in again." });
   }
   createFlashDeck() {
     this.navEvent.push("DECK");

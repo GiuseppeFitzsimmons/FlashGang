@@ -16,6 +16,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ClickNHold from 'react-click-n-hold';
 
 const loadImage = require('blueimp-load-image');
+const someImages=require('../../utility/smimages');
 
 //const allImages = [];
 const holder = {}
@@ -93,7 +94,18 @@ class GalleryStyled extends React.Component {
         document.getElementById("file-upload").reset();
     }
     render() {
-        const images = this.props.images ? this.props.images : []
+        var images = this.props.images ? this.props.images : []
+        
+        if (this.props.station==='GANG') {
+            const gangImages=someImages.getGangImages();
+            images=gangImages.concat(images);
+        } else if (this.props.station==='DECK') {
+            const subjectImages=someImages.getSubjectImages();
+            images=subjectImages.concat(images);
+        } else if (this.props.station==='GANGSTER') {
+            const gangsterImages=someImages.getGangsterImages();
+            images=gangsterImages.concat(images);
+        }
         //console.log('allImages', allImages)
         var button=
             <FlashButton
@@ -184,12 +196,15 @@ class GalleryStyled extends React.Component {
                                                     }
                                                     this.setState({ selecting: _isSelecting })
                                                 } else {
-                                                    this.imageSelected(image.url);
+                                                    if (!image.loading) {
+                                                        this.imageSelected(image.url);
+                                                    }
                                                 }
                                             }
                                         }}>
                                         <>
                                             <ImageUploadComponentRedux
+                                                imageRecord={image}
                                                 source={image.url}
                                                 id={index}
                                                 isSelected={image.isSelected}
@@ -205,7 +220,7 @@ class GalleryStyled extends React.Component {
                         <FlashButton disabled={!this.state.selecting} onClick={this.handleDelete} color="primary" buttonType='action'>
                             Delete
                         </FlashButton>
-                        <FlashButton onClick={this.handleCancel} color="primary">
+                        <FlashButton onClick={this.handleCancel} color="primary" buttonType='action'>
                             Close
                         </FlashButton>
                     </DialogActions>
@@ -219,15 +234,25 @@ class ImageUploadComponent extends React.Component {
     constructor(props) {
         super(props)
     }
+    componentDidUpdate() {
+        if (this.props.imageRecord) {
+            this.props.imageRecord.url=this.props.source;
+            this.props.imageRecord.loading=this.props.loading;
+        }
+    }
     componentDidMount() {
+    }
+    render() {
+        console.log("UPLOADBUG componentDidUpdate, ", this.props.source);
         if (this.props.source) {
             let isBinary = this.props.source.indexOf('data:image') == 0
             if (isBinary) {
                 this.props.uploadImage(this.props.source, this.props.id)
             }
         }
-    }
-    render() {
+        if (this.props.imageRecord) {
+            this.props.imageRecord.url=this.props.source;
+        }
         return (
             <>
                 {
@@ -276,6 +301,7 @@ class ImageUploadComponent extends React.Component {
 }
 function mapStateToProps(state, props) {
     if (state.id == props.id) {
+        console.log("UPLOADBUG mapStateToProps", state, props);
         return { loading: state.loading, source: state.url, errors: state.errors }
     }
     return {};

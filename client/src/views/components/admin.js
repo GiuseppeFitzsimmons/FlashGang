@@ -22,9 +22,8 @@ import { RadioButton } from 'material-ui';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AdminUsers from './adminusers';
-import AdminDecks from './admindecks'
-
-
+import AdminDecks from './admindecks';
+import AdminGangs from './admingangs'
 
 class Admin extends React.Component {
     constructor(props) {
@@ -32,22 +31,25 @@ class Admin extends React.Component {
         this.state = { index: 0, open: false }
         var renderable = <>USER TAB CONTENT</>
     }
+    componentDidMount() {
+        //console.log('this.state', this.state)
+    }
     render() {
         const handleChange = (event, index) => {
-            this.setState({ index: index }) 
+            this.setState({ index: index })
         };
         switch (this.state.index) {
             case 0:
                 console.log('Index is 0')
-                this.renderable = <AdminUsers/>
+                this.renderable = <AdminUsers />
                 break;
             case 1:
                 console.log('Index is 1')
-                this.renderable = <> GANG TAB CONTENT </>
+                this.renderable = <AdminGangs />
                 break;
             case 2:
                 console.log('Index is 2')
-                this.renderable = <AdminDecks/>
+                this.renderable = <AdminDecks />
                 break;
             case 3:
                 console.log('Index is 3')
@@ -83,6 +85,7 @@ class Admin extends React.Component {
             </>
         )
     }
+
 }
 
 function mapStateToProps(state, props) {

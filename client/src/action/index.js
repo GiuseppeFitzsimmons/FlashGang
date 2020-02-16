@@ -29,7 +29,11 @@ export const DELETE_IMAGES = 'DELETE_IMAGES';
 export const SESSION_EXPIRED = 'SESSION_EXPIRED';
 export const GET_ALL_USERS = 'GET_ALL_USERS';
 export const GET_ALL_DECKS = 'GET_ALL_DECKS';
-export const SAVE_USER = 'SAVE_USER'
+export const SAVE_USER = 'SAVE_USER';
+export const SUSPEND_DECK = 'SUSPEND_DECK';
+export const SUSPEND_GANG = 'SUSPEND_GANG';
+export const GET_ALL_GANGS = 'GET_ALL_GANGS';
+export const LOG_OUT = 'LOG_OUT'
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -160,8 +164,27 @@ export function getAllDecks(filters) {
     return { type: GET_ALL_DECKS, decks: {}, data: { filters } }
 
 }
+export function getAllGangs(filters) {
+    console.log("Action GET_ALL_GANGS")
+    return { type: GET_ALL_GANGS, gangs: {}, data: { filters } }
+
+}
 export function saveUser(user) {
     console.log("Action SAVE_USER")
     return { type: SAVE_USER, user: {user} }
+
+}
+export function suspendDeck(deck) {
+    console.log("Action SUSPEND_DECK")
+    return { type: SUSPEND_DECK, deck: {deck} }
+
+}
+export function suspendGang(gang) {
+    console.log("Action SUSPEND_GANG")
+    return { type: SUSPEND_GANG, gang: {gang} }
+}
+export function logout() {
+    console.log("Action LOG_OUT")
+    return { type: LOG_OUT }
 
 }

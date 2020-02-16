@@ -5,10 +5,11 @@ import {
     DELETE_DECK, DELETE_CARD, PREV_CARD, LOAD_GANGS,
     NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT,
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
-    SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS
+    SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
+    SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT
 } from '../action';
 
-const initialState = {};
+const initialState = {sessionExpired: false};
 var user
 
 function rootReducer(state = initialState, action) {
@@ -94,7 +95,8 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashGang: null })
             return state
         case UPLOAD_IMAGE:
-            state = Object.assign({}, state, { loading: false, url: action.url, id: action.id, errors: action.errors })
+            state = Object.assign({}, state, { loading: false, url: action.url, id: action.id, errors: action.errors });
+            console.log("UPLOAD_IMAGE", state);
             return state
         case GET_IMAGES:
             state = Object.assign({}, state, { images: action.images })
@@ -107,7 +109,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { flashDecks: action.data.flashDecks })
             return state
         case SESSION_EXPIRED:
-            console.log("SESSION_EXPIRED", action);
+            console.log("SESSIONBUG SESSION_EXPIRED", action);
             state = Object.assign({}, state, { sessionExpired: true })
             return state
         case GET_ALL_USERS:
@@ -116,8 +118,20 @@ function rootReducer(state = initialState, action) {
         case GET_ALL_DECKS:
             state = Object.assign({}, state, { decks: action.decks, loading: false, cursor: action.cursor, string: action.string })
             return state
+        case GET_ALL_GANGS:
+            state = Object.assign({}, state, { gangs: action.gangs, loading: false, cursor: action.cursor, string: action.string })
+            return state
         case SAVE_USER:
             state = Object.assign({}, state, { user: action.user })
+            return state
+        case SUSPEND_DECK:
+            state = Object.assign({}, state, { deck: action.deck })
+            return state
+        case SUSPEND_GANG:
+            state = Object.assign({}, state, { gang: action.gang })
+            return state
+        case LOG_OUT:
+            state = Object.assign({}, state, { sessionExpired: false })
             return state
         default:
             console.log('state', state)

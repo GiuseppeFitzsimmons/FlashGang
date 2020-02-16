@@ -14,6 +14,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Checkbox from '@material-ui/core/Checkbox';
 import Icon from '@material-ui/core/Icon';
+import { QuestionImage } from '../widgets/question-image'
 
 export default class FlashTestMultipleAnswer extends React.Component {
     constructor(props) {
@@ -63,19 +64,13 @@ export default class FlashTestMultipleAnswer extends React.Component {
         })
         return (
             <Grid container
-                direction="column"
+                direction="row"
                 justify="space-between"
-                alignItems="flex-start">
-                <Grid>
+                alignItems="center">
+                <Grid  item xs={12} sm={12}>
                     {
                         card.image &&
-                        <div
-                            style={{
-                                textAlign: 'center'
-                            }}
-                        >
-                            <img src={card.image} height='132px' />
-                        </div>
+                        <QuestionImage image={card.image}/>
                     }
                     {card.question}
                     <RadioGroup aria-label="testtype" name="testtype"

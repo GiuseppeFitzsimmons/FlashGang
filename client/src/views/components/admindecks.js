@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import FlashDeckEditor from './flashdeckeditor'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
+import AdminDecksEditor from './admindeckseditor';
 
 
 
@@ -84,8 +85,10 @@ class AdminDecks extends React.Component {
                     closeModal={closeModal}
                 >
                     <DialogContent>
-                        <FlashDeckEditor
+                        <AdminDecksEditor
+                            open={this.state.modalShowing}
                             flashDeck={this.state.deck}
+                            closeModal={closeModal}
                         />
                     </DialogContent>
                 </Dialog>
@@ -146,7 +149,7 @@ class AdminDecks extends React.Component {
 
 function mapStateToProps(state, props) {
     console.log('mapstatetoprops decks', state.decks)
-    return { decks: state.decks, cursor: state.cursor }
+    return { decks: state.decks, cursor: state.cursor, user: state.user }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

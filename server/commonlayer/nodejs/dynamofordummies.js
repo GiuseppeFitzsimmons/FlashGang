@@ -332,10 +332,10 @@ const subscriptionLevels = {
         maxMembersPerGang: 99
     },
     admin: {
-        maxDecks: -1,
-        maxCardsPerDeck: -1,
-        maxGangs: -1,
-        maxMembersPerGang: -1
+        maxDecks: 100000,
+        maxCardsPerDeck: 200,
+        maxGangs: 100000,
+        maxMembersPerGang: 300
     }
 }
 function getProfile(subscriptionLevel) {
@@ -668,6 +668,7 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
+    console.log("getDocumentDbClient", process.env.REGION);
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
             const _config = {
@@ -680,6 +681,17 @@ function getDocumentDbClient() {
             }
             AWS.config.update(_config);
         }
+    }
+    if (process.env.RUNNING_LOCAL_REGION) {
+        const _config = {
+            region:process.env.RUNNING_LOCAL_REGION
+        }
+        if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
+            _config.accessKeyId = process.env.ACCESS_KEY_ID,
+                _config.secretAccessKey = process.env.SECRET_ACCESS_KEY
+        }
+        console.log(_config);
+        AWS.config.update(_config);
     }
     var documentClient = new AWS.DynamoDB.DocumentClient();
     return documentClient;
@@ -973,6 +985,80 @@ async function getAllDecks(filters) {
     else return null
 }
 
+async function getAllGangs(filters) {
+    console.log('ddb getAllGangs called', params)
+    var documentClient = getDocumentDbClient();
+    var params = {
+        TableName: process.env.FLASHGANG_TABLE_NAME,
+        Limit: 10,
+    };
+    if (filters) {
+        let FilterAttributeValues = {}
+        if (filters.string) {
+            params.FilterExpression = {}
+            params.FilterAttributeValues = {}
+            params.ExpressionAttributeValues = {":string":filters.string}
+            params.FilterExpression = "contains(name, :string) or contains(description, :string)  or contains(owner, :string)"
+            //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
+            //params.FilterExpression = Attr('firstName').contains(filters.string)
+        }
+        if (filters.suspension == 'true') {
+            if (!params.ExpressionAttributeValues) {
+                params.ExpressionAttributeValues = {}
+            }
+            let suspensionAttributeValue = {}
+            let suspensionFilter = ''
+            if (filters.subscription) {
+                params.FilterExpression = '(' + params.FilterExpression + ')'
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression += ' and ' + suspensionFilter
+            } else {
+                params.FilterExpression = {}
+                suspensionFilter += 'suspended = :' + filters.suspension
+                params.FilterExpression = suspensionFilter
+            }
+            suspensionAttributeValue[':' + filters.suspension] = filters.suspension
+            params.ExpressionAttributeValues[':' + filters.suspension] = filters.suspension
+        }
+        if (filters.cursor && filters.cursor != null) {
+            params.ExclusiveStartKey = { id: filters.cursor }
+        }
+    }
+    let stringifiedParams = JSON.stringify(params)
+    console.log('getAllGangs params', stringifiedParams)
+    let item = await new Promise((resolve, reject) => {
+        documentClient.scan(params, function (err, data) {
+            if (err) {
+                console.log("Error getting gang table", err);
+                reject(err);
+            } else {
+                console.log("success getting gang table", data);
+                resolve(data);
+            }
+        });
+    });
+    console.log('getAllGangs item', item)
+    if (item) {
+        return item
+    }
+    else return null
+}
+
+async function suspendDeck(flashDeck) {
+    let now = new Date();
+    flashDeck.lastModified = now.getTime();
+    flashDeck.suspended = true
+    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
+}
+
+async function suspendGang(flashGang) {
+    console.log('suspendGang flashGang', flashGang)
+    let now = new Date();
+    flashGang.lastModified = now.getTime();
+    flashGang.suspended = true
+    await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -994,5 +1080,10 @@ module.exports = {
     countFlashGangs,
     getProfile,
     getAllUsers,
-    getAllDecks
+    getAllDecks,
+    suspendDeck,
+    getFlashDeck,
+    getFlashGang,
+    suspendGang,
+    getAllGangs
 }

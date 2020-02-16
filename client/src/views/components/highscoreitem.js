@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Grid, GridList, Container } from '@material-ui/core';
+import { withTheme } from '@material-ui/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -7,7 +8,6 @@ import Icon from '@material-ui/core/Icon';
 import IntegratedInput from '../widgets/IntegratedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { withTheme } from '@material-ui/styles';
 //https://react-icons.netlify.com/#/icons/md
 import { MdDelete, MdModeEdit } from 'react-icons/md';
 //https://react-icons.netlify.com/#/icons/gi
@@ -16,14 +16,6 @@ import Paper from 'material-ui/Paper';
 import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 
 
-const styles = theme => ({
-    paper: {
-        height: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
-})
 class HighScoreItemStyled extends React.Component {
     constructor(props) {
         super(props)
@@ -42,33 +34,28 @@ class HighScoreItemStyled extends React.Component {
         } else {
             name = 'Name'
             score = 'Score'
-            highScore = 'Highscore'
+            highScore = 'High'
         }
         return (
             <Grid container spacing={0} style={{ paddingTop: '4px' }}>
-                <Grid item xs={2} sm={1} md={1} style={this.props.theme.actionListItem}>
-                    <Container style={{
-                        height: '100%',
-                        //backgroundImage: `url('${this.props.gangMember.profileImage}')`,
-                        backgroundSize: '100%',
-                        backgroundRepeat: 'no-repeat'
-                    }}
-                        height={'10%'}>
-                    </Container>
-                </Grid>
-                <Grid container xs={10} sm={11} md={11} style={this.props.theme.actionListItem} direction='row'>
+                <Grid container xs={12} sm={12} md={12} style={this.props.theme.actionListItem} direction='row'>
                     <Grid
                         xs={8} sm={8} md={8}
                     >
                         {name}
                     </Grid>
-                    <Grid
+                    <Grid container
                         xs={2} sm={2} md={2}
+                        alignContent='center'
+                        justify='center'
                     >
                         {score}
                     </Grid>
-                    <Grid
+                    <Grid container
                         xs={2} sm={2} md={2}
+                        direction="column"
+                        alignItems="center"
+  justify="center"
                     >
                         {highScore}
                     </Grid>

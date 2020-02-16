@@ -256,6 +256,21 @@ Resources:
             Method: any
             RestApiId: !Ref ApiGateway
 
+  ReactDeployer:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: react-deployer/
+      Runtime: nodejs12.x
+      Role: 
+        !GetAtt ReactDeployer.Arn
+  ReactDeployment:
+    Type: Custom::ReactDeployer
+    DependsOn: ReactDeployer
+    Properties:
+      ServiceToken: !GetAtt ReactDeployer.Arn
+      Bucket: !Ref S3Bucket
+      TargetDirectory: flashgang
+
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:

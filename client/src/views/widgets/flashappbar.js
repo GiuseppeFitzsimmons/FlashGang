@@ -11,6 +11,11 @@ import { FlashListItem } from './FlashBits';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Icon from '@material-ui/core/Icon';
 import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import ListItem from '@material-ui/core/ListItem';
+import { Button, Grid, GridList } from '@material-ui/core';
+
+const someImages = require('../../utility/smimages')
 
 export default class FlashAppBar extends React.Component {
   constructor(props) {
@@ -24,67 +29,68 @@ export default class FlashAppBar extends React.Component {
 
     this.setState({ ...this.state, openDrawer: open });
   };
+  listItem = (action, image, primary, secondary) => {
+    return (
+      <Grid container
+        onClick={action}
+        direction='row'
+        justify="space-evenly"
+      >
+        <Grid item md={2} sm={2} xs={2}
+        justify="center"
+        >
+          <Avatar
+            src={image}
+            style={{ borderRadius: '50%', width:'42px' }} />
+        </Grid>
+        <Grid item md={1} sm={1} xs={1}/>
+        <Grid item md={9} sm={9} xs={9}
+        justify="center"
+        >
+          <ListItemText
+            primary={primary}
+            secondary={secondary}
+          />
+        </Grid>
+      </Grid>
+    )
+  }
   render() {
     let renderable = <>
-      <FlashListItem alignItems="flex-start"
-        onClick={this.props.goSettings}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Settings"
-          secondary="Click here to go to settings"
-        />
-      </FlashListItem>
-      <FlashListItem alignItems="flex-start"
-        onClick={this.props.onLogOut}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Log out"
-          secondary="Click here to log out"
-        />
-      </FlashListItem>
-      {(this.props.station == 'DECK' || this.props.station == 'GANGS') &&
-        <FlashListItem alignItems="flex-start"
-          onClick={this.props.goHome}
-          button
-        >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>home</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Flash decks"
-          secondary="Click here to go home"
-        />
-      </FlashListItem>
+      {this.props.goSettings &&
+        this.listItem(this.props.goSettings,
+          this.props.user && this.props.user.picture ? this.props.user.picture : someImages.getRandomGangsterImage(),
+          "Settings",
+          "Express yourself"
+        )
       }
-      {(this.props.station == 'DECK' || this.props.station == 'HOME') &&
-        <FlashListItem alignItems="flex-start"
-        onClick={this.props.goGangs}
-        button
-      >
-        <ListItemAvatar>
-          <Icon style={{ fontSize: 30 }}>home</Icon>
-        </ListItemAvatar>
-        <ListItemText
-          primary="Flash gangs"
-          secondary="Click here to go see your gangs"
-        />
-      </FlashListItem>
+      {this.props.onLogOut &&
+        this.listItem(this.props.onLogOut,
+          '/exit.jpg',
+          "Log out",
+          "Come back soon"
+        )
+      }
+      {this.props.goHome &&
+        this.listItem(this.props.goHome,
+          someImages.getRandomSubjectImage(),
+          "Home",
+          "Go to your fashdecks"
+        )
+      }
+      {this.props.goGangs &&
+        this.listItem(this.props.goGangs,
+          someImages.getRandomGangImage(),
+          "Flash gangs",
+          "Manage your gangs"
+        )
       }
     </>
     return (
       <div style={{
-        marginBottom: '48px'
+        marginBottom: '60px'
       }}>
-        <AppBar position="fixed" style={{
-        }}>
+        <AppBar position="fixed">
           <Toolbar>
             <IconButton
               edge="start"
@@ -109,9 +115,9 @@ export default class FlashAppBar extends React.Component {
           </Toolbar>
         </AppBar>
         <Drawer open={this.state.openDrawer} onClose={this.toggleDrawer(false)}>
-          <List>
+          <div style={{margin:'8px'}}>
             {renderable}
-          </List>
+            </div>
         </Drawer>
       </div>
     );

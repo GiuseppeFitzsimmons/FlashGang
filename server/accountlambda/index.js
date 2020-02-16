@@ -28,7 +28,10 @@ exports.handler = async (event, context) => {
             if (event.body.grant_type == 'password') {
                 let userId = event.body.id ? event.body.id.toLowerCase() : '';
                 let user;
-                if (userId != '') {
+                if (!event.body.password || event.body.password=='') {
+                    reply.errors = { fields: [{ password: `Password cannot be empty` }] }
+                    returnObject.statusCode = 401
+                } else if (userId != '') {
                     user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
                     let _compare = await new Promise((resolve, reject) => {
                         bcrypt.compare(event.body.password, user.password, function (err, res) {
@@ -132,6 +135,7 @@ exports.handler = async (event, context) => {
                         user.lastName = event.body.lastName
                     }
                     if (event.body.picture) {
+                        //I thinkt that this is obsolete now that the settings page uses the gallery instead of its own upload
                         if (event.body.picture.indexOf('data:image') == 0) {
                             var imageData = event.body.picture.split(',');
                             var base64Data = imageData[1];
@@ -170,6 +174,8 @@ exports.handler = async (event, context) => {
                                 user.picture = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
                             }
                             console.log("s3result", s3result);
+                        } else {
+                            user.picture=event.body.picture;
                         }
                     }
                     await dynamodbfordummies.putUser(user);

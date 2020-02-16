@@ -13,15 +13,15 @@ module.exports={
         
     },
     getEnvironment: function(url) {
-        console.log("url", url);
+        //console.log("url", url);
         if (url.toLowerCase().indexOf('local')>-1 || url.indexOf('127')>-1) {
-            console.log("url is ", url, "returning", this.local);
+        //    console.log("url is ", url, "returning", this.local);
             return this.local;
         } else if (url.toLowerCase().indexOf('dev.flashgang')>-1) {
-            console.log("url is ", url, "returning", this.devServer);
+        //    console.log("url is ", url, "returning", this.devServer);
             return this.devServer;
         } else {
-            console.log("url is ", url, "returning", this.server);
+        //    console.log("url is ", url, "returning", this.server);
             return this.server;
         }
     }

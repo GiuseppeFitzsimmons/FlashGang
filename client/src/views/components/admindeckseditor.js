@@ -17,98 +17,44 @@ class AdminDecksEditor extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            modalShowing: this.props.modalShowing, editableUser: this.props.user,
-            newFirstName: '', newLastName: '', imageChanged: false
+            modalShowing: this.props.modalShowing
         }
     }
     componentDidMount() {
-        this.setState({ newFirstName: '', newLastName: '' })
-        //console.log('picture', this.props.user)
+        console.log('this.props.flashDeck', this.props.flashDeck)
     }
     componentDidUpdate() {
-        //this.setState({newFirstName: '', newLastName: '' })
-        console.log('picture', this.props.user)
     }
 
     render() {
-        console.log('userseditor state', this.state)
+        console.log('deckeditor state', this.state)
         return (
-            <Dialog
-                open={this.props.modalShowing}
-                keepMounted
-                aria-labelledby="alert-dialog-slide-title"
-                aria-describedby="alert-dialog-slide-description"
-            //user={this.state.user}
-            //var editableUser = {this.state.user}
-            >
-                <DialogContent>
-                    <div>
-                        <TextField
-                            placeholder={this.props.user.firstName}
-                            onChange={(event) => {
-                                this.state.newFirstName = event.target.value
-                                console.log('newFirstName ', this.state.newFirstName)
-                            }}
-                        >
-                        </TextField>
-                        <TextField
-                            placeholder={this.props.user.lastName}
-                            onChange={(event) => {
-                                this.state.newLastName = event.target.value
-                                console.log('newLastName ', this.state.newLastName)
-                            }}
-                        >
-                        </TextField>
-                        <Button
-                            onClick={() => {
-                                this.setState({ imageChanged: true })
-                                console.log('this.state.imageChanged', this.state.imageChanged)
-                            }}
-                        >
-                            <img
-                                src={this.props.user.picture}
-                                height='100'
-                                width='100'
-                                alt='Missing image'
-                            />
-                        </Button>
-
-                    </div>
-                </DialogContent>
+            <>
+                <div>
+                    {this.props.flashDeck.name}
+                    {this.props.flashDeck.owner}
+                </div>
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        if (this.state.newFirstName.length > 0) {
-                            this.props.user.firstName = this.state.newFirstName
-                        }
-                        if (this.state.newLastName.length > 0) {
-                            this.props.user.newLastName = this.state.newLastName
-                        }
-                        if (this.state.imageChanged == true) {
-                            this.props.user.picture = '/random_profile_male_1.png'
-                        }
-                        //this.setState({ modalShowing: false })
+                        console.log('suspending deck')
+                        this.props.flashDeck.suspended = true
                         this.props.closeModal()
-                        this.props.saveUser(this.props.user)
-                        this.setState({imageChanged: false})
+                        this.props.suspendDeck(this.props.flashDeck)
                     }}
                 >
-                    Save
+                    Suspend
                 </FlashButton>
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        this.state.newFirstName = ''
-                        this.state.newLastName = ''
-                        this.state.imageChanged = false
-                        //this.setState({ modalShowing: false })
                         this.props.closeModal()
 
                     }}
                 >
                     Cancel
                 </FlashButton>
-            </Dialog>
+            </>
         )
 
     }
@@ -116,7 +62,7 @@ class AdminDecksEditor extends React.Component {
 
 function mapStateToProps(state, props) {
     console.log('mapstatetoprops users', state.users)
-    return { users: state.users, cursor: state.cursor }
+    return { users: state.users, cursor: state.cursor, modalShowing: state.modalShowing }
 }
 function mapDispatchToProps(dispatch) {
     return bindActionCreators(Actions, dispatch)

@@ -1,20 +1,9 @@
 import React from 'react';
-//import logo from '../logo.svg';
 import '../App.css';
-import { AwesomeButton } from "react-awesome-button";
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as Actions from '../action'
-import { Button, Grid, GridList } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Icon from '@material-ui/core/Icon';
-import Typography from '@material-ui/core/Typography';
-import { FlashListItem, FlashButton } from './widgets/FlashBits'
+import { FlashButton } from './widgets/FlashBits'
 import FlashAppBar from './widgets/flashappbar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -23,8 +12,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Upgrade from './components/upgrade';
+import { FlashDeckListItem, FlashDeckListButton } from './components/flashgangmemberlistitem';
 
-const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -62,6 +51,7 @@ class FlashGangs extends React.Component {
       this.props.onFlashGangSelected(this.state.flashGang.id)
     }
   }
+  
   render() {
     const flashGangs = this.props.flashGangs;
     const generateFlashGangList = () => {
@@ -71,34 +61,22 @@ class FlashGangs extends React.Component {
         )
       }
       var _display = flashGangs.map((flashGang, i) => {
-        console.log('flashGang', flashGang)
-        if (!flashGang.icon) {
-          flashGang.icon = someIcons[Math.floor(Math.random() * Math.floor(someIcons.length))]
+        if (!flashGang.image) {
+          flashGang.image =  `/gangs-${Math.floor(Math.random() * Math.floor(20))}.jpg`
+          
         }
         return (
           <>
             {this.renderRSVPdialog()}
-            <ListItem alignItems="flex-start"
-              button
-              onClick={() => {
-                if (flashGang.state == 'TO_INVITE' || flashGang.state == 'INVITED') {
-                  this.openModal(flashGang)
-                } else {
-                  this.props.onFlashGangSelected(flashGang.id)
-                }
+            
+          <FlashDeckListItem flashDeck={flashGang}
+            onClick={() => {
+              if (flashGang.state == 'TO_INVITE' || flashGang.state == 'INVITED') {
+                this.openModal(flashGang)
+              } else {
+                this.props.onFlashGangSelected(flashGang.id)
               }
-              }>
-              <ListItemAvatar>
-                <Icon style={{ fontSize: 30 }}>{flashGang.icon}</Icon>
-              </ListItemAvatar>
-              <ListItemText
-                primary={flashGang.name}
-                secondary={flashGang.state == 'TO_INVITE' || flashGang.state == 'INVITED' ? flashGang.state: flashGang.description}
-              />
-            </ListItem>
-            {i < flashGangs.length - 1 &&
-              <Divider variant="inset" component="li" />
-            }
+            }} />
           </>
         )
       })
@@ -110,31 +88,23 @@ class FlashGangs extends React.Component {
     }
     return (
       <>
-        <FlashAppBar title='FlashGang!' station='GANGS' goHome={this.props.goHome} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings}/>
-        <List>
-          <FlashListItem alignItems="flex-start"
-            onClick={this.props.onNewButton}
-            buttonType='action'
-            button
-          >
-            <ListItemAvatar>
-              <Icon style={{ fontSize: 30 }}>add_circle</Icon>
-            </ListItemAvatar>
-            <ListItemText
-              primary="New"
-              secondary="Click here to create a new FlashGang"
-              onClick={
-                () => {
-                  if (this.props.user.remainingFlashGangsAllowed > 0) {
-                    this.props.createFlashGang()
-                  } else {
-                    this.upgrade.open('GANGS')
-                  }
-                }}
-            />
-          </FlashListItem>
+        <FlashAppBar title='FlashGang!' 
+          station='GANGS' 
+          goHome={this.props.goHome} 
+          onLogOut={this.props.onLogOut} 
+          goSettings={this.props.goSettings}
+          user={this.props.user} />
+         <FlashDeckListButton
+            onClick={() => {
+              if (this.props.user.remainingFlashGangsAllowed > 0) {
+                this.props.createFlashGang()
+              } else {
+                this.upgrade.open('GANGS')
+              }
+            }}
+            main='New FlashGang'
+            sub='Click to create a FlashGang'/>
           {generateFlashGangList()}
-        </List>
         <Upgrade
           parent={this}
         >
@@ -142,6 +112,7 @@ class FlashGangs extends React.Component {
       </>
     )
   }
+  
   renderRSVPdialog() {
     var message = <>You have been invited to join <b>{this.state.flashGang.name}</b> <i>({this.state.flashGang.description})</i>. Would you like to accept?</>;
     if (this.state.flashGang.invitedBy) {
