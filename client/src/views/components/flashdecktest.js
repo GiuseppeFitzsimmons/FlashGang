@@ -64,7 +64,7 @@ class FlashDeckTest extends React.Component {
                             <Explanation 
                                 label='Revision'
                                 id='revision'
-                                explanation="With revision, the test is only over when you've answered every question correctly."/>
+                                explanation="With revision, you get one chance to answer each question, in random order, and you see your score as you go."/>
                             }
                              name="FormControlLabelButton"/>
                         
@@ -72,14 +72,14 @@ class FlashDeckTest extends React.Component {
                             <Explanation 
                                 label='Cram'
                                 id='cram'
-                                explanation="In cram mode, you get one chance to answer each question, in random order, and you see your score as you go."/>
+                                explanation="In cram mode, the questions repeat in random order until you've answered them all correctly."/>
                             }
                             name="FormControlLabelButton" />
                         <FormControlLabel value="EXAM" control={<Radio />}  label={
                             <Explanation 
                                 label='Exam'
                                 id='exam'
-                                explanation="In exam mode, you get one chance to answer each question, in random order, and you see your at the end of the test."/>
+                                explanation="In exam mode, you get one chance to answer each question, in order, and you don't see your score until the end."/>
                             }
                             name="FormControlLabelButton" />
                     </RadioGroup>

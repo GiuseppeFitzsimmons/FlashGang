@@ -32,8 +32,7 @@ class FlashDeck extends React.Component {
             delete this.props.flashDeck.currentIndex
             this.forceUpdate()*/
             //TODO if this card hasn't been saved, we might want to offer the user a chance to save it before going back
-            //
-            alert(this.props.flashDeck.dirty);
+            //This should just be a matter of testing this.props.flashDeck.dirty;
             this.props.goHome();
           } else {
             this.props.prevCard(this.props.flashDeck)
