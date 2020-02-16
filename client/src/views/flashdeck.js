@@ -27,10 +27,14 @@ class FlashDeck extends React.Component {
     if (this.props.navEvent) {
       this.props.navEvent.backButton = () => {
         if (this.props.flashDeck && this.props.flashDeck.mode == "EDIT") {
-          if (!this.props.flashDeck.hasOwnProperty('currentIndex') || this.props.flashDeck.currentIndex === 0) {
-            this.props.flashDeck.mode = 'TEST'
+          if (!this.props.flashDeck.hasOwnProperty('currentIndex')) {
+            /*this.props.flashDeck.mode = 'TEST'
             delete this.props.flashDeck.currentIndex
-            this.forceUpdate()
+            this.forceUpdate()*/
+            //TODO if this card hasn't been saved, we might want to offer the user a chance to save it before going back
+            //
+            alert(this.props.flashDeck.dirty);
+            this.props.goHome();
           } else {
             this.props.prevCard(this.props.flashDeck)
             console.log('this.props.flashDeck.currentIndex', this.props.flashDeck.currentIndex)
