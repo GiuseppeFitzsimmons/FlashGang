@@ -87,8 +87,9 @@ class FlashDeckEditor extends React.Component {
           direction="row"
           justify="space-between"
           alignItems="stretch"
+          style={{minHeight:'80px'}}
         >
-          <Grid item xs='2'>
+          <Grid item xl='1' lg='1' md='2' sm='2' xs='2'>
             {/*<IconSelector icon={flashDeck.icon} iconClient={flashDeck} />*/}
             <Gallery
               onImageSelected={(image) => {
@@ -108,7 +109,7 @@ class FlashDeckEditor extends React.Component {
               station='DECK'
             />
           </Grid>
-          <Grid item xs='9'>
+          <Grid item xl='11' lg='11' md='10' sm='10' xs='10' alignContent='flex-end' direction='row' style={{paddingLeft:'4px'}}>
             <IntegratedInput
               label="FlashDeck Name"
               id='flashCardName'
