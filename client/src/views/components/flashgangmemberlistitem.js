@@ -156,6 +156,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                     onChange={
                                         (event) => {
                                             this.props.gangMember.rank = event.target.value;
+                                            this.forceUpdate()
                                         }
                                     }
                                     style={{ width: '100%' }}
