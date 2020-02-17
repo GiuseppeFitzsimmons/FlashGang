@@ -73,7 +73,7 @@ class FlashGangMemberListItemStyled extends React.Component {
         var big = this.props.small ? 'h7' : 'h5';
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
-        var mininmumHeight = this.props.small ? '15%' : '15%';
+        var mininmumHeight = this.props.small ? '12%' : '12%';
         return (
             <Grid container spacing={0} direction='row' style={{
                 marginTop: '4px',
@@ -107,7 +107,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                             <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
                                 {name}
                             </FlashTypography>
-                            <FlashTypography variant={small} sublabel>
+                            <FlashTypography variant='h7' sublabel>
                                 {this.props.gangMember.rank}
                             </FlashTypography>
                         </Container>
