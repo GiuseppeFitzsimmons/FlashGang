@@ -73,7 +73,8 @@ exports.handler = async (event, context, callback) => {
         }).promise();
       }
     await emptyS3Directory(s3, targetBucket, targetDirectory);
-    await s3CopyFolder(s3, sourceBucket, sourceDirectory+'/', targetBucket, targetDirectory+'/');
+    //await s3CopyFolder(s3, sourceBucket, sourceDirectory+'/', targetBucket, targetDirectory+'/');
+    await s3CopyFolder(s3, sourceDirectory+'/', targetBucket, targetDirectory+'/');
 
     return {Id:tempKey};
   }
@@ -187,7 +188,13 @@ exports.handler = async (event, context, callback) => {
 
     if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir, exceptions);
 }
-  async function s3CopyFolder(s3, sourceBucket, source, targetBucket, dest) {
+async function s3CopyFolder(s3, source, targetBucket, dest) {
+    console.log("s3CopyFolder, enter", source, targetBucket, dest);
+    const {execSync} = require('child_process');
+    let syncCommandResult=execSync(`aws s3 sync ${source}/ s3://${targetBucket}/${dest}/`).toString();
+    console.log("s3CopyFolder, done", syncCommandResult);
+}
+  async function s3CopyFolderOld(s3, sourceBucket, source, targetBucket, dest) {
     // sanity check: source and dest must end with '/'
     console.log("s3CopyFolder", sourceBucket, source, targetBucket, dest);
     if (!source.endsWith('/') || !dest.endsWith('/')) {

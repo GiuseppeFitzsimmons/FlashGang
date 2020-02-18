@@ -91,9 +91,9 @@ if (local) {
 } else {
     var packageCommand = `aws cloudformation package --template-file ${templateFile} --output-template-file packaged.yaml ${profileArgument} --s3-bucket wwdd-build-bucket-us-east-1`
     var deployCommand = `aws cloudformation deploy --template-file packaged.yaml --stack-name ${stackName}  ${profileArgument} --region us-east-1 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND ${deployParameters}`
-    execSync(packageCommand);
+    execSync(packageCommand, {stdio: 'inherit'});
     console.log(packageCommand);
-    execSync(deployCommand);
+    execSync(deployCommand, {stdio: 'inherit', stderr: 'inherit'});
     console.log(deployCommand);
 }
 

@@ -262,14 +262,14 @@ Resources:
       CodeUri: react-deployer/
       Runtime: nodejs12.x
       Role: 
-        !GetAtt ReactDeployer.Arn
+        !GetAtt LambdaExecutionRole.Arn
   ReactDeployment:
     Type: Custom::ReactDeployer
     DependsOn: ReactDeployer
     Properties:
       ServiceToken: !GetAtt ReactDeployer.Arn
       Bucket: !Ref S3Bucket
-      TargetDirectory: flashgang
+      TargetDirectory: flashgang-deploy-test
 
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
@@ -620,6 +620,20 @@ Resources:
                 Action:
                   - 'dynamodb:*'
                 Resource: '*'
+        - PolicyName:
+            Fn::Join:
+              - '-'
+              - - !Ref AWS::StackName
+                - S3Policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: 
+                  - 'arn:aws:s3:::*'
+                  - 'arn:aws:s3:::*/*'
 # bucket stuff
   S3Bucket:
     Type: AWS::S3::Bucket
