@@ -9,6 +9,7 @@ let stackName;
 let local;
 let environment;
 let install='false';
+let deployToCloudFormation=true;
 process.argv.forEach(function (val, index, array) {
     if (val == '--profile') {
         profileArgument = '--profile ' + array[index + 1];
@@ -22,6 +23,10 @@ process.argv.forEach(function (val, index, array) {
         environment = array[index + 1];
     } else if (val=='--install') {
         install=array[index+1];
+    } else if (val=='-cf' || val=='--deployToCloudformation') {
+        if (array[index+1].toLowerCase()!=='true') {
+            deployToCloudFormation=false;
+        }
     }
 });
 if (!deployParametersFile && environment) {
@@ -93,8 +98,12 @@ if (local) {
     var deployCommand = `aws cloudformation deploy --template-file packaged.yaml --stack-name ${stackName}  ${profileArgument} --region us-east-1 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND ${deployParameters}`
     execSync(packageCommand, {stdio: 'inherit'});
     console.log(packageCommand);
-    execSync(deployCommand, {stdio: 'inherit', stderr: 'inherit'});
-    console.log(deployCommand);
+    if (deployToCloudFormation) {
+        execSync(deployCommand, {stdio: 'inherit', stderr: 'inherit'});
+        console.log(deployCommand);    
+    } else {
+        console.log("Package complete, not deploying to CloudFormation");
+    }
 }
 
 

@@ -80,8 +80,9 @@ exports.handler = async (event, context, callback) => {
   }
   async function cleanup(s3, event) {
     console.log("cleanup enter");
-    const sourceBucket=event.ResourceProperties.SourceBucket;
-    const sourceDirectory=event.ResourceProperties.SourceDirectory;
+    //TODO revisit this. Maybe we'll want to have the option of using a source bucket.
+    //const sourceBucket=event.ResourceProperties.SourceBucket;
+    //const sourceDirectory=event.ResourceProperties.SourceDirectory;
     const targetBucket=event.ResourceProperties.TargetBucket;
     const targetDirectory=event.ResourceProperties.TargetDirectory;
     const backupDirectory=event.ResourceProperties.BackupDirectory;

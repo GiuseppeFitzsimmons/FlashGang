@@ -13,9 +13,8 @@ import { MdDelete, MdModeEdit } from 'react-icons/md';
 //https://react-icons.netlify.com/#/icons/gi
 import { GiSwordman, GiHoodedFigure, GiBrutalHelm, GiImperialCrown, GiFedora, GiCaptainHatProfile, GiFloorHatch } from 'react-icons/gi';
 import Paper from 'material-ui/Paper';
-import { FlashButton, FlashListItem } from '../widgets/FlashBits';
 import Popover from '@material-ui/core/Popover';
-import { FlashTypography } from '../widgets/FlashBits';
+import { FlashTypography, FlashButton } from '../widgets/FlashBits';
 import ClickNHold from 'react-click-n-hold';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -74,7 +73,7 @@ class FlashGangMemberListItemStyled extends React.Component {
         var big = this.props.small ? 'h7' : 'h5';
         var medium = this.props.small ? 'h9' : 'h5';
         var small = this.props.small ? 'h10' : 'h6';
-        var mininmumHeight = this.props.small ? '15%' : '15%';
+        var mininmumHeight = this.props.small ? '12%' : '12%';
         return (
             <Grid container spacing={0} direction='row' style={{
                 marginTop: '4px',
@@ -96,43 +95,28 @@ class FlashGangMemberListItemStyled extends React.Component {
                 </Grid>
                 <Grid container direction='column' xs={10} sm={10} md={11}
                     style={this.props.theme.actionListItem}>
-                    <ClickNHold
-                        time={1}
-                        onStart={() => { }}
-                        onClickNHold={() => { }}
-                        onEnd={(event, enough) => {
-                            if (enough) {
-                                //this.props.onLongHold(event.target);
-                                this.setState({ editing: true })
-                            } else {
-                                //this.props.onClick(event.target);
-                            }
-                        }}
-                        style={{
-                            marginTop: '4px',
-                            minHeight: mininmumHeight,
-                            cursor: 'pointer'
-                        }}>
                         <Container style={{
                             paddingLeft: '4px',
                             height: '100%',
                             paddingTop: this.props.gangMember.rank ? 0 : '6px'
                         }}
-                            height={'20%'}>
+                            height={'20%'}
+                            onClick={()=>{
+                                this.setState({ editing: true })
+                            }}>
                             <FlashTypography variant={this.props.gangMember.rank ? medium : big} label>
                                 {name}
                             </FlashTypography>
-                            <FlashTypography variant={small} sublabel>
+                            <FlashTypography variant='h7' sublabel>
                                 {this.props.gangMember.rank}
                             </FlashTypography>
                         </Container>
-                    </ClickNHold>
                 </Grid>
                 <Dialog /*onClose={handleClose}*/ aria-labelledby="simple-dialog-title" 
                     open={this.state.editing}
                     maxWidth='lg' fullWidth>
-                    <Grid container spacing={0} direction='columns' style={{ width: '100%', padding: '4px' }}>
-                        <Grid item xs={8} sm={8} md={8} >
+                    <Grid container spacing={0} direction='column' style={{ width: '100%', padding: '4px' }}>
+                        <Grid item xs={12} sm={12} md={12} >
                             <IntegratedInput
                                 label='Gang member email'
                                 placeholder='@'
@@ -147,8 +131,7 @@ class FlashGangMemberListItemStyled extends React.Component {
                                 }
                             />
                         </Grid>
-                        <Grid item xs={1} sm={1} md={1} />
-                        <Grid item xs={3} sm={3} md={3} >
+                        <Grid xs={12} sm={12} md={12} >
                             <div style={{ marginTop: '10px' }}>
                                 <label style={{ color: '0,0,0,0.6' }}>Rank</label><br />
                                 <Select
@@ -174,18 +157,19 @@ class FlashGangMemberListItemStyled extends React.Component {
                     </Grid>
 
                     <DialogActions>
-                        <Button onClick={() => this.setState({ editing: false })} color="primary" 
+                        <FlashButton onClick={() => this.setState({ editing: false })}  buttonType='action'
                             disabled={!this.props.gangMember.id || this.props.gangMember.id == ''}>
                             Close
-                        </Button>
-                        <Button onClick={() => {
+                        </FlashButton>
+                        <FlashButton onClick={() => {
                             if (this.props.onDelete) {
                                 this.props.onDelete();
                             }
                             this.setState({editing:false})
-                        }} color="primary">
+                        }}
+                        buttonType='action'>
                             Delete
-                        </Button>
+                        </FlashButton>
                     </DialogActions>
                 </Dialog>
             </Grid>
