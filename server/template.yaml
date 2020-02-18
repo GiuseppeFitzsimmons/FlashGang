@@ -256,20 +256,20 @@ Resources:
             Method: any
             RestApiId: !Ref ApiGateway
 
-  ReactDeployer:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: react-deployer/
-      Runtime: nodejs12.x
-      Role: 
-        !GetAtt LambdaExecutionRole.Arn
-  ReactDeployment:
-    Type: Custom::ReactDeployer
-    DependsOn: ReactDeployer
-    Properties:
-      ServiceToken: !GetAtt ReactDeployer.Arn
-      Bucket: !Ref S3Bucket
-      TargetDirectory: flashgang-deploy-test
+  #ReactDeployer:
+  #  Type: AWS::Serverless::Function
+  #  Properties:
+  #    CodeUri: react-deployer/
+  #    Runtime: nodejs12.x
+  #    Role: 
+  #      !GetAtt LambdaExecutionRole.Arn
+  #ReactDeployment:
+  #  Type: Custom::ReactDeployer
+  #  DependsOn: ReactDeployer
+  #  Properties:
+  #    ServiceToken: !GetAtt ReactDeployer.Arn
+  #    Bucket: !Ref S3Bucket
+  #    TargetDirectory: flashgang-deploy-test
 
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
