@@ -2,13 +2,13 @@ version: 0.2
 
 run-as: Linux-user-name
 
-env:
-  variables:
-    key: "value"
-    key: "value"
-  parameter-store:
-    key: "value"
-    key: "value"
+#env:
+  #variables:
+    #key: "value"
+    #key: "value"
+ #parameter-store:
+    #key: "value"
+    #key: "value"
             
 phases:
   install:
