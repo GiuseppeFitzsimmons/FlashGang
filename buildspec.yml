@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 
 run-as: Linux-user-name
 
@@ -32,3 +32,4 @@ phases:
 artifacts:
   files:
     - packaged.yaml
+    - server/deploy-parameters-dev.json
