@@ -73,9 +73,7 @@ if (deployParametersFile) {
     let _secrets = { Parameters: {} }
     try {
         _secrets = JSON.parse(fs.readFileSync('deploy-parameters-secrets.json'));
-    } catch (err) {
-        console.log(err)
-    }
+    } catch (err) { }
     if (_json.Parameters) {
         _secrets = Object.assign({}, _secrets.Parameters, _json.Parameters);
     }
