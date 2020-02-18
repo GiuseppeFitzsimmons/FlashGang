@@ -126,6 +126,7 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
     //let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
     //delete currentUser.password;
     let currentUser = await getUser(userId);
+    console.log('currentUser', currentUser)
     currentUser.isCurrentUser = true;
     //currentUser.profile = getProfile(currentUser.subscription);
     let totalDecks = await countFlashDecks(currentUser.id)

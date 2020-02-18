@@ -26,7 +26,7 @@ import Confirmation from '../components/confirmation';
 import { withTheme } from '@material-ui/styles';
 import { Gallery } from '../components/gallery';
 
-const someImages=require('../../utility/smimages');
+const someImages = require('../../utility/smimages');
 
 
 const someIcons = ['language', 'timeline', 'toc', 'palette', 'all_inclusive', 'public', 'poll', 'share', 'emoji_symbols']
@@ -50,8 +50,8 @@ class FlashGangEditorStyled extends React.Component {
             this.props.loadFlashGang(this.props.flashGangId)
         }
         if (this.props.navEvent) {
-            this.props.navEvent.backButton=this.props.goGangs;
-          }
+            this.props.navEvent.backButton = this.props.goGangs;
+        }
     }
     componentDidUpdate() {
     }
@@ -79,18 +79,18 @@ class FlashGangEditorStyled extends React.Component {
     render() {
         //const classes = useStyles();
         const flashGang = this.props.flashGang ? this.props.flashGang : {}
-        
+
         if (!flashGang.image) {
             //flashGang.image =  `/gangs-${Math.floor(Math.random() * Math.floor(20))}.jpg`
             flashGang.image = someImages.getRandomGangImage();
-          }
+        }
         const isOwner = this.props.user && this.props.user.id == flashGang.owner
         return (
             <>
                 <FlashAppBar title='FlashGang!' station='GANGS'
-                    goHome={this.props.goHome} 
-                    onLogOut={this.props.onLogOut} 
-                    goSettings={this.props.goSettings} 
+                    goHome={this.props.goHome}
+                    onLogOut={this.props.onLogOut}
+                    goSettings={this.props.goSettings}
                     user={this.props.user} />
 
                 <Grid container
@@ -99,7 +99,7 @@ class FlashGangEditorStyled extends React.Component {
                     alignItems="stretch"
                     style={{
                         height: '100%',
-                        paddingTop:'8px'
+                        paddingTop: '8px'
                     }}
                 >
 
@@ -113,14 +113,14 @@ class FlashGangEditorStyled extends React.Component {
                         }}>
                         <Grid item md={1} sm={1} xs={2}>
                             <Gallery
-                                onImageSelected={image=>flashGang.image=image}
+                                onImageSelected={image => flashGang.image = image}
                                 image={flashGang.image}
                                 imageButton
                                 station='GANG'
                                 closeOnSelect
                             />
                         </Grid>
-                        <Grid item md={11} sm={11} xs={10} style={{paddingLeft:'2px'}}>
+                        <Grid item md={11} sm={11} xs={10} style={{ paddingLeft: '2px' }}>
                             <IntegratedInput
                                 label="Gang Name"
                                 id='gangName'
@@ -187,7 +187,7 @@ class FlashGangEditorStyled extends React.Component {
                                     }
                                 }}
                             main='New Member'
-                            sub='Click here to invite a gang member'/>
+                            sub='Click here to invite a gang member' />
                         {this.generateFlashGangMemberList()}
                     </Box>
                     <Box
@@ -232,7 +232,7 @@ class FlashGangEditorStyled extends React.Component {
                         </Upgrade>
                         <Confirmation
                             parent={this}
-                            onConfirm={() => { 
+                            onConfirm={() => {
                                 this.props.deleteGang(flashGang.id)
                                 this.props.goGangs()
                             }}
@@ -257,9 +257,9 @@ class FlashGangEditorStyled extends React.Component {
                         flashGang={flashGang}
                         user={this.props.user}
                         onDelete={() => { this.removeMember(i) }}
-                        onMemberEdited={()=>this.forceUpdate()}
-                        onClick={()=>{}}
-                        id={'flashgang-index-'+i}
+                        onMemberEdited={() => this.forceUpdate()}
+                        //onClick={() => {}}
+                        id={'flashgang-index-' + i}
                     />
                 </>
             )
