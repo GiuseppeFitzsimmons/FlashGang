@@ -665,7 +665,7 @@ async function putFlashGang(flashGang, userId) {
 async function putItem(item, tableName) {
     var params = {
         TableName: tableName,
-        Item: item
+        Item: cleanItem(item)
     };
     var documentClient = getDocumentDbClient();
     let updatedItem = await new Promise((resolve, reject) => {
