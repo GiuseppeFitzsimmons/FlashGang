@@ -69,6 +69,7 @@ class FlashCardEditor extends React.Component {
 
         const generateCorrectAnswerList = () => {
             const thisCardEditor = this
+            console.log("generateCorrectAnswerList", flashCard);
             var _display = flashCard.correctAnswers.map((answer, i) => {
                 let removeButton = ''
                 let _gridWidth = 12;
