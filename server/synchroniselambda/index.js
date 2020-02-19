@@ -43,13 +43,14 @@ exports.handler = async (event, context) => {
                         if (!member.id) {
                             continue
                         }
+                        console.log("GANG MEMBER", member);
                         if (member.state == 'TO_INVITE') {
                             let user = await dynamodbfordummies.getItem(token.sub, process.env.USER_TABLE_NAME)
                             let invitor = token.sub;
                             if (user.firstName || user.lastName) {
                                 invitor = `${user.firstName ? user.firstName : ''} ${user.lastName ? user.lastName : ''}`
                             }
-                            await mailUtility.sendInvitationMail(invitor, member.email, flashGang.name)
+                            await mailUtility.sendInvitationMail(invitor, member.id, flashGang.name)
                             member.state = 'INVITED'
                             member.invitedBy = token.sub;
                             console.log("INVITEDBY BUG SAVING MEMBER", member);
