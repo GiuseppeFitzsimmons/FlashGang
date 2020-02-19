@@ -579,6 +579,7 @@ async function putFlashDeck(flashDeck, userId) {
     if (!flashDeck.editable) {
         flashDeck.editable = false;
     }
+    cleanItem(flashDeck);
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
     let flashDeckOwner = {
         userId: userId,
@@ -590,13 +591,12 @@ async function putFlashDeck(flashDeck, userId) {
 }
 //We need to make sure that no empty strings are inserted into the database
 function cleanItem(item) {
-    item=Object.entries(item).reduce((a,[k,v]) => (v ? {...a, [k]:v} : a), {});
     for (var i in item) {
         if (typeof item[i]==='object') {
             item[i] = cleanItem(item[i]);
-        }
-        if (Object.entries(item[i]).length === 0 && item[i].constructor === Object) {
-            delete item[i];
+        } else if (item[i]==='') {
+            //TODO this is ugly, but it'll do for now
+            item[i]=" ";
         }
     }
     return item;
