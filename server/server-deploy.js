@@ -40,10 +40,10 @@ if (!deployParametersFile && environment) {
 }
 
 if (install != 'false') {
-    if (process.platform === 'darwin') {
-        installed = execSync('npm run install:linux --prefix commonlayer/nodejs');
-    } else {
+    if (process.platform === 'win32') {
         installed = execSync('npm run install:windows --prefix commonlayer/nodejs');
+    } else {
+        installed = execSync('npm run install:linux --prefix commonlayer/nodejs');
     }
     console.log(installed.toString());
     installed = execSync('npm run install:all --prefix accountlambda');
