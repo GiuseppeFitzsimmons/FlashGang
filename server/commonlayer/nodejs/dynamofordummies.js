@@ -579,7 +579,6 @@ async function putFlashDeck(flashDeck, userId) {
     if (!flashDeck.editable) {
         flashDeck.editable = false;
     }
-    cleanItem(flashDeck);
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
     let flashDeckOwner = {
         userId: userId,
