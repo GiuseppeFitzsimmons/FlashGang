@@ -18,6 +18,7 @@ phases:
   build:
     commands:
       - cd client
+      - npm install
       - node deploy.js
   post_build:
     commands:
