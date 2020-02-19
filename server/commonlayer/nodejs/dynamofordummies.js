@@ -671,7 +671,7 @@ async function putItem(item, tableName) {
     let updatedItem = await new Promise((resolve, reject) => {
         documentClient.put(params, function (err, data) {
             if (err) {
-                console.log("putItem error ", params, err);
+                console.log("putItem error ", JSON.stringify(params), err);
                 reject(err);
             } else {
                 console.log(data);
