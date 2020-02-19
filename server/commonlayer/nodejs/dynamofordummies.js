@@ -579,6 +579,7 @@ async function putFlashDeck(flashDeck, userId) {
     if (!flashDeck.editable) {
         flashDeck.editable = false;
     }
+    cleanItem(flashDeck);
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
     let flashDeckOwner = {
         userId: userId,
@@ -587,6 +588,19 @@ async function putFlashDeck(flashDeck, userId) {
         rank: 'BOSS'
     }
     await putItem(flashDeckOwner, process.env.FLASHDECK_USER_TABLE_NAME)
+}
+//We need to make sure that no empty strings are inserted into the database
+function cleanItem(item) {
+    item=Object.entries(item).reduce((a,[k,v]) => (v ? {...a, [k]:v} : a), {});
+    for (var i in item) {
+        if (typeof item[i]==='object') {
+            item[i] = cleanItem(item[i]);
+        }
+        if (Object.entries(item[i]).length === 0 && item[i].constructor === Object) {
+            delete item[i];
+        }
+    }
+    return item;
 }
 async function putFlashGang(flashGang, userId) {
     let now = new Date();
@@ -685,7 +699,7 @@ function getDocumentDbClient() {
     }
     if (process.env.RUNNING_LOCAL_REGION) {
         const _config = {
-            region:process.env.RUNNING_LOCAL_REGION
+            region: process.env.RUNNING_LOCAL_REGION
         }
         if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
             _config.accessKeyId = process.env.ACCESS_KEY_ID,
@@ -780,7 +794,7 @@ async function putUser(user) {
     }
     await putItem(user, process.env.USER_TABLE_NAME);
 }
-async function saveUser(user){
+async function saveUser(user) {
     //console.log('ddb saveUser user', user)
     user.lastModified = (new Date()).getTime();
     await putItem(user, process.env.USER_TABLE_NAME);
@@ -863,7 +877,7 @@ async function getAllUsers(filters) {
             }*/
             params.FilterExpression = {}
             params.FilterAttributeValues = {}
-            params.ExpressionAttributeValues = {":string":filters.string}
+            params.ExpressionAttributeValues = { ":string": filters.string }
             params.FilterExpression = "contains(firstName, :string) or contains(lastName, :string)  or contains(id, :string)"
             //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
             //params.FilterExpression = Attr('firstName').contains(filters.string)
@@ -939,7 +953,7 @@ async function getAllDecks(filters) {
         if (filters.string) {
             params.FilterExpression = {}
             params.FilterAttributeValues = {}
-            params.ExpressionAttributeValues = {":string":filters.string}
+            params.ExpressionAttributeValues = { ":string": filters.string }
             params.FilterExpression = "contains(name, :string) or contains(description, :string)  or contains(owner, :string)"
             //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
             //params.FilterExpression = Attr('firstName').contains(filters.string)
@@ -998,7 +1012,7 @@ async function getAllGangs(filters) {
         if (filters.string) {
             params.FilterExpression = {}
             params.FilterAttributeValues = {}
-            params.ExpressionAttributeValues = {":string":filters.string}
+            params.ExpressionAttributeValues = { ":string": filters.string }
             params.FilterExpression = "contains(name, :string) or contains(description, :string)  or contains(owner, :string)"
             //params.FilterExpression = 'contains (firstName, '+filters.string+')'// OR contains (lastName, '+filters.string+') OR contains (id, '+filters.string+')'
             //params.FilterExpression = Attr('firstName').contains(filters.string)
