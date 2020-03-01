@@ -95,6 +95,8 @@ Globals:
           !Sub ${AWS::StackName}-flashgang-deck-table
         POLL_TABLE_NAME:
           !Sub ${AWS::StackName}-poll-table
+        WEBSOCKET_TABLE_NAME:
+          !Sub ${AWS::StackName}-websocket-table
         DYNAMODB_ENDPOINT: !Ref DynamoDBEndpoint
         REGION: "us-east-1"
         SIGNING_SECRET: !Ref SigningSecret
@@ -126,6 +128,51 @@ Resources:
         AllowOrigin: "'*'"
         AllowMethods: "'OPTIONS,HEAD,GET,PUT,POST'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+  WebSocketGateway:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: SimpleChatWebSocket
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+  WebsocketRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SimpleChatWebSocket
+      RouteKey: websocket
+      AuthorizationType: NONE
+      OperationName: WebsocketRoute
+      Target: '/integrations/WebsocketIntegration'
+  WebsocketConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref SimpleChatWebSocket
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: WebsocketRoute
+      Target: '/integrations/WebsocketIntegration'
+  WebsocketIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref SimpleChatWebSocket
+      Description: Websocket Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri: 
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${WebsocketFunction.Arn}/invocations
+  WebsocketFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      Environment:
+        Variables:
+          BUILD_VERSION: 
+            !Ref BuildVersion
+          GREETING:
+            !Ref Greeting
+      CodeUri: websocketLambda
+      Runtime: nodejs8.10
+      Role: 
+        !GetAtt LambdaExecutionRole.Arn
 # lambdas
   SynchroniseLambda:
     Type: AWS::Serverless::Function
@@ -255,21 +302,6 @@ Resources:
             Path: /gallery
             Method: any
             RestApiId: !Ref ApiGateway
-
-  #ReactDeployer:
-  #  Type: AWS::Serverless::Function
-  #  Properties:
-  #    CodeUri: react-deployer/
-  #    Runtime: nodejs12.x
-  #    Role: 
-  #      !GetAtt LambdaExecutionRole.Arn
-  #ReactDeployment:
-  #  Type: Custom::ReactDeployer
-  #  DependsOn: ReactDeployer
-  #  Properties:
-  #    ServiceToken: !GetAtt ReactDeployer.Arn
-  #    Bucket: !Ref S3Bucket
-  #    TargetDirectory: flashgang-deploy-test
 
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
@@ -430,6 +462,22 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: !Sub ${AWS::StackName}-user-table
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      BillingMode: PROVISIONED
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+  WebsocketTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${AWS::StackName}-websocket-table
       KeySchema:
         - AttributeName: id
           KeyType: HASH

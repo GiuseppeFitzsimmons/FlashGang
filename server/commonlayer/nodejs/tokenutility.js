@@ -7,12 +7,17 @@ function getSigningSecret() {
     return process.env.SIGNING_SECRET
 }
 function validateToken(event, ignoreExpiration, scope) {
+    console.log('tokenevent', event)
     signingSecret=getSigningSecret();
     var token = event.authorizationToken;
     if ((!token || token == '') && event.headers) {
         token = event.headers.Authorization;
         if (!token || token == '') {
             token = event.headers.authorization;
+        }
+    } else {
+        if (event.body){
+            token = event.body.token
         }
     }
     if (!token) {

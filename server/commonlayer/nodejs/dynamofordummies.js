@@ -1073,6 +1073,15 @@ async function suspendGang(flashGang) {
     await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
 }
 
+async function putWebsocketConnection(connectionId, id){
+    await putItem({connectionId, id}, process.env.WEBSOCKET_TABLE_NAME)
+}
+
+async function getWebsocketConnection(userId){
+    let item = await getItem(userId, process.env.WEBSOCKET_TABLE_NAME)
+    return item
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -1099,5 +1108,7 @@ module.exports = {
     getFlashDeck,
     getFlashGang,
     suspendGang,
-    getAllGangs
+    getAllGangs,
+    putWebsocketConnection,
+    getWebsocketConnection
 }
