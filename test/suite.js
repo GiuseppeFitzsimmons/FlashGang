@@ -1,6 +1,6 @@
-const fetch=require('node-fetch')
+const fetch = require('node-fetch')
 //const domain='https://api.flashgang.io/v1'
-const domain='http://localhost:8080';
+const domain = 'http://localhost:8080';
 
 const createAccountTony = {
     id: 'tony@soprano.it',
@@ -101,8 +101,8 @@ const createAccountMikey = {
     password: 'password',
     subscription: 'lieutenant'
 }
-const castOfSopranos=[createAccountCarmella, createAccountJunior, createAccountPaulie, 
-    createAccountBobby, createAccountVito, createAccountJohnny, 
+const castOfSopranos = [createAccountCarmella, createAccountJunior, createAccountPaulie,
+    createAccountBobby, createAccountVito, createAccountJohnny,
     createAccountPhil, createAccountLivia, createAccountSal,
     createAccountCarmine, createAccountMikey, createAccountAngelo]
 synchroniseTony = {
@@ -110,7 +110,7 @@ synchroniseTony = {
         {
             "id": "10",
             "name": "The name of the deck",
-            "editable":"true",
+            "editable": "true",
             "flashCards": [
                 {
                     "id": "11",
@@ -151,30 +151,30 @@ rsvpChris = {
     acceptance: true
 }
 synchroniseChris = {
-        "flashDecks": [
-            {
-                "id": "10",
-                "name": "The name of the deck",
-                "flashCards": [
-                    {
-                        "id": "11",
-                        "question": "How much?",
-                        "correctAnswers": [
-                            "a lot"
-                        ]
-                    },
+    "flashDecks": [
+        {
+            "id": "10",
+            "name": "The name of the deck",
+            "flashCards": [
+                {
+                    "id": "11",
+                    "question": "How much?",
+                    "correctAnswers": [
+                        "a lot"
+                    ]
+                },
 
-                    {
-                        "id": "12",
-                        "question": "Ow olda you boy?",
-                        "correctAnswers": [
-                            "aaaaaaa!"
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
+                {
+                    "id": "12",
+                    "question": "Ow olda you boy?",
+                    "correctAnswers": [
+                        "aaaaaaa!"
+                    ]
+                }
+            ]
+        }
+    ]
+}
 
 
 async function post(url, params, token) {
@@ -233,42 +233,55 @@ async function get(url, token) {
 
 async function test() {
     console.log("CREATING ACCOUNT TONY");
-    let tony=await post(domain+'/account', createAccountTony);
+    let tony = await post(domain + '/account', createAccountTony);
     console.log(tony);
     if (!tony || !tony.token) {
-        createAccountTony.grant_type="password";
-        tony=await post(domain+'/login', createAccountTony);
+        createAccountTony.grant_type = "password";
+        tony = await post(domain + '/login', createAccountTony);
     }
     console.log(tony);
     console.log("SYNCHRONISING TONY");
-    let tonySynch=await post(domain+'/synchronise', synchroniseTony, tony.token);
+    let tonySynch = await post(domain + '/synchronise', synchroniseTony, tony.token);
     console.log(tonySynch);
     console.log("CREATING ACCOUNT CHRIS");
-    let chris=await post(domain+'/account', createAccountChris);
+    let chris = await post(domain + '/account', createAccountChris);
     console.log(chris);
     if (!chris || !chris.token) {
-        createAccountChris.grant_type="password";
-        chris=await post(domain+'/login', createAccountChris);
+        createAccountChris.grant_type = "password";
+        chris = await post(domain + '/login', createAccountChris);
     }
     console.log(chris);;
     console.log("RSVP CHRIS");
-    let chrisRsvp=await post(domain+'/rsvp', rsvpChris, chris.token);
+    let chrisRsvp = await post(domain + '/rsvp', rsvpChris, chris.token);
     console.log(JSON.stringify(chrisRsvp));
     console.log("SYNCHRONISING CHRIS");
-    let chrisSynch=await post(domain+'/synchronise', synchroniseChris, chris.token);
+    let chrisSynch = await post(domain + '/synchronise', synchroniseChris, chris.token);
     console.log(JSON.stringify(chrisSynch));
     //console.log("DELETING A DECK TONY");
     //let tonyDeleteDeck=await post(domain+'/synchronise', deleteDeckTony, tony.token);
     //console.log(tonyDeleteDeck);
     for (var i in castOfSopranos) {
-        let createCastMembmer=await post(domain+'/account', castOfSopranos[i]);
+        let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
-    
+
+    const WebSocket = require('ws');
+
+    const ws = new WebSocket('ws://localhost:9090');
+
+    ws.on('open', function open() {
+        let data = {action: 'websocket', type: 'handshake', token: chris.token}
+        ws.send(JSON.stringify(data));
+    });
+
+    ws.on('message', function incoming(data) {
+        console.log(data);
+    });
+
 }
 
 function run() {
-    let testArg=process.argv[2];
-    if (testArg=='users') {
+    let testArg = process.argv[2];
+    if (testArg == 'users') {
         testGetAllUsers();
     } else {
         test();
@@ -277,6 +290,6 @@ function run() {
 run();
 async function testGetAllUsers() {
     console.log("test")
-    let getAll=await get(domain+'/admin?string=sopra');
-    console.log("all users",getAll);
+    let getAll = await get(domain + '/admin?string=sopra');
+    console.log("all users", getAll);
 }
