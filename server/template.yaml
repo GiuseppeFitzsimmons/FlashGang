@@ -481,8 +481,12 @@ Resources:
       KeySchema:
         - AttributeName: id
           KeyType: HASH
+        - AttributeName: connectionId
+          KeyType: RANGE
       AttributeDefinitions:
         - AttributeName: id
+          AttributeType: S
+        - AttributeName: connectionId
           AttributeType: S
       ProvisionedThroughput:
         ReadCapacityUnits: 1

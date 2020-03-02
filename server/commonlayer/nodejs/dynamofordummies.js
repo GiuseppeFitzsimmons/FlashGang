@@ -1077,8 +1077,29 @@ async function putWebsocketConnection(connectionId, id){
     await putItem({connectionId, id}, process.env.WEBSOCKET_TABLE_NAME)
 }
 
-async function getWebsocketConnection(userId){
-    let item = await getItem(userId, process.env.WEBSOCKET_TABLE_NAME)
+async function getWebsocketConnection(id){
+    const params = {
+        TableName: process.env.WEBSOCKET_TABLE_NAME,
+        KeyConditionExpression: '#id = :id',
+        ExpressionAttributeNames: {
+            '#id': 'id'
+        },
+        ExpressionAttributeValues: {
+            ':id': id
+        }
+    }
+    let item = await new Promise((resolve, reject) => {
+        var documentClient = getDocumentDbClient();
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log('getWebsocketConnection err', err);
+                resolve();
+            } else {
+                console.log('getWebsocketConnection data', data);
+                resolve(data.Items)
+            }
+        });
+    })
     return item
 }
 
