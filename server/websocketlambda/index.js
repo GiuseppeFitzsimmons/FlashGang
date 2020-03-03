@@ -20,7 +20,10 @@ exports.handler = async (event, context) => {
             let connectionId = event.requestContext.connectionId
             await dynamodbfordummies.putWebsocketConnection(connectionId, userId)
             let connection = await dynamodbfordummies.getWebsocketConnection(userId)
-            console.log('connectionWEBSOCKETLAMBDA', connection)
+        }
+        if (event.body.type == 'deckUpdate'){
+            let flashDeckId = event.requestContext.flashDeckId
+            let users = await dynamodbfordummies.getDeckUsers(flashDeckId)
         }
     }
     return returnObject

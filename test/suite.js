@@ -276,7 +276,10 @@ async function test() {
     ws.on('message', function incoming(data) {
         console.log(data);
     });
-
+    setTimeout(()=>{
+        let data = {action: 'websocket', type: 'deckUpdate', token: chris.token, requestContext: {flashDeckId: chrisSynch.flashDecks[0].id}}
+        ws.send(JSON.stringify(data));
+    }, 3000)
 }
 
 function run() {

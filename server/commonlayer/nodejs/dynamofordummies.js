@@ -1103,6 +1103,43 @@ async function getWebsocketConnection(id){
     return item
 }
 
+async function getDeckUsers(flashDeckId) {
+    const params = {
+        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+        KeyConditionExpression: 'flashDeckId = :did',
+        IndexName: 'flashdeck_index',
+        ExpressionAttributeValues: {
+            ':did': flashDeckId
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let deckUsers = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log(err);
+                resolve();
+            } else {
+                console.log(data);
+                resolve(data.Items)
+            }
+        });
+    })
+    if (deckUsers && Array.isArray(deckUsers)) {
+        params = {
+            TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+            Key: {
+                flashDeckId: id
+            }
+        };
+        for (var i in deckUsers) {
+            params.Key.userId = deckUsers[i].userId;
+            console.log("added user to deckUsers", params, deckUsers[i]);
+        }
+    }
+    console.log('deckUsers', deckUsers)
+    return deckUsers;
+}
+
 module.exports = {
     putItem,
     removeItem,
@@ -1131,5 +1168,6 @@ module.exports = {
     suspendGang,
     getAllGangs,
     putWebsocketConnection,
-    getWebsocketConnection
+    getWebsocketConnection,
+    getDeckUsers
 }
