@@ -269,7 +269,7 @@ async function test() {
     const ws = new WebSocket('ws://localhost:9090');
 
     ws.on('open', function open() {
-        let data = {action: 'websocket', type: 'handshake', token: chris.token}
+        let data = {action: 'websocket', type: 'handshake', token: tony.token}
         ws.send(JSON.stringify(data));
     });
 
@@ -277,7 +277,7 @@ async function test() {
         console.log(data);
     });
     setTimeout(()=>{
-        let data = {action: 'websocket', type: 'deckUpdate', token: chris.token, requestContext: {flashDeckId: chrisSynch.flashDecks[0].id}}
+        let data = {action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id}
         ws.send(JSON.stringify(data));
     }, 3000)
 }

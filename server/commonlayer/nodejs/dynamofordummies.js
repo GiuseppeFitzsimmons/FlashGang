@@ -1124,20 +1124,31 @@ async function getDeckUsers(flashDeckId) {
             }
         });
     })
-    if (deckUsers && Array.isArray(deckUsers)) {
-        params = {
-            TableName: process.env.FLASHDECK_USER_TABLE_NAME,
-            Key: {
-                flashDeckId: id
-            }
-        };
-        for (var i in deckUsers) {
-            params.Key.userId = deckUsers[i].userId;
-            console.log("added user to deckUsers", params, deckUsers[i]);
-        }
-    }
     console.log('deckUsers', deckUsers)
     return deckUsers;
+}
+
+async function deleteConnection(connectionId, userId){
+    const params = {
+        TableName: process.env.WEBSOCKET_TABLE_NAME,
+        Key: {
+            connectionId: connectionId,
+            id: userId
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.delete(params, function (err, data) {
+            if (err) {
+                console.log("Failed to delete connection", err);
+                resolve();
+            } else {
+                console.log("Deleted connection", err);
+                resolve(data)
+            }
+        });
+    })
+    return result;
 }
 
 module.exports = {
@@ -1169,5 +1180,6 @@ module.exports = {
     getAllGangs,
     putWebsocketConnection,
     getWebsocketConnection,
-    getDeckUsers
+    getDeckUsers,
+    deleteConnection
 }
