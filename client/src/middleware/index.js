@@ -13,14 +13,19 @@ import flashdeck from '../views/flashdeck';
 
 const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
-const WebSocket = require('ws');
+//const WebSocket = require('ws');
 
 const connectionHandler = {
     connect : function(token){
-        var ws = new WebSocket('ws://localhost:9090');
-        console.log('CONNECTIONHANDLER.CONNECT CALLED, TOKEN:', token)
-        let data = {action: 'websocket', type: 'handshake', token: token}
-        ws.send(JSON.stringify(data));
+        this.socketConnection = new WebSocket('ws://localhost:9090');
+        console.log('socketConnection:', this.socketConnection)
+        this.socketConnection.onopen=event=>{
+            console.log('CONNECTIONHANDLER.CONNECT CALLED, event:', event)
+            let data = {action: 'websocket', type: 'handshake', messageFromFlashgang: 'hello', token: token}
+            this.socketConnection.send(JSON.stringify(data));
+        }
+        //let data = {action: 'websocket', type: 'handshake', token: token}
+        //ws.send(JSON.stringify(data));
     }
     //this.disconnect = function(){}       
     //this.sendMessage = function(){}
