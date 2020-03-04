@@ -13,6 +13,19 @@ import flashdeck from '../views/flashdeck';
 
 const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
+const WebSocket = require('ws');
+const ws = new WebSocket('ws://localhost:9090');
+
+async function connectionHandler(){
+    console.log('CONNECTIONHANDLER CALLED')
+    this.connect = function(token){
+        console.log('CONNECTIONHANDLER.CONNECT CALLED, TOKEN:', token)
+        let data = {action: 'websocket', type: 'handshake', token: token}
+        ws.send(JSON.stringify(data));
+    }
+    //this.disconnect = function(){}       
+    //this.sendMessage = function(){}
+}
 
 async function synchronise(dispatch) {
     console.log('Synchronisation')
@@ -655,9 +668,13 @@ export function flashGangMiddleware({ dispatch }) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                 }
                 if (postResult.token) {
+                    console.log('CALLED')
                     localStorage.setItem('flashJwt', postResult.token)
                     localStorage.setItem('flashJwtRefresh', postResult.refresh)
+                    //await connectionHandler(postResult.token)
                     await synchronise(dispatch)
+                    //await connectionHandler.connect(postResult.token)
+                    
                 } else {
                     action.errors = postResult.errors
                 }
