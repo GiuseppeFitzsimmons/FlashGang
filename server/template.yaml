@@ -604,7 +604,12 @@ Resources:
       ApiId: !Ref WebSocketGateway
       #ApiMappingKey: String
       DomainName: !Ref WebsocketDomainName
-      Stage: prod       
+      Stage: !Ref WebsocketStage
+  WebsocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref WebSocketGateway
+      StageName: prod
   FlashCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
