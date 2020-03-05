@@ -1104,16 +1104,20 @@ async function getWebsocketConnection(id){
 }
 
 async function getDeckUsers(flashDeckId) {
+    console.log('flashDeckId',flashDeckId)
+    /*
+        Getting all gangs associated with deck
+    */
     const params = {
-        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
-        KeyConditionExpression: 'flashDeckId = :did',
-        IndexName: 'flashdeck_index',
+        TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
+        KeyConditionExpression: 'flashDeckId = :id',
+        IndexName: 'deck_index',
         ExpressionAttributeValues: {
-            ':did': flashDeckId
+            ':id': flashDeckId
         }
     }
     var documentClient = getDocumentDbClient();
-    let deckUsers = await new Promise((resolve, reject) => {
+    let gangs = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
             if (err) {
                 console.log(err);
@@ -1124,8 +1128,31 @@ async function getDeckUsers(flashDeckId) {
             }
         });
     })
-    console.log('deckUsers', deckUsers)
-    return deckUsers;
+    console.log('gangs', gangs)
+    /*
+        Getting all members of gangs associated with deck
+    */
+    const secondParams = {
+        TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
+        KeyConditionExpression: 'flashGangId = :id',
+        IndexName: 'gang_index',
+        ExpressionAttributeValues: {
+            ':id': gangs
+        }
+    }
+    let users = await new Promise((resolve, reject) => {
+        documentClient.query(secondParams, function (err, data) {
+            if (err) {
+                console.log(err);
+                resolve();
+            } else {
+                console.log(data);
+                resolve(data.Items)
+            }
+        });
+    })
+    console.log('users', users)
+    return users;
 }
 
 async function deleteConnection(connectionId, userId){

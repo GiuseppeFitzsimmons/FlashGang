@@ -26,6 +26,15 @@ const connectionHandler = {
         }
         //let data = {action: 'websocket', type: 'handshake', token: token}
         //ws.send(JSON.stringify(data));
+    },
+    sendMessage: function (token, message){
+        this.socketConnection.onmessage=event=>{
+            //temporary hardcoding of message
+            message = 'websocket message'
+            console.log('connectionhandler.sendMessage, message:', this.message)
+            let data = {action: 'websocket', type: 'message', messageFromFlashgang: this.message, token: token}
+            this.socketConnection.send(JSON.stringify(data));
+        }
     }
     //this.disconnect = function(){}       
     //this.sendMessage = function(){}
