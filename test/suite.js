@@ -1,6 +1,8 @@
 const fetch = require('node-fetch')
 //const domain='https://api.flashgang.io/v1'
 const domain = 'http://localhost:8080';
+const websockerserver = 'ws://localhost:9090';
+const WebSocket = require('ws');
 
 const createAccountTony = {
     id: 'tony@soprano.it',
@@ -264,23 +266,50 @@ async function test() {
         let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
 
-    const WebSocket = require('ws');
-
-    const ws = new WebSocket('ws://localhost:9090');
-
-    ws.on('open', function open() {
-        let data = {action: 'websocket', type: 'handshake', token: tony.token}
-        ws.send(JSON.stringify(data));
-    });
-
-    ws.on('message', function incoming(data) {
-        console.log(data);
-    });
-    setTimeout(()=>{
-        let data = {action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id}
-        ws.send(JSON.stringify(data));
+    /*
+        const ws = new WebSocket('ws://localhost:9090');
+    
+        ws.on('open', function open() {
+            let data = {action: 'websocket', type: 'handshake', token: tony.token}
+            ws.send(JSON.stringify(data));
+        });
+    
+        ws.on('message', function incoming(data) {
+            console.log(data);
+        });
+        setTimeout(()=>{
+            let data = {action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id}
+            ws.send(JSON.stringify(data));
+        }, 3000)
+        */
+    tonySocket = new WebSocketConnection('tony', tony.token);
+   chrisSocket = new WebSocketConnection('chris', chris.token);
+    setTimeout(() => {
+        let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
+        tonySocket.sendMessage(data);
     }, 3000)
 }
+function WebSocketConnection(name, token) {
+    this.name = name;
+    this.uniqueId=Math.random();
+    this.connect = function (token) {
+        this.ws = new WebSocket(websockerserver);
+        this.ws.webSocketConnection=this;
+        this.ws.on('open', function open() {
+            let data = { action: 'websocket', type: 'handshake', token: token }
+            this.webSocketConnection.ws.send(JSON.stringify(data));
+        });
+        this.ws.on('message', function incoming(data) {
+            console.log(this.webSocketConnection.name +" "+this.webSocketConnection.uniqueId+ " message received ", data);
+        });
+    }
+    this.sendMessage = function (message) {
+        this.ws.send(JSON.stringify(message));
+    }
+    this.connect(token);
+}
+wsc = new WebSocketConnection();
+console.log(wsc);
 
 function run() {
     let testArg = process.argv[2];

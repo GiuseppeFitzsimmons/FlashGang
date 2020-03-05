@@ -185,7 +185,6 @@ exports.handler = async (event, context) => {
             }
         } else {
             //Account creation sequence
-            console.log("EVENT DOT BODY", event.body, event.body.id, typeof event.body);
             event.body.id = event.body.id.toLowerCase();
             let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME);
             if (!user) {

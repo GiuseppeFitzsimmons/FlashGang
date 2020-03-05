@@ -586,6 +586,19 @@ Resources:
       DomainName: !Ref ApiDomainName
       BasePath: !Ref ApiVersion
       Stage: prod
+  WebsocketDomainName:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties: 
+      DomainName: dev-websocket.flashgang.io
+      DomainNameConfigurations: 
+        - CertificateArn: !Ref FlashCertificate
+  WebsocketMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties: 
+      ApiId: !Ref WebSocketGateway
+      #ApiMappingKey: String
+      DomainName: !Ref WebsocketDomainName
+      Stage: prod       
   FlashCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -608,6 +621,17 @@ Resources:
             EvaluateTargetHealth: false
             HostedZoneId: !GetAtt ApiDomainName.RegionalHostedZoneId
             DNSName: !GetAtt ApiDomainName.RegionalDomainName
+  WebsocketRoute53RecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: flashgang.io.
+      RecordSets:
+        - Name: dev-websocket.flashgang.io
+          Type: A
+          AliasTarget:
+            EvaluateTargetHealth: false
+            HostedZoneId: !GetAtt WebsocketDomainName.RegionalHostedZoneId
+            DNSName: !GetAtt WebsocketDomainName.RegionalDomainName
 # roles & permissions stuff
   LambdaExecutionRole:
     Type: AWS::IAM::Role
