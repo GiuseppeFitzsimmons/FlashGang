@@ -145,7 +145,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - !Ref: WebsocketIntegration
+            - Ref: WebsocketIntegration
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -157,7 +157,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - !Ref: WebsocketIntegration
+            - Ref: WebsocketIntegration
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -169,7 +169,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - !Ref: WebsocketIntegration
+            - Ref: WebsocketIntegration
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -926,4 +926,4 @@ Outputs:
       Fn::Join:
           - /
           - - integrations
-            - !Ref: WebsocketIntegration
+            - Ref: WebsocketIntegration
