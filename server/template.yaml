@@ -171,12 +171,6 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      Environment:
-        Variables:
-          BUILD_VERSION: 
-            !Ref BuildVersion
-          GREETING:
-            !Ref Greeting
       CodeUri: websocketlambda
       Runtime: nodejs8.10
       Role: 
