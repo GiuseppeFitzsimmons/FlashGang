@@ -177,7 +177,7 @@ Resources:
             !Ref BuildVersion
           GREETING:
             !Ref Greeting
-      CodeUri: websocketLambda
+      CodeUri: websocketlambda
       Runtime: nodejs8.10
       Role: 
         !GetAtt LambdaExecutionRole.Arn
