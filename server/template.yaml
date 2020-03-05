@@ -141,7 +141,7 @@ Resources:
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target: 'integrations/WebsocketIntegration'
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -149,7 +149,7 @@ Resources:
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target: 'integrations/WebsocketIntegration'
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -157,7 +157,7 @@ Resources:
       RouteKey: $disconnect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target: 'integrations/WebsocketIntegration'
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
