@@ -2,6 +2,7 @@ const fetch = require('node-fetch')
 //const domain='https://api.flashgang.io/v1'
 const domain = 'http://localhost:8080';
 const websockerserver = 'ws://localhost:9090';
+//const websockerserver='wss://dev-websocket.flashgang.io';
 const WebSocket = require('ws');
 
 const createAccountTony = {
@@ -294,6 +295,7 @@ function WebSocketConnection(name, token) {
     this.uniqueId=Math.random();
     this.connect = function (token) {
         this.ws = new WebSocket(websockerserver);
+        console.log("connected", this.ws)
         this.ws.webSocketConnection=this;
         this.ws.on('open', function open() {
             let data = { action: 'websocket', type: 'handshake', token: token }
@@ -308,8 +310,6 @@ function WebSocketConnection(name, token) {
     }
     this.connect(token);
 }
-wsc = new WebSocketConnection();
-console.log(wsc);
 
 function run() {
     let testArg = process.argv[2];

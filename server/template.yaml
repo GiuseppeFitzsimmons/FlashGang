@@ -45,6 +45,9 @@ Parameters:
   ImageServerDomain:
     Type: String
     Default: images.flashgang.io
+  WebsocketDomain:
+    Type: String
+    Default: websocket.flashgang.io
   GoogleRedirectUri:
     Type: String
     Default: 'https://api.flashgang.io/v1/googleauth'
@@ -128,16 +131,16 @@ Resources:
         AllowOrigin: "'*'"
         AllowMethods: "'OPTIONS,HEAD,GET,PUT,POST'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  WebSocketGateway:
+  FlashgangWebSocketGateway:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: WebSocketGateway
+      Name: FlashgangWebSocketGateway
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
   WebsocketRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
@@ -149,7 +152,7 @@ Resources:
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
@@ -161,8 +164,20 @@ Resources:
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: WebsocketRoute
+      Target:
+        Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration
+  WebsocketConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref FlashgangWebSocketGateway
+      RouteKey: $default
       AuthorizationType: NONE
       OperationName: WebsocketRoute
       Target:
@@ -173,7 +188,7 @@ Resources:
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       Description: Websocket Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: 
@@ -595,20 +610,20 @@ Resources:
   WebsocketDomainName:
     Type: AWS::ApiGatewayV2::DomainName
     Properties: 
-      DomainName: dev-websocket.flashgang.io
+      DomainName: !Ref WebsocketDomain
       DomainNameConfigurations: 
         - CertificateArn: !Ref FlashCertificate
   WebsocketMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties: 
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       #ApiMappingKey: String
       DomainName: !Ref WebsocketDomainName
       Stage: !Ref WebsocketStage
   WebsocketStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
-      ApiId: !Ref WebSocketGateway
+      ApiId: !Ref FlashgangWebSocketGateway
       StageName: prod
   FlashCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -637,7 +652,7 @@ Resources:
     Properties:
       HostedZoneName: flashgang.io.
       RecordSets:
-        - Name: dev-websocket.flashgang.io
+        - Name: !Ref WebsocketDomain
           Type: A
           AliasTarget:
             EvaluateTargetHealth: false
