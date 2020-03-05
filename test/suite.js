@@ -288,7 +288,7 @@ async function test() {
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
-    }, 45000)
+    }, 3000)
 }
 function WebSocketConnection(name, token) {
     this.name = name;

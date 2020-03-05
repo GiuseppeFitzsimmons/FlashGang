@@ -144,11 +144,7 @@ Resources:
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -156,11 +152,7 @@ Resources:
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -168,11 +160,7 @@ Resources:
       RouteKey: $disconnect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDefaultRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -180,11 +168,7 @@ Resources:
       RouteKey: $default
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
