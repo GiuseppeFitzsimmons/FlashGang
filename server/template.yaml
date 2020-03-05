@@ -161,14 +161,14 @@ Resources:
       AuthorizationType: NONE
       OperationName: WebsocketRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
-  WebsocketDefaultRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
-      RouteKey: $default
-      AuthorizationType: NONE
-      OperationName: WebsocketRoute
-      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
+  #WebsocketDefaultRoute:
+  #  Type: AWS::ApiGatewayV2::Route
+  #  Properties:
+  #    ApiId: !Ref FlashgangWebSocketGateway
+  #    RouteKey: $default
+  #    AuthorizationType: NONE
+  #   OperationName: WebsocketRoute
+  #    Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
