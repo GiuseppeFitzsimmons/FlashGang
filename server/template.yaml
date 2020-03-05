@@ -184,7 +184,7 @@ Resources:
     Properties:
       Handler: index.handler
       CodeUri: websocketlambda
-      Runtime: nodejs8.10
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
 # lambdas
