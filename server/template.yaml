@@ -148,7 +148,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - Ref: WebsocketIntegration
+            - WebsocketIntegration
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -160,7 +160,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - Ref: WebsocketIntegration
+            - WebsocketIntegration
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -172,8 +172,8 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - Ref: WebsocketIntegration
-  WebsocketConnectRoute:
+            - WebsocketIntegration
+  WebsocketDefaultRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref FlashgangWebSocketGateway
@@ -184,7 +184,7 @@ Resources:
         Fn::Join:
           - /
           - - integrations
-            - Ref: WebsocketIntegration
+            - WebsocketIntegration
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:

@@ -1103,13 +1103,12 @@ async function getWebsocketConnection(id){
 }
 
 async function getDeckUsers(flashDeckId) {
-    console.log('flashDeckId',flashDeckId)
     /*
         Getting all gangs associated with deck
     */
     const params = {
         TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
-        KeyConditionExpression: 'flashDeckId = :id',
+        KeyConditionExpression: 'id = :id',
         IndexName: 'deck_index',
         ExpressionAttributeValues: {
             ':id': flashDeckId
@@ -1127,7 +1126,6 @@ async function getDeckUsers(flashDeckId) {
             }
         });
     })
-    console.log('gangs', gangs)
     /*
         Getting all members of gangs associated with deck
     */
@@ -1139,19 +1137,48 @@ async function getDeckUsers(flashDeckId) {
             ':id': gangs
         }
     }
-    let users = await new Promise((resolve, reject) => {
-        documentClient.query(secondParams, function (err, data) {
-            if (err) {
-                console.log(err);
-                resolve();
-            } else {
-                console.log(data);
-                resolve(data.Items)
-            }
-        });
+    let gangUsers = await new Promise((resolve, reject)=> {
+        gangs.forEach(gang=>{
+            secondParams.ExpressionAttributeValues[':id']=gang.flashGangId;
+            documentClient.query(secondParams, function (err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    resolve(data.Items.map(user=>user.id))
+                }
+            });
+        })
     })
-    console.log('users', users)
-    return users;
+    /*
+        Final query on deck user table to get any users associated that are not in gangs
+    */
+        const userParams = {
+            TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+            KeyConditionExpression: 'flashDeckId = :id',
+            IndexName: 'flashdeck_index',
+            ExpressionAttributeValues: {
+                ':id': flashDeckId
+            }
+        }
+        let deckUsers = await new Promise((resolve, reject) => {
+            documentClient.query(userParams, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    resolve();
+                } else {
+                    console.log(data);
+                    resolve(data.Items.map(user=>user.userId))
+                }
+            });
+        })
+        
+        gangUsers.forEach(user=>{
+            if (!deckUsers.includes(user)){
+                deckUsers.push(user)
+            }
+        })
+        console.log('final deckUsers', deckUsers)
+    return deckUsers;
 }
 
 async function deleteConnection(connectionId, userId){

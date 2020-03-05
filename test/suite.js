@@ -284,18 +284,17 @@ async function test() {
         }, 3000)
         */
     tonySocket = new WebSocketConnection('tony', tony.token);
-   chrisSocket = new WebSocketConnection('chris', chris.token);
+    //chrisSocket = new WebSocketConnection('chris', chris.token);
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
-    }, 3000)
+    }, 45000)
 }
 function WebSocketConnection(name, token) {
     this.name = name;
     this.uniqueId=Math.random();
     this.connect = function (token) {
         this.ws = new WebSocket(websockerserver);
-        console.log("connected", this.ws)
         this.ws.webSocketConnection=this;
         this.ws.on('open', function open() {
             let data = { action: 'websocket', type: 'handshake', token: token }
