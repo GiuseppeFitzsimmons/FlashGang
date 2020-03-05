@@ -925,9 +925,5 @@ Outputs:
     Value: !Ref Home
   GatewayUrl:
     Value: !Ref ApiDomain
-  IntegrationTarget:
-    Value:
-      Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
+  WebsocketUrl:
+    Value: !Ref WebsocketDomain
