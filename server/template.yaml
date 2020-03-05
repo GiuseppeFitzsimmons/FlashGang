@@ -131,13 +131,13 @@ Resources:
   WebSocketGateway:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: SimpleChatWebSocket
+      Name: WebSocketGateway
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
   WebsocketRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref WebSocketGateway
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
@@ -145,7 +145,7 @@ Resources:
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref WebSocketGateway
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
@@ -153,7 +153,7 @@ Resources:
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref WebSocketGateway
       RouteKey: $disconnect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
@@ -161,7 +161,7 @@ Resources:
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref WebSocketGateway
       Description: Websocket Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: 
