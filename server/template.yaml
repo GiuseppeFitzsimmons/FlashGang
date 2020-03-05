@@ -125,7 +125,7 @@ Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: FlashGangGateway
+      Name: !Sub ${AWS::StackName}-FlashGangGateway
       StageName: prod
       Cors: 
         AllowOrigin: "'*'"
@@ -134,7 +134,7 @@ Resources:
   FlashgangWebSocketGateway:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: FlashgangWebSocketGateway
+      Name: !Sub ${AWS::StackName}-FlashgangWebSocketGateway
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
   WebsocketRoute:
