@@ -60,6 +60,8 @@ if (install != 'false') {
     console.log("done installing rsvplambda", installed.toString());
     installed = execSync('npm run install:all --prefix synchroniselambda');
     console.log("done installing synchroniselambda", installed.toString());
+    installed = execSync('npm run install:all --prefix websocketlambda');
+    console.log("done installing websocketlambda", installed.toString());
 }
 if (!stackName && environment) {
     if (environment === 'dev') {
