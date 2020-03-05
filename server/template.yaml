@@ -45,6 +45,9 @@ Parameters:
   ImageServerDomain:
     Type: String
     Default: images.flashgang.io
+  WebsocketDomain:
+    Type: String
+    Default: websocket.flashgang.io
   GoogleRedirectUri:
     Type: String
     Default: 'https://api.flashgang.io/v1/googleauth'
@@ -122,46 +125,70 @@ Resources:
   ApiGateway:
     Type: AWS::Serverless::Api
     Properties:
-      Name: FlashGangGateway
+      Name: !Sub ${AWS::StackName}-FlashGangGateway
       StageName: prod
       Cors: 
         AllowOrigin: "'*'"
         AllowMethods: "'OPTIONS,HEAD,GET,PUT,POST'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-  WebSocketGateway:
+  FlashgangWebSocketGateway:
     Type: AWS::ApiGatewayV2::Api
     Properties:
-      Name: SimpleChatWebSocket
+      Name: !Sub ${AWS::StackName}-FlashgangWebSocketGateway
       ProtocolType: WEBSOCKET
       RouteSelectionExpression: "$request.body.action"
   WebsocketRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target:
+        Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target:
+        Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $disconnect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target: '/integrations/WebsocketIntegration'
+      Target:
+        Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration
+  WebsocketConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref FlashgangWebSocketGateway
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: WebsocketRoute
+      Target:
+        Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref SimpleChatWebSocket
+      ApiId: !Ref FlashgangWebSocketGateway
       Description: Websocket Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: 
@@ -171,14 +198,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: index.handler
-      Environment:
-        Variables:
-          BUILD_VERSION: 
-            !Ref BuildVersion
-          GREETING:
-            !Ref Greeting
-      CodeUri: websocketLambda
-      Runtime: nodejs8.10
+      CodeUri: websocketlambda
+      Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
 # lambdas
@@ -586,6 +607,24 @@ Resources:
       DomainName: !Ref ApiDomainName
       BasePath: !Ref ApiVersion
       Stage: prod
+  WebsocketDomainName:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties: 
+      DomainName: !Ref WebsocketDomain
+      DomainNameConfigurations: 
+        - CertificateArn: !Ref FlashCertificate
+  WebsocketMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    Properties: 
+      ApiId: !Ref FlashgangWebSocketGateway
+      #ApiMappingKey: String
+      DomainName: !Ref WebsocketDomainName
+      Stage: !Ref WebsocketStage
+  WebsocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref FlashgangWebSocketGateway
+      StageName: prod
   FlashCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -608,6 +647,17 @@ Resources:
             EvaluateTargetHealth: false
             HostedZoneId: !GetAtt ApiDomainName.RegionalHostedZoneId
             DNSName: !GetAtt ApiDomainName.RegionalDomainName
+  WebsocketRoute53RecordSetGroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: flashgang.io.
+      RecordSets:
+        - Name: !Ref WebsocketDomain
+          Type: A
+          AliasTarget:
+            EvaluateTargetHealth: false
+            HostedZoneId: !GetAtt WebsocketDomainName.RegionalHostedZoneId
+            DNSName: !GetAtt WebsocketDomainName.RegionalDomainName
 # roles & permissions stuff
   LambdaExecutionRole:
     Type: AWS::IAM::Role
@@ -891,3 +941,9 @@ Outputs:
     Value: !Ref Home
   GatewayUrl:
     Value: !Ref ApiDomain
+  IntegrationTarget:
+    Value:
+      Fn::Join:
+          - /
+          - - integrations
+            - Ref: WebsocketIntegration

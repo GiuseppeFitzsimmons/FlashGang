@@ -11,6 +11,7 @@
     "WebAliasBase": "flashgang.io",
     "ImageServerDomain": "images.flashgang.io",
     "GoogleRedirectUri": "https://api.flashgang.io/v1/googleauth",
+    "WebsocketDomain": "websocket.flashgang.io",
     "Home": "https://www.flashgang.io",
     "CookieHome": ".flashgang.io"
   }

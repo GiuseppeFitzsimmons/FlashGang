@@ -682,7 +682,6 @@ async function putItem(item, tableName) {
 }
 
 function getDocumentDbClient() {
-    console.log("getDocumentDbClient", process.env.REGION);
     if (process.env.REGION) {
         if (process.env.DYNAMODB_ENDPOINT && process.env.DYNAMODB_ENDPOINT != '' && process.env.DYNAMODB_ENDPOINT != '::') {
             const _config = {
@@ -721,10 +720,10 @@ async function getItem(id, tableName) {
     let item = await new Promise((resolve, reject) => {
         documentClient.get(params, function (err, data) {
             if (err) {
-                console.log("Error", err);
+                //console.log("Error", err);
                 reject(err);
             } else {
-                console.log("Success", data.Item);
+                //console.log("Success", data.Item);
                 resolve(data.Item);
             }
         });
