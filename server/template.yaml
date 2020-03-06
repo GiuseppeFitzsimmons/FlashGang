@@ -194,7 +194,7 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName:
-        Ref: WebsocketFunction
+        !Ref: WebsocketFunction
       Principal: apigateway.amazonaws.com
 # lambdas
   SynchroniseLambda:
@@ -607,6 +607,23 @@ Resources:
       DomainName: !Ref WebsocketDomain
       DomainNameConfigurations: 
         - CertificateArn: !Ref FlashCertificate
+  WebsocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+    - WebsocketRoute
+    - WebsocketConnectRoute
+    - WebsocketDisconnectRoute
+    - WebsocketDefaultRoute
+    Properties:
+      ApiId:
+        Ref: FlashgangWebSocketGateway
+  WebsocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref FlashgangWebSocketGateway
+      StageName: prod
+      DeploymentId:
+        Ref: WebsocketDeployment
   WebsocketMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties: 
@@ -614,11 +631,6 @@ Resources:
       #ApiMappingKey: String
       DomainName: !Ref WebsocketDomainName
       Stage: !Ref WebsocketStage
-  WebsocketStage:
-    Type: AWS::ApiGatewayV2::Stage
-    Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
-      StageName: prod
   FlashCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
