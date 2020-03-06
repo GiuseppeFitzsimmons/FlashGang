@@ -36,7 +36,7 @@ exports.handler = async (event, context) => {
             let flashDeckId = _body.flashDeckId
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
             console.log("users", users);
-            let message = {type: 'deckUpdate', flashDeckId: flashDeckId};
+            let message = JSON.stringify({type: 'deckUpdate', flashDeckId: flashDeckId});
             //users.forEach(async user=>{
             for (var u in users) {
                 let user=users[u];
