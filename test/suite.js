@@ -281,7 +281,6 @@ function WebSocketConnection(name, token) {
     this.name = name;
     this.uniqueId = Math.random();
     this.connect = function (token) {
-        console.log("agency", agent);
         this.ws = new WebSocket(websockerserver, { agent: websocketagent });
         console.log("connected", this.ws)
         this.ws.webSocketConnection = this;
@@ -318,7 +317,7 @@ function run() {
     if (environment==='dev') {
         domain='https://api-dev.flashgang.io/v1'
         //websockerserver='wss://dev-websocket.flashgang.io/prod';
-        websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/Prod';
+        websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/prod';
        // websockerserver='wss://dev-websocket.flashgang.io/Prod';
     }
     if (justGetUsers) {

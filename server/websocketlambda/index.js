@@ -8,6 +8,7 @@ const apigwManagementApi = new AWS.ApiGatewayManagementApi({
 });
 
 exports.handler = async (event, context) => {
+    console.log("Websocket lambda enter", event);
     let returnObject = {}
     returnObject.statusCode = 200
     var reply = {}
