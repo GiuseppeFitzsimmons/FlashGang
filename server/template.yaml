@@ -151,7 +151,7 @@ Resources:
       ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $connect
       AuthorizationType: NONE
-      OperationName: WebsocketRoute
+      OperationName: WebsocketConnectRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -159,7 +159,7 @@ Resources:
       ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $disconnect
       AuthorizationType: NONE
-      OperationName: WebsocketRoute
+      OperationName: WebsocketDisconnectRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDefaultRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -167,7 +167,7 @@ Resources:
       ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $default
       AuthorizationType: NONE
-      OperationName: WebsocketRoute
+      OperationName: WebsocketDefaultRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
