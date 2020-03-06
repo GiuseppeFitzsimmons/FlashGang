@@ -194,7 +194,7 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName:
-        !Ref: WebsocketFunction
+        Ref: WebsocketFunction
       Principal: apigateway.amazonaws.com
 # lambdas
   SynchroniseLambda:
