@@ -17,7 +17,11 @@ function validateToken(event, ignoreExpiration, scope) {
         }
     } else {
         if (event.body){
-            token = event.body.token
+            let _body=event.body;
+            if (typeof _body=='string') {
+                _body=JSON.parse(_body);
+            }
+            token = _body.token
         }
     }
     if (!token) {

@@ -17,7 +17,7 @@ exports.handler = async (event, context) => {
     if (_body && typeof _body=='string') {
         _body=JSON.parse(event.body);
     }
-    if  (event.body && event.body.type){
+    if  (_body && _body.type){
         try {
             token = tokenUtility.validateToken(event);
         } catch(badtoken) {
@@ -26,14 +26,14 @@ exports.handler = async (event, context) => {
             reply=badtoken;
         }
         let userId = token.sub;
-        if (event.body.type == 'handshake'){
+        if (_body.type == 'handshake'){
             console.log('handshake made')
             let connectionId = event.requestContext.connectionId
             await dynamodbfordummies.putWebsocketConnection(connectionId, userId)
             //let connection = await dynamodbfordummies.getWebsocketConnection(userId)
-        } else if (event.body.type == 'deckUpdate'){
-            console.log('WS body', event.body)
-            let flashDeckId = event.body.flashDeckId
+        } else if (_body.type == 'deckUpdate'){
+            console.log('WS body', _body)
+            let flashDeckId = _body.flashDeckId
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
             console.log("users", users);
             let message = {type: 'deckUpdate', flashDeckId: flashDeckId};
