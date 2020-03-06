@@ -128,9 +128,9 @@ async function startDb(callback) {
 }
 async function startServer(deployParameters) {
     var crockCommand = 'crockstack'
-    if (process.platform === 'darwin') {
-        crockCommand = '../node_modules/crockstack/cli.js';
-    }
+    //if (process.platform === 'darwin') {
+        crockCommand = 'node ../node_modules/crockstack/cli.js';
+    //}
     if (deployParameters.indexOf('--parameter-overrides ') == 0) {
         deployParameters = deployParameters.replace('--parameter-overrides ', '');
     }

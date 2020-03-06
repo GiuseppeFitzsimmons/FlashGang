@@ -2,6 +2,7 @@ const fetch = require('node-fetch')
 var domain = 'http://localhost:8080';
 var websockerserver = 'ws://localhost:9090';
 const WebSocket = require('ws');
+const local=true;
 
 const createAccountTony = {
     id: 'tony@soprano.it',
@@ -185,13 +186,16 @@ async function post(url, params, token) {
     if (token) {
         _headers.authorization = token;
     }
-    let reply = await fetch(url, {
+    let options= {
         method: 'post',
         credentials: "same-origin",
         headers: _headers,
-        body: JSON.stringify(params),
-        agent
-    })
+        body: JSON.stringify(params)
+    }
+    if (!local) {
+        options.agent=agent;
+    }
+    let reply = await fetch(url, options)
         .then(function (response) {
             responseCode = response.status;
             return response.json();
@@ -236,7 +240,7 @@ async function get(url, token) {
 }
 
 async function test() {
-    console.log("CREATING ACCOUNT TONY");
+    console.log("CREATING ACCOUNT TONY", domain);
     let tony = await post(domain + '/account', createAccountTony);
     console.log(tony);
     if (!tony || !tony.token) {
@@ -281,7 +285,12 @@ function WebSocketConnection(name, token) {
     this.name = name;
     this.uniqueId = Math.random();
     this.connect = function (token) {
-        this.ws = new WebSocket(websockerserver, { agent: websocketagent });
+        if (!local) {
+            this.ws = new WebSocket(websockerserver, { agent: websocketagent });
+        } else {
+            this.ws = new WebSocket(websockerserver);
+        }
+        
         this.ws.webSocketConnection = this;
         this.ws.on('open', function open() {
             console.log("ws-1 We appear to be connected")
@@ -314,6 +323,7 @@ function run() {
         }
     });
     if (environment==='dev') {
+        local=false;
         domain='https://api-dev.flashgang.io/v1'
         //websockerserver='wss://dev-websocket.flashgang.io/prod';
         websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/prod';

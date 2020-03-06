@@ -140,31 +140,17 @@ Resources:
   WebsocketRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
+      ApiId:
+        !Ref FlashgangWebSocketGateway
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
-  #WebsocketConnectRoute:
-  #  Type: AWS::ApiGatewayV2::Route
-  #  Properties:
-  #    ApiId: !Ref FlashgangWebSocketGateway
-  #    RouteKey: $connect
-  #    AuthorizationType: NONE
-  #    OperationName: WebsocketConnectRoute
-  #    Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
-  #WebsocketDisconnectRoute:
-  #  Type: AWS::ApiGatewayV2::Route
-  #  Properties:
-  #    ApiId: !Ref FlashgangWebSocketGateway
-  #    RouteKey: $disconnect
-  #    AuthorizationType: NONE
-  #    OperationName: WebsocketDisconnectRoute
-  #    Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDefaultRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
+      ApiId:
+        !Ref FlashgangWebSocketGateway
       RouteKey: $default
       AuthorizationType: NONE
       OperationName: WebsocketDefaultRoute
@@ -172,7 +158,8 @@ Resources:
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
+      ApiId:
+        !Ref FlashgangWebSocketGateway
       Description: Websocket Integration
       IntegrationType: AWS_PROXY
       IntegrationUri: 
@@ -620,14 +607,16 @@ Resources:
   WebsocketStage:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
+      ApiId:
+        !Ref FlashgangWebSocketGateway
       StageName: prod
       DeploymentId:
         Ref: WebsocketDeployment
   WebsocketMapping:
     Type: AWS::ApiGatewayV2::ApiMapping
     Properties: 
-      ApiId: !Ref FlashgangWebSocketGateway
+      ApiId:
+        !Ref FlashgangWebSocketGateway
       #ApiMappingKey: String
       DomainName: !Ref WebsocketDomainName
       Stage: !Ref WebsocketStage
