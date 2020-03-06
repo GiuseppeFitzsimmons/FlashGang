@@ -1,8 +1,6 @@
 const fetch = require('node-fetch')
-//const domain='https://api.flashgang.io/v1'
-const domain = 'http://localhost:8080';
-const websockerserver = 'ws://localhost:9090';
-//const websockerserver='wss://dev-websocket.flashgang.io';
+var domain = 'http://localhost:8080';
+var websockerserver = 'ws://localhost:9090';
 const WebSocket = require('ws');
 
 const createAccountTony = {
@@ -178,8 +176,10 @@ synchroniseChris = {
         }
     ]
 }
-
-
+const https = require("https");
+const agent = new https.Agent({
+    rejectUnauthorized: false
+  })
 async function post(url, params, token) {
     var _headers = {}
     if (token) {
@@ -189,7 +189,8 @@ async function post(url, params, token) {
         method: 'post',
         credentials: "same-origin",
         headers: _headers,
-        body: JSON.stringify(params)
+        body: JSON.stringify(params),
+        agent
     })
         .then(function (response) {
             responseCode = response.status;
@@ -266,43 +267,30 @@ async function test() {
     for (var i in castOfSopranos) {
         let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
-
-    /*
-        const ws = new WebSocket('ws://localhost:9090');
-    
-        ws.on('open', function open() {
-            let data = {action: 'websocket', type: 'handshake', token: tony.token}
-            ws.send(JSON.stringify(data));
-        });
-    
-        ws.on('message', function incoming(data) {
-            console.log(data);
-        });
-        setTimeout(()=>{
-            let data = {action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id}
-            ws.send(JSON.stringify(data));
-        }, 3000)
-        */
     tonySocket = new WebSocketConnection('tony', tony.token);
-   chrisSocket = new WebSocketConnection('chris', chris.token);
+    chrisSocket = new WebSocketConnection('chris', chris.token);
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
     }, 3000)
 }
+const websocketagent = new https.Agent({
+    rejectUnauthorized: false
+  })
 function WebSocketConnection(name, token) {
     this.name = name;
-    this.uniqueId=Math.random();
+    this.uniqueId = Math.random();
     this.connect = function (token) {
-        this.ws = new WebSocket(websockerserver);
+        console.log("agency", agent);
+        this.ws = new WebSocket(websockerserver, { agent: websocketagent });
         console.log("connected", this.ws)
-        this.ws.webSocketConnection=this;
+        this.ws.webSocketConnection = this;
         this.ws.on('open', function open() {
             let data = { action: 'websocket', type: 'handshake', token: token }
             this.webSocketConnection.ws.send(JSON.stringify(data));
         });
         this.ws.on('message', function incoming(data) {
-            console.log(this.webSocketConnection.name +" "+this.webSocketConnection.uniqueId+ " message received ", data);
+            console.log(this.webSocketConnection.name + " " + this.webSocketConnection.uniqueId + " message received ", data);
         });
     }
     this.sendMessage = function (message) {
@@ -312,8 +300,22 @@ function WebSocketConnection(name, token) {
 }
 
 function run() {
-    let testArg = process.argv[2];
-    if (testArg == 'users') {
+    let justGetUsers = false;
+    let environment = 'local';
+    process.argv.forEach(function (val, index, array) {
+        if (val == '--users') {
+            justGetUsers = true;
+        } else if (val == '--environment') {
+            environment = array[index + 1];
+        }
+    });
+    if (environment==='dev') {
+        domain='https://api-dev.flashgang.io/v1'
+        //websockerserver='wss://dev-websocket.flashgang.io/prod';
+        websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/Prod';
+       // websockerserver='wss://dev-websocket.flashgang.io/Prod';
+    }
+    if (justGetUsers) {
         testGetAllUsers();
     } else {
         test();

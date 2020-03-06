@@ -47,5 +47,6 @@ exports.handler = async (event, context) => {
             
         }
     }
+    returnObject.body = JSON.stringify(reply);
     return returnObject
 }

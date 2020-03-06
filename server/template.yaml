@@ -202,6 +202,16 @@ Resources:
       Runtime: nodejs12.x
       Role: 
         !GetAtt LambdaExecutionRole.Arn
+  WebsocketFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+    - SimpleChatWebSocket
+    - OnDisconnectFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: WebsocketFunction
+      Principal: apigateway.amazonaws.com
 # lambdas
   SynchroniseLambda:
     Type: AWS::Serverless::Function
@@ -744,6 +754,19 @@ Resources:
                 Resource: 
                   - 'arn:aws:s3:::*'
                   - 'arn:aws:s3:::*/*'
+        - PolicyName:
+            Fn::Join:
+              - '-'
+              - - !Ref AWS::StackName
+                - websocket
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - execute-api::*
+                Resource: 
+                  - '*'
 # bucket stuff
   S3Bucket:
     Type: AWS::S3::Bucket
@@ -941,9 +964,14 @@ Outputs:
     Value: !Ref Home
   GatewayUrl:
     Value: !Ref ApiDomain
-  IntegrationTarget:
-    Value:
-      Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
+  WebSocketURI:
+      Description: The WSS Protocol URI to connect to
+      Value:
+        Fn::Join:
+        - ''
+        - - wss://
+          - Ref: FlashgangWebSocketGateway
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - Ref: WebsocketStage
