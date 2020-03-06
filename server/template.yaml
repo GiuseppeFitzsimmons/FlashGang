@@ -167,7 +167,7 @@ Resources:
       ApiId: !Ref FlashgangWebSocketGateway
       RouteKey: $default
       AuthorizationType: NONE
-     OperationName: WebsocketRoute
+      OperationName: WebsocketRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
