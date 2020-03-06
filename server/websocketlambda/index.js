@@ -37,11 +37,15 @@ exports.handler = async (event, context) => {
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
             console.log("users", users);
             let message = {type: 'deckUpdate', flashDeckId: flashDeckId};
-            users.forEach(async user=>{
+            //users.forEach(async user=>{
+            for (var u in users) {
+                let user=users[u];
                 console.log('WS user', user)
                 let connections = await dynamodbfordummies.getWebsocketConnection(user)
                 console.log('WS connections', connections)
-                connections.forEach(async connection=>{
+                //connections.forEach(async connection=>{
+                for (var c in connections) {
+                    let connection=connections[c];
                     let promiseToSend = apigwManagementApi.postToConnection({ ConnectionId: connection.connectionId, Data: message }).promise();
                     await promiseToSend.then(sent=>{
                         console.log('sent', user, connection.connectionId)
@@ -49,8 +53,10 @@ exports.handler = async (event, context) => {
                         console.log(err)
                         dynamodbfordummies.deleteConnection(connection.connectionId, user)
                     })
-                })
-            })
+                }
+                //})
+            }
+            //})
             
         }
     }
