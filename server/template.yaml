@@ -189,8 +189,8 @@ Resources:
   WebsocketFunctionPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
-    - SimpleChatWebSocket
-    - OnDisconnectFunction
+    - FlashgangWebSocketGateway
+    - WebsocketFunction
     Properties:
       Action: lambda:InvokeFunction
       FunctionName:
