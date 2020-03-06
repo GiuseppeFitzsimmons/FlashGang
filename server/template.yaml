@@ -144,11 +144,7 @@ Resources:
       RouteKey: websocket
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketConnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -156,11 +152,7 @@ Resources:
       RouteKey: $connect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketDisconnectRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
@@ -168,23 +160,15 @@ Resources:
       RouteKey: $disconnect
       AuthorizationType: NONE
       OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
-  WebsocketConnectRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref FlashgangWebSocketGateway
-      RouteKey: $default
-      AuthorizationType: NONE
-      OperationName: WebsocketRoute
-      Target:
-        Fn::Join:
-          - /
-          - - integrations
-            - Ref: WebsocketIntegration
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
+  #WebsocketDefaultRoute:
+  #  Type: AWS::ApiGatewayV2::Route
+  #  Properties:
+  #    ApiId: !Ref FlashgangWebSocketGateway
+  #    RouteKey: $default
+  #    AuthorizationType: NONE
+  #   OperationName: WebsocketRoute
+  #    Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -964,7 +948,7 @@ Outputs:
     Value: !Ref Home
   GatewayUrl:
     Value: !Ref ApiDomain
-  WebSocketURI:
+  InternalWesocketUri:
       Description: The WSS Protocol URI to connect to
       Value:
         Fn::Join:
@@ -975,3 +959,5 @@ Outputs:
           - Ref: AWS::Region
           - .amazonaws.com/
           - Ref: WebsocketStage
+  WebsocketUrl:
+    Value: !Ref WebsocketDomain

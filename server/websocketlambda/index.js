@@ -22,6 +22,7 @@ exports.handler = async (event, context) => {
         }
         let userId = token.sub;
         if (event.body.type == 'handshake'){
+            console.log('handshake made')
             let connectionId = event.requestContext.connectionId
             await dynamodbfordummies.putWebsocketConnection(connectionId, userId)
             let connection = await dynamodbfordummies.getWebsocketConnection(userId)
@@ -32,15 +33,15 @@ exports.handler = async (event, context) => {
             let message = {type: 'deckUpdate', flashDeckId: flashDeckId}
             users.forEach(async user=>{
                 console.log('WS user', user)
-                let connections = await dynamodbfordummies.getWebsocketConnection(user.userId)
+                let connections = await dynamodbfordummies.getWebsocketConnection(user)
                 console.log('WS connections', connections)
                 connections.forEach(async connection=>{
                     let promiseToSend = apigwManagementApi.postToConnection({ ConnectionId: connection.connectionId, Data: message }).promise();
                     await promiseToSend.then(sent=>{
-                        console.log('sent', sent)
+                        console.log('sent', user, connection.connectionId)
                     }).catch(err=>{
                         console.log(err)
-                        dynamodbfordummies.deleteConnection(connection.connectionId, user.userId)
+                        dynamodbfordummies.deleteConnection(connection.connectionId, user)
                     })
                 })
             })

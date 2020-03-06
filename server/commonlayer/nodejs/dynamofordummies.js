@@ -1103,16 +1103,19 @@ async function getWebsocketConnection(id){
 }
 
 async function getDeckUsers(flashDeckId) {
+    /*
+        Getting all gangs associated with deck
+    */
     const params = {
-        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
-        KeyConditionExpression: 'flashDeckId = :did',
-        IndexName: 'flashdeck_index',
+        TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
+        KeyConditionExpression: 'id = :id',
+        IndexName: 'deck_index',
         ExpressionAttributeValues: {
-            ':did': flashDeckId
+            ':id': flashDeckId
         }
     }
     var documentClient = getDocumentDbClient();
-    let deckUsers = await new Promise((resolve, reject) => {
+    let gangs = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
             if (err) {
                 console.log(err);
@@ -1123,7 +1126,58 @@ async function getDeckUsers(flashDeckId) {
             }
         });
     })
-    console.log('deckUsers', deckUsers)
+    /*
+        Getting all members of gangs associated with deck
+    */
+    const secondParams = {
+        TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
+        KeyConditionExpression: 'flashGangId = :id',
+        IndexName: 'gang_index',
+        ExpressionAttributeValues: {
+            ':id': gangs
+        }
+    }
+    let gangUsers = await new Promise((resolve, reject)=> {
+        gangs.forEach(gang=>{
+            secondParams.ExpressionAttributeValues[':id']=gang.flashGangId;
+            documentClient.query(secondParams, function (err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    resolve(data.Items.map(user=>user.id))
+                }
+            });
+        })
+    })
+    /*
+        Final query on deck user table to get any users associated that are not in gangs
+    */
+        const userParams = {
+            TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+            KeyConditionExpression: 'flashDeckId = :id',
+            IndexName: 'flashdeck_index',
+            ExpressionAttributeValues: {
+                ':id': flashDeckId
+            }
+        }
+        let deckUsers = await new Promise((resolve, reject) => {
+            documentClient.query(userParams, function (err, data) {
+                if (err) {
+                    console.log(err);
+                    resolve();
+                } else {
+                    console.log(data);
+                    resolve(data.Items.map(user=>user.userId))
+                }
+            });
+        })
+        
+        gangUsers.forEach(user=>{
+            if (!deckUsers.includes(user)){
+                deckUsers.push(user)
+            }
+        })
+        console.log('final deckUsers', deckUsers)
     return deckUsers;
 }
 

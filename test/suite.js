@@ -268,7 +268,11 @@ async function test() {
         let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
     tonySocket = new WebSocketConnection('tony', tony.token);
+<<<<<<< HEAD
     chrisSocket = new WebSocketConnection('chris', chris.token);
+=======
+    //chrisSocket = new WebSocketConnection('chris', chris.token);
+>>>>>>> 2e3450cd15df4b25fc8d17ec5e6f7911fbe17077
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
@@ -281,10 +285,15 @@ function WebSocketConnection(name, token) {
     this.name = name;
     this.uniqueId = Math.random();
     this.connect = function (token) {
+<<<<<<< HEAD
         console.log("agency", agent);
         this.ws = new WebSocket(websockerserver, { agent: websocketagent });
         console.log("connected", this.ws)
         this.ws.webSocketConnection = this;
+=======
+        this.ws = new WebSocket(websockerserver);
+        this.ws.webSocketConnection=this;
+>>>>>>> 2e3450cd15df4b25fc8d17ec5e6f7911fbe17077
         this.ws.on('open', function open() {
             let data = { action: 'websocket', type: 'handshake', token: token }
             this.webSocketConnection.ws.send(JSON.stringify(data));
