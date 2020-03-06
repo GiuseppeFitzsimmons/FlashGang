@@ -748,7 +748,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - execute-api::*
+                  - execute-api:*
                 Resource: 
                   - '*'
 # bucket stuff
