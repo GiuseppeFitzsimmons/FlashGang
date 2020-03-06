@@ -611,9 +611,9 @@ Resources:
     Type: AWS::ApiGatewayV2::Deployment
     DependsOn:
     - WebsocketRoute
-    - WebsocketConnectRoute
-    - WebsocketDisconnectRoute
-    - WebsocketDefaultRoute
+    #- WebsocketConnectRoute
+    #- WebsocketDisconnectRoute
+    #- WebsocketDefaultRoute
     Properties:
       ApiId:
         Ref: FlashgangWebSocketGateway
