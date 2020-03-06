@@ -2,10 +2,6 @@ const dynamodbfordummies = require('dynamofordummies')
 const mailUtility = require('mailutility')
 const tokenUtility = require('tokenutility');
 const AWS = require('aws-sdk');
-const apigwManagementApi = new AWS.ApiGatewayManagementApi({
-    apiVersion: '2018-11-29',
-    //endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
-});
 
 exports.handler = async (event, context) => {
     console.log("Websocket lambda enter", event);
@@ -32,6 +28,10 @@ exports.handler = async (event, context) => {
             await dynamodbfordummies.putWebsocketConnection(connectionId, userId)
             //let connection = await dynamodbfordummies.getWebsocketConnection(userId)
         } else if (_body.type == 'deckUpdate'){
+            const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+                apiVersion: '2018-11-29',
+                endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+            });
             console.log('WS body', _body)
             let flashDeckId = _body.flashDeckId
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
