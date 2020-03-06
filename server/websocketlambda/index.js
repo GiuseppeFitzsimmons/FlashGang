@@ -13,7 +13,9 @@ exports.handler = async (event, context) => {
     if (_body && typeof _body=='string') {
         _body=JSON.parse(event.body);
     }
-    if  (_body && _body.type){
+    if (event.requestContext.routeKey && event.requestContext.routeKey==='$disconnect') {
+        //TODO delete event.requestContext.connectionId from the database
+    } else if  (_body && _body.type){
         try {
             token = tokenUtility.validateToken(event);
         } catch(badtoken) {
@@ -24,9 +26,8 @@ exports.handler = async (event, context) => {
         let userId = token.sub;
         if (_body.type == 'handshake'){
             console.log('handshake made')
-            let connectionId = event.requestContext.connectionId
-            await dynamodbfordummies.putWebsocketConnection(connectionId, userId)
-            //let connection = await dynamodbfordummies.getWebsocketConnection(userId)
+            let connectionId = event.requestContext.connectionId;
+            await dynamodbfordummies.putWebsocketConnection(connectionId, userId);
         } else if (_body.type == 'deckUpdate'){
             const apigwManagementApi = new AWS.ApiGatewayManagementApi({
                 apiVersion: '2018-11-29',
