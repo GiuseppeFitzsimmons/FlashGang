@@ -268,7 +268,7 @@ async function test() {
         let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
     tonySocket = new WebSocketConnection('tony', tony.token);
-    //chrisSocket = new WebSocketConnection('chris', chris.token);
+    chrisSocket = new WebSocketConnection('chris', chris.token);
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
@@ -282,7 +282,6 @@ function WebSocketConnection(name, token) {
     this.uniqueId = Math.random();
     this.connect = function (token) {
         this.ws = new WebSocket(websockerserver, { agent: websocketagent });
-        console.log("connected", this.ws)
         this.ws.webSocketConnection = this;
         this.ws.on('open', function open() {
             console.log("ws-1 We appear to be connected")

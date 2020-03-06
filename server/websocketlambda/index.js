@@ -30,8 +30,9 @@ exports.handler = async (event, context) => {
         } else if (event.body.type == 'deckUpdate'){
             console.log('WS body', event.body)
             let flashDeckId = event.body.flashDeckId
-            let users = await dynamodbfordummies.getDeckUsers(flashDeckId)
-            let message = {type: 'deckUpdate', flashDeckId: flashDeckId}
+            let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
+            console.log("users", users);
+            let message = {type: 'deckUpdate', flashDeckId: flashDeckId};
             users.forEach(async user=>{
                 console.log('WS user', user)
                 let connections = await dynamodbfordummies.getWebsocketConnection(user)
