@@ -161,14 +161,14 @@ Resources:
       AuthorizationType: NONE
       OperationName: WebsocketRoute
       Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
-  #WebsocketDefaultRoute:
-  #  Type: AWS::ApiGatewayV2::Route
-  #  Properties:
-  #    ApiId: !Ref FlashgangWebSocketGateway
-  #    RouteKey: $default
-  #    AuthorizationType: NONE
-  #   OperationName: WebsocketRoute
-  #    Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
+  WebsocketDefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref FlashgangWebSocketGateway
+      RouteKey: $default
+      AuthorizationType: NONE
+     OperationName: WebsocketRoute
+      Target: !Join ['/',  [ 'integrations', !Ref WebsocketIntegration ],]
   WebsocketIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -947,7 +947,7 @@ Outputs:
   ClientUrl:
     Value: !Ref Home
   GatewayUrl:
-    Value: !Ref ApiDomain
+    Value: !Sub https://${ApiDomain}/${ApiVersion}
   InternalWesocketUri:
       Description: The WSS Protocol URI to connect to
       Value:
@@ -960,4 +960,4 @@ Outputs:
           - .amazonaws.com/
           - Ref: WebsocketStage
   WebsocketUrl:
-    Value: !Ref WebsocketDomain
+    Value: !Sub wss://${WebsocketDomain}/prod

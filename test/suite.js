@@ -268,11 +268,7 @@ async function test() {
         let createCastMembmer = await post(domain + '/account', castOfSopranos[i]);
     }
     tonySocket = new WebSocketConnection('tony', tony.token);
-<<<<<<< HEAD
-    chrisSocket = new WebSocketConnection('chris', chris.token);
-=======
     //chrisSocket = new WebSocketConnection('chris', chris.token);
->>>>>>> 2e3450cd15df4b25fc8d17ec5e6f7911fbe17077
     setTimeout(() => {
         let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
         tonySocket.sendMessage(data);
@@ -285,18 +281,19 @@ function WebSocketConnection(name, token) {
     this.name = name;
     this.uniqueId = Math.random();
     this.connect = function (token) {
-<<<<<<< HEAD
         console.log("agency", agent);
         this.ws = new WebSocket(websockerserver, { agent: websocketagent });
         console.log("connected", this.ws)
         this.ws.webSocketConnection = this;
-=======
-        this.ws = new WebSocket(websockerserver);
-        this.ws.webSocketConnection=this;
->>>>>>> 2e3450cd15df4b25fc8d17ec5e6f7911fbe17077
         this.ws.on('open', function open() {
+            console.log("ws-1 We appear to be connected")
             let data = { action: 'websocket', type: 'handshake', token: token }
-            this.webSocketConnection.ws.send(JSON.stringify(data));
+            try {
+                this.webSocketConnection.ws.send(JSON.stringify(data));
+                console.log("ws-2 We appear to have sent a message")
+            } catch (err) {
+                console.log("ws-3 We had an error connecting", err)
+            }
         });
         this.ws.on('message', function incoming(data) {
             console.log(this.webSocketConnection.name + " " + this.webSocketConnection.uniqueId + " message received ", data);
@@ -336,3 +333,9 @@ async function testGetAllUsers() {
     let getAll = await get(domain + '/admin?string=sopra');
     console.log("all users", getAll);
 }
+
+//./node_modules/wscat/bin/wscat -c wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/prod
+//./node_modules/wscat/bin/wscat -c wss://dev-websocket.flashgang.io/prod
+
+
+//./node_modules/wscat/bin/wscat -c wss://x905fhvzdj.execute-api.us-east-1.amazonaws.com/Prod
