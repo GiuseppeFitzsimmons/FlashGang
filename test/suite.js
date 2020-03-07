@@ -326,8 +326,12 @@ function run() {
         local=false;
         domain='https://api-dev.flashgang.io/v1'
         //websockerserver='wss://dev-websocket.flashgang.io/prod';
-        websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/prod';
-       // websockerserver='wss://dev-websocket.flashgang.io/Prod';
+        //websockerserver='wss://x0giqnvad0.execute-api.us-east-1.amazonaws.com/prod';
+        websockerserver='wss://dev-websocket.flashgang.io';
+    } else if (environment==='prod') {
+        local=false;
+        domain='https://api.flashgang.io/v1'
+        websockerserver='wss://websocket.flashgang.io';
     }
     if (justGetUsers) {
         testGetAllUsers();
