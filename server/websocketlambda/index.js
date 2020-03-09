@@ -38,9 +38,22 @@ exports.handler = async (event, context) => {
             //I'm proposing that we operate on an array of gangs and decks
             //for now I'm just getting the first deck in the array
             let flashDeckId=_body.decks[0];
-            let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
-            console.log("users", users);
+            let users = {}
+            users.gangUsers = []
+            for (var i in _body.decks){
+                deckUsers = await dynamodbfordummies.getDeckUsers(flashDeckId);
+                users.deckUsers = deckUsers
+            }
+            //              TODO: Add getGangUsers to ddb
+            /*let flashGangId = _body.gangs[0];
+            for (var i in _body.gangs){
+                gangUsers = await dynamodbfordummies.getGangUsers(flashGangId);
+                users.push(gangUsers)
+            }*/
+            console.log("users wslambda", users);
             let message = JSON.stringify({type: 'update'});
+            users = users.deckUsers.concat(users.gangUsers)
+            console.log('users wslambda concatenated', users)
             //users.forEach(async user=>{
             for (var u in users) {
                 let user=users[u];
