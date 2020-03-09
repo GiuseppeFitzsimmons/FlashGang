@@ -10,29 +10,50 @@ import {
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
 import flashdeck from '../views/flashdeck';
+import call from 'material-ui/svg-icons/communication/call';
 
 const env = require('./environment.js');
 const uuidv4 = require('uuid/v4');
 //const WebSocket = require('ws');
 
 const connectionHandler = {
-    connect : function(token){
+    connect : function(token, dispatch, callback){
         this.socketConnection = new WebSocket('ws://localhost:9090');
+        this.dispatch=dispatch;
         console.log('socketConnection:', this.socketConnection)
         this.socketConnection.onopen=event=>{
             console.log('CONNECTIONHANDLER.CONNECT CALLED, event:', event)
             let data = {action: 'websocket', type: 'handshake', messageFromFlashgang: 'hello', token: token}
             this.socketConnection.send(JSON.stringify(data));
+            if (callback) {
+                callback(this.socketConnection);
+            }
         }
         this.socketConnection.onmessage = function(event){
-            console.log('event', event)
+            console.log('websocket onmessage event', event)
+        }
+        this.socketConnection.onclose = function(event){
+            console.log('Websocket close event', event);
         }
         //let data = {action: 'websocket', type: 'handshake', token: token}
         //ws.send(JSON.stringify(data));
     },
-    sendMessage: function (token, message){
-            let data = {action: 'websocket', type: 'message', messageFromFlashgang: this.message, token: token}
-            this.socketConnection.send(JSON.stringify(data));
+    getConnection: function(callback) {
+        if (this.socketConnection && this.socketConnection.readyState==1) {
+            callback(this.socketConnection);
+        } else {
+            this.connect(this.token, this.dispatch, callback);
+        }
+    },
+    sendMessage: function (data){
+            this.getConnection(connection=>{
+                connection.send(JSON.stringify(data));
+            })
+    },
+    sendUpdateMessage: function(decks, gangs) {
+        console.log("websocket sendUpdateMessage token", this.token)
+        let data = {action: 'websocket', type:'update', token: this.token, decks, gangs}
+        this.sendMessage(data);
     }
     //this.disconnect = function(){}       
     //this.sendMessage = function(){}
@@ -118,6 +139,7 @@ async function synchronise(dispatch) {
         if (dispatch) {
             dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks } })
         }
+        connectionHandler.sendUpdateMessage(decks.map(deck=>deck.id), gangs.map(gang=>gang.id));
     } else {
         console.log("ERROR SYNCHRONISING", postResult);
         if (postResult.responseCode >= 400) {
@@ -469,7 +491,8 @@ export function flashGangMiddleware({ dispatch }) {
                 delete action.data.flashDeck.lastModified
                 localStorage.setItem('flashDeck-' + action.data.flashDeck.id, JSON.stringify(action.data.flashDeck))
                 action.data.flashDeck.mode = mode
-                synchronise(dispatch)
+                synchronise(dispatch);
+                //connectionHandler.sendUpdateMessage(['10']);
             }
             else if (action.type === NEXT_CARD) {
                 console.log('Middleware NEXT_CARD')
@@ -682,7 +705,7 @@ export function flashGangMiddleware({ dispatch }) {
                     console.log('CALLED')
                     localStorage.setItem('flashJwt', postResult.token)
                     localStorage.setItem('flashJwtRefresh', postResult.refresh)
-                    connectionHandler.connect(postResult.token)
+                    connectionHandler.connect(postResult.token, dispatch)
                     await synchronise(dispatch)
                     
                 } else {

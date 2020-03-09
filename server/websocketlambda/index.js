@@ -34,7 +34,10 @@ exports.handler = async (event, context) => {
                 endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
             });
             console.log('WS body', _body)
-            let flashDeckId = _body.flashDeckId
+            //let flashDeckId = _body.flashDeckId
+            //I'm proposing that we operate on an array of gangs and decks
+            //for now I'm just getting the first deck in the array
+            let flashDeckId=_body.decks[0];
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
             console.log("users", users);
             let message = JSON.stringify({type: 'deckUpdate', flashDeckId: flashDeckId});

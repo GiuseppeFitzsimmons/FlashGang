@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 var domain = 'http://localhost:8080';
 var websockerserver = 'ws://localhost:9090';
 const WebSocket = require('ws');
-const local=true;
+var local=true;
 
 const createAccountTony = {
     id: 'tony@soprano.it',
