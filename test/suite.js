@@ -107,38 +107,36 @@ const castOfSopranos = [createAccountCarmella, createAccountJunior, createAccoun
     createAccountBobby, createAccountVito, createAccountJohnny,
     createAccountPhil, createAccountLivia, createAccountSal,
     createAccountCarmine, createAccountMikey, createAccountAngelo]
+    const aDeck={
+        "id": "10",
+        "name": "The name of the deck",
+        "editable": "true",
+        "flashCards": [
+            {
+                "id": "11",
+                "question": "How much?",
+                "correctAnswers": [
+                    "a lot"
+                ]
+            }
+        ]
+    };
+    const aGang= {
+        "id": "11",
+        "name": "My gang",
+        "description": "My homies studying the multiplication tables",
+        "members": [
+            {
+                "id": "chris@soprano.id",
+                "state": "TO_INVITE",
+                "rank": "LIEUTENANT"
+            }
+        ],
+        "flashDecks": ["10"]
+    }
 synchroniseTony = {
-    "flashDecks": [
-        {
-            "id": "10",
-            "name": "The name of the deck",
-            "editable": "true",
-            "flashCards": [
-                {
-                    "id": "11",
-                    "question": "How much?",
-                    "correctAnswers": [
-                        "a lot"
-                    ]
-                }
-            ]
-        }
-    ],
-    "flashGangs": [
-        {
-            "id": "11",
-            "name": "My gang",
-            "description": "My homies studying the multiplication tables",
-            "members": [
-                {
-                    "id": "chris@soprano.id",
-                    "state": "TO_INVITE",
-                    "rank": "LIEUTENANT"
-                }
-            ],
-            "flashDecks": ["10"]
-        }
-    ]
+    "flashDecks": [aDeck],
+    "flashGangs": [aGang]
 }
 
 deleteDeckTony = {
@@ -273,10 +271,12 @@ async function test() {
     }
     tonySocket = new WebSocketConnection('tony', tony.token);
     chrisSocket = new WebSocketConnection('chris', chris.token);
+    synchroniseTony.flashDecks[0].name="A different deck name";
+    tonySynch = await post(domain + '/synchronise', synchroniseTony, tony.token);
     setTimeout(() => {
-        let data = { action: 'websocket', type: 'deckUpdate', token: tony.token, flashDeckId: tonySynch.flashDecks[0].id }
+        let data = { action: 'websocket', type: 'update', token: tony.token, decks: [tonySynch.flashDecks[0].id] }
         tonySocket.sendMessage(data);
-    }, 3000)
+    }, 5000)
 }
 const websocketagent = new https.Agent({
     rejectUnauthorized: false

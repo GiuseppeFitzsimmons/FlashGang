@@ -28,7 +28,7 @@ exports.handler = async (event, context) => {
             console.log('handshake made')
             let connectionId = event.requestContext.connectionId;
             await dynamodbfordummies.putWebsocketConnection(connectionId, userId);
-        } else if (_body.type == 'deckUpdate'){
+        } else if (_body.type == 'update'){
             const apigwManagementApi = new AWS.ApiGatewayManagementApi({
                 apiVersion: '2018-11-29',
                 endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
@@ -40,7 +40,7 @@ exports.handler = async (event, context) => {
             let flashDeckId=_body.decks[0];
             let users = await dynamodbfordummies.getDeckUsers(flashDeckId);
             console.log("users", users);
-            let message = JSON.stringify({type: 'deckUpdate', flashDeckId: flashDeckId});
+            let message = JSON.stringify({type: 'update'});
             //users.forEach(async user=>{
             for (var u in users) {
                 let user=users[u];
