@@ -6,10 +6,11 @@ import {
     NEW_GANG, SAVE_GANG, LOAD_FLASHGANG, CREATE_ACCOUNT,
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
     SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
-    SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT
+    SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT,
+    LOGIN_SOCIAL
 } from '../action';
 
-const initialState = {sessionExpired: false};
+const initialState = { sessionExpired: false };
 var user
 
 function rootReducer(state = initialState, action) {
@@ -77,6 +78,9 @@ function rootReducer(state = initialState, action) {
             return state
         case LOGIN:
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
+            return state
+        case LOGIN:
+            state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, jwt: action.data.jwt, refreshToken: action.data.refreshToken, loading: false })
             return state
         case LOADING:
             state = Object.assign({}, state, { loading: action.data.loading, id: action.data.id })

@@ -102,7 +102,7 @@ export default class App extends React.Component {
     //localStorage.removeItem("flashJwt")
     //localStorage.removeItem("flashJwtRefresh");
     logout();
-//    alert("Session has expired, please log in again");
+    //    alert("Session has expired, please log in again");
     this.setState({ mode: '', flashDeckId: null, error: "Session has expired, please log in again." });
   }
   createFlashDeck() {
@@ -146,10 +146,14 @@ export default class App extends React.Component {
       let parsedCookie = JSON.parse(cookie.socialLogin)
       console.log('parsedCookie', parsedCookie)
       if (parsedCookie.error) {
-        this.setState({error: parsedCookie.error})
+        this.setState({ error: parsedCookie.error })
       } else {
+        //this.setState({})
         localStorage.setItem("flashJwt", parsedCookie.jwt)
         localStorage.setItem("flashJwtRefresh", parsedCookie.refresh)
+        //this.synchroniseComponent.socialLogin(parsedCookie.jwt, parsedCookie.refresh, parsedCookie.user)
+        console.log('parsedCookie', parsedCookie)
+        this.socialLogin = { jwt: parsedCookie.jwt, refreshToken: parsedCookie.refresh, user: parsedCookie.user }
         localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
         this.callSynchronise = true
       }
@@ -223,12 +227,12 @@ export default class App extends React.Component {
         navEvent={this.navEvent}
       />
     } else if (window.location.pathname.endsWith('/admin')) {
-      renderable=<Admin
-      goGangs={this.goGangs}
-      onLogOut={this.logOut}
-      goSettings={this.goSettings}
-      goHome={this.goHome}
-      navEvent={this.navEvent}
+      renderable = <Admin
+        goGangs={this.goGangs}
+        onLogOut={this.logOut}
+        goSettings={this.goSettings}
+        goHome={this.goHome}
+        navEvent={this.navEvent}
       />
     }
     //renderable=<TestGrid/>
@@ -239,9 +243,10 @@ export default class App extends React.Component {
             <SynchroniseComponent
               callSynchronise={this.callSynchronise}
               onSessionExpired={this.onSessionExpired}
+              socialLogin={this.socialLogin}
             />
             {/*<SplashScreen showing={this.state.splashScreenShowing} />*/}
-            <ErrorDialog error={this.state.error} onClose={()=>{this.setState({error: null})}}/>
+            <ErrorDialog error={this.state.error} onClose={() => { this.setState({ error: null }) }} />
             {renderable}
           </Box>
         </ThemeProvider>

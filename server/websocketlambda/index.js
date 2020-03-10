@@ -34,9 +34,6 @@ exports.handler = async (event, context) => {
                 endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
             });
             console.log('WS body', _body)
-            //let flashDeckId = _body.flashDeckId
-            //I'm proposing that we operate on an array of gangs and decks
-            //for now I'm just getting the first deck in the array
             let users = {}
             users.gangUsers = []
             users.deckUsers = []
@@ -60,13 +57,11 @@ exports.handler = async (event, context) => {
             let message = JSON.stringify({type: 'update'});
             users=users.deckUsers.concat(users.gangUsers.filter(id=>!users.deckUsers.includes(id)));
             console.log('users wslambda concatenated', users)
-            //users.forEach(async user=>{
             for (var u in users) {
                 let user=users[u];
                 console.log('WS user', user)
                 let connections = await dynamodbfordummies.getWebsocketConnection(user)
                 console.log('WS connections', connections)
-                //connections.forEach(async connection=>{
                 for (var c in connections) {
                     let connection=connections[c];
                     let promiseToSend = apigwManagementApi.postToConnection({ ConnectionId: connection.connectionId, Data: message }).promise();
@@ -77,9 +72,7 @@ exports.handler = async (event, context) => {
                         dynamodbfordummies.deleteConnection(connection.connectionId, user)
                     })
                 }
-                //})
             }
-            //})
             
         }
     }

@@ -8,14 +8,18 @@ class SynchroniseComponent extends React.Component {
         super(props)
     }
     componentDidMount() {
-        if (this.props.callSynchronise){
+        if (this.props.callSynchronise) {
             this.props.synchronise()
+        }
+        if (this.props.socialLogin) {
+            console.log('we have social login', this.props.socialLogin)
+            this.props.loginSocial(this.props.socialLogin)
         }
     }
     componentDidUpdate() {
-        if (this.props.session && this.props.session.expired===true) {
+        if (this.props.session && this.props.session.expired === true) {
             console.log("SESSIONBUG Synchronise component componentDidUpdate expired", this.props);
-            this.props.session.expired=false;
+            this.props.session.expired = false;
             this.props.onSessionExpired(this.props.logout);
         }
     }
@@ -32,7 +36,7 @@ class SynchroniseComponent extends React.Component {
 function mapStateToProps(state, props) {
     console.log("SESSIONBUG Synchronise component mapStateToProps", state);
     return {
-        session: {expired: state.sessionExpired}
+        session: { expired: state.sessionExpired }
     }
 }
 function mapDispatchToProps(dispatch) {

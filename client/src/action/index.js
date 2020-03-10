@@ -33,7 +33,8 @@ export const SAVE_USER = 'SAVE_USER';
 export const SUSPEND_DECK = 'SUSPEND_DECK';
 export const SUSPEND_GANG = 'SUSPEND_GANG';
 export const GET_ALL_GANGS = 'GET_ALL_GANGS';
-export const LOG_OUT = 'LOG_OUT'
+export const LOG_OUT = 'LOG_OUT';
+export const LOGIN_SOCIAL = 'LOGIN_SOCIAL'
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -109,6 +110,11 @@ export function logIn(user) {
     return { type: LOGIN, data: { user } }
 
 }
+export function loginSocial(jwt, refreshToken, user) {
+    console.log("Action LOGIN_SOCIAL")
+    return { type: LOGIN_SOCIAL, data: { jwt, refreshToken, user } }
+
+}
 export function sendRSVP(flashGangId, acceptance) {
     console.log("Action RSVP")
     return { type: RSVP, data: { flashGangId, acceptance } }
@@ -171,17 +177,17 @@ export function getAllGangs(filters) {
 }
 export function saveUser(user) {
     console.log("Action SAVE_USER")
-    return { type: SAVE_USER, user: {user} }
+    return { type: SAVE_USER, user: { user } }
 
 }
 export function suspendDeck(deck) {
     console.log("Action SUSPEND_DECK")
-    return { type: SUSPEND_DECK, deck: {deck} }
+    return { type: SUSPEND_DECK, deck: { deck } }
 
 }
 export function suspendGang(gang) {
     console.log("Action SUSPEND_GANG")
-    return { type: SUSPEND_GANG, gang: {gang} }
+    return { type: SUSPEND_GANG, gang: { gang } }
 }
 export function logout() {
     console.log("Action LOG_OUT")
