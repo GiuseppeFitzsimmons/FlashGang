@@ -274,7 +274,7 @@ async function test() {
     synchroniseTony.flashDecks[0].name="A different deck name";
     tonySynch = await post(domain + '/synchronise', synchroniseTony, tony.token);
     setTimeout(() => {
-        let data = { action: 'websocket', type: 'update', token: tony.token, decks: [tonySynch.flashDecks[0].id] }
+        let data = { action: 'websocket', type: 'update', token: tony.token, decks: [tonySynch.flashDecks[0].id], gangs: [tonySynch.flashGangs[0].id] }
         tonySocket.sendMessage(data);
     }, 5000)
 }

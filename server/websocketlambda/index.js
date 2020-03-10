@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
                     gangUsers = await dynamodbfordummies.getGangUsers(flashGangId);
                     users.gangUsers = users.gangUsers.concat(gangUsers.filter(id=>!users.gangUsers.includes(id)))
                 }
-                console.log('ws deckusers: ', users.gangUsers)
+                console.log('ws gangusers: ', users.gangUsers)
             }
             let message = JSON.stringify({type: 'update'});
             users=users.deckUsers.concat(users.gangUsers.filter(id=>!users.deckUsers.includes(id)));

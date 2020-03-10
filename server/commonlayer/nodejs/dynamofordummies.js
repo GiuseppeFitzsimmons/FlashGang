@@ -1184,7 +1184,7 @@ async function getDeckUsers(flashDeckId) {
 async function getGangUsers(flashGangId) {
     const params = {
         TableName: process.env.FLASHGANG_MEMBER_TABLE_NAME,
-        KeyConditionExpression: 'id = :id',
+        KeyConditionExpression: 'flashGangId = :id',
         IndexName: 'gang_index',
         ExpressionAttributeValues: {
             ':id': flashGangId
@@ -1198,7 +1198,7 @@ async function getGangUsers(flashGangId) {
                 resolve();
             } else {
                 console.log(data);
-                resolve(data.Items)
+                resolve(data.Items.map(user => user.id))
             }
         });
     })
