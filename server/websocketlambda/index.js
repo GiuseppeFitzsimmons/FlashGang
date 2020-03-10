@@ -40,22 +40,26 @@ exports.handler = async (event, context) => {
             let flashDeckId=_body.decks[0];
             let users = {}
             users.gangUsers = []
-            for (var i in _body.decks){
-                //TODO flashDeckId is wrong - we're iterating through _body.decks, and should be getting the element at i
-                deckUsers = await dynamodbfordummies.getDeckUsers(flashDeckId);
-                users.deckUsers = deckUsers
+            users.deckUsers = []
+            if (_body.decks){
+                for (var i in _body.decks){
+                    flashDeckId = _body.decks[i]
+                    deckUsers = await dynamodbfordummies.getDeckUsers(flashDeckId);
+                    users.deckUsers = users.deckUsers.concat(deckUsers.filter(id=>!users.deckUsers.includes(id)))
+                }
+                console.log('ws deckusers: ', users.deckUsers)
             }
-            //              TODO: Add getGangUsers to ddb
-            /*let flashGangId = _body.gangs[0];
-            for (var i in _body.gangs){
-                gangUsers = await dynamodbfordummies.getGangUsers(flashGangId);
-                users.push(gangUsers)
-            }*/
-            console.log("users wslambda", users);
+
+            if (_body.gangs){
+                for (var i in _body.gangs){
+                    flashGangId = _body.gangs[i]
+                    gangUsers = await dynamodbfordummies.getGangUsers(flashGangId);
+                    users.gangUsers = users.gangUsers.concat(gangUsers.filter(id=>!users.gangUsers.includes(id)))
+                }
+                console.log('ws deckusers: ', users.gangUsers)
+            }
             let message = JSON.stringify({type: 'update'});
-            users = users.deckUsers.concat(users.gangUsers)
-            //TODO the above will still include duplicates, try this
-            //users=users.deckUsers.concat(users.gangUsers.filter(id=>!users.deckUsers.includes(id)));
+            users=users.deckUsers.concat(users.gangUsers.filter(id=>!users.deckUsers.includes(id)));
             console.log('users wslambda concatenated', users)
             //users.forEach(async user=>{
             for (var u in users) {
