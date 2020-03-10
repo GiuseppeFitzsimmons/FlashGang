@@ -37,13 +37,12 @@ exports.handler = async (event, context) => {
             //let flashDeckId = _body.flashDeckId
             //I'm proposing that we operate on an array of gangs and decks
             //for now I'm just getting the first deck in the array
-            let flashDeckId=_body.decks[0];
             let users = {}
             users.gangUsers = []
             users.deckUsers = []
             if (_body.decks){
                 for (var i in _body.decks){
-                    flashDeckId = _body.decks[i]
+                    let flashDeckId = _body.decks[i]
                     deckUsers = await dynamodbfordummies.getDeckUsers(flashDeckId);
                     users.deckUsers = users.deckUsers.concat(deckUsers.filter(id=>!users.deckUsers.includes(id)))
                 }
@@ -52,7 +51,7 @@ exports.handler = async (event, context) => {
 
             if (_body.gangs){
                 for (var i in _body.gangs){
-                    flashGangId = _body.gangs[i]
+                    let flashGangId = _body.gangs[i]
                     gangUsers = await dynamodbfordummies.getGangUsers(flashGangId);
                     users.gangUsers = users.gangUsers.concat(gangUsers.filter(id=>!users.gangUsers.includes(id)))
                 }
