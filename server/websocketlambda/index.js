@@ -41,6 +41,7 @@ exports.handler = async (event, context) => {
             let users = {}
             users.gangUsers = []
             for (var i in _body.decks){
+                //TODO flashDeckId is wrong - we're iterating through _body.decks, and should be getting the element at i
                 deckUsers = await dynamodbfordummies.getDeckUsers(flashDeckId);
                 users.deckUsers = deckUsers
             }
@@ -53,6 +54,8 @@ exports.handler = async (event, context) => {
             console.log("users wslambda", users);
             let message = JSON.stringify({type: 'update'});
             users = users.deckUsers.concat(users.gangUsers)
+            //TODO the above will still include duplicates, try this
+            //users=users.deckUsers.concat(users.gangUsers.filter(id=>!users.deckUsers.includes(id)));
             console.log('users wslambda concatenated', users)
             //users.forEach(async user=>{
             for (var u in users) {
