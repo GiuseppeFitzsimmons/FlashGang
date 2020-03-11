@@ -68,7 +68,7 @@ exports.handler = async (event, context) => {
                     await promiseToSend.then(sent=>{
                         console.log('sent', user, connection.connectionId)
                     }).catch(err=>{
-                        console.log(err)
+                        console.log("Error connecting to ", connection.connectionId, err)
                         dynamodbfordummies.deleteConnection(connection.connectionId, user)
                     })
                 }

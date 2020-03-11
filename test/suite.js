@@ -271,12 +271,15 @@ async function test() {
     }
     tonySocket = new WebSocketConnection('tony', tony.token);
     chrisSocket = new WebSocketConnection('chris', chris.token);
-    synchroniseTony.flashDecks[0].name="A different deck name";
-    tonySynch = await post(domain + '/synchronise', synchroniseTony, tony.token);
-    setTimeout(() => {
+    setTimeout(async() => {
+        synchroniseTony.flashDecks[0].name="A different deck name";
+        synchroniseTony.flashGangs[0].name="A different gang name";
+        tonySynch = await post(domain + '/synchronise', synchroniseTony, tony.token);
+    }, 10000)
+    setTimeout(async() => {
         let data = { action: 'websocket', type: 'update', token: tony.token, decks: [tonySynch.flashDecks[0].id], gangs: [tonySynch.flashGangs[0].id] }
         tonySocket.sendMessage(data);
-    }, 5000)
+    }, 15000)
 }
 const websocketagent = new https.Agent({
     rejectUnauthorized: false

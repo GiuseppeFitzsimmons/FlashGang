@@ -18,7 +18,7 @@ const uuidv4 = require('uuid/v4');
 //const WebSocket = require('ws');
 
 const connectionHandler = {
-    connect: function (token, dispatch, callback) {
+    connect: function (dispatch, callback) {
         this.socketConnection = new WebSocket('ws://localhost:9090');
         this.dispatch = dispatch;
         this.socketConnection.dispatch = dispatch;
@@ -26,7 +26,8 @@ const connectionHandler = {
         console.log('socketConnection:', this.socketConnection)
         this.socketConnection.onopen = event => {
             console.log('CONNECTIONHANDLER.CONNECT CALLED, event:', event)
-            let data = { action: 'websocket', type: 'handshake', messageFromFlashgang: 'hello', token: token }
+            let token=localStorage.getItem('flashJwt');
+            let data = { action: 'websocket', type: 'handshake', token: token }
             this.socketConnection.send(JSON.stringify(data));
             if (callback) {
                 callback(this.socketConnection);
@@ -52,17 +53,20 @@ const connectionHandler = {
         if (this.socketConnection && this.socketConnection.readyState == 1) {
             callback(this.socketConnection);
         } else {
-            this.connect(this.token, this.dispatch, callback);
+            let token=localStorage.getItem('flashJwt');
+            this.connect(this.dispatch, callback);
         }
     },
     sendMessage: function (data) {
+        data.token=localStorage.getItem('flashJwt');
+        console.log("sending message", data);
         this.getConnection(connection => {
             connection.send(JSON.stringify(data));
         })
     },
     sendUpdateMessage: function (decks, gangs) {
         console.log("websocket sendUpdateMessage token", this.token, "dispatch", this.dispatch)
-        let data = { action: 'websocket', type: 'update', token: this.token, decks, gangs }
+        let data = { action: 'websocket', type: 'update', decks, gangs }
         this.sendMessage(data);
     }
     //this.disconnect = function(){}       
@@ -717,7 +721,7 @@ export function flashGangMiddleware({ dispatch }) {
                     console.log('CALLED')
                     localStorage.setItem('flashJwt', postResult.token)
                     localStorage.setItem('flashJwtRefresh', postResult.refresh)
-                    connectionHandler.connect(postResult.token, dispatch)
+                    connectionHandler.connect(dispatch)
                     await synchronise(dispatch)
 
                 } else {
@@ -729,7 +733,7 @@ export function flashGangMiddleware({ dispatch }) {
                 if (action.data.token) {
                     localStorage.setItem('flashJwt', action.data.token)
                     localStorage.setItem('flashJwtRefresh', action.data.refreshToken)
-                    connectionHandler.connect(action.data.token, dispatch)
+                    connectionHandler.connect(dispatch)
                     await synchronise(dispatch)
 
                 } else {
