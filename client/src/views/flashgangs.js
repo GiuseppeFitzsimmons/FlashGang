@@ -150,7 +150,6 @@ class FlashGangs extends React.Component {
   }
 }
 function mapStateToProps(state, props) {
-  console.log('state', state)
   return { flashGangs: state.flashGangs, user: state.user }
 }
 function mapDispatchToProps(dispatch) {

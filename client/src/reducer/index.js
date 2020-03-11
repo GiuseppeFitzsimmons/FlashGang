@@ -110,7 +110,7 @@ function rootReducer(state = initialState, action) {
             return state
         case ENDSYNCHRONISE:
             console.log("ENDSYNCHRONISE", action);
-            state = Object.assign({}, state, { flashDecks: action.data.flashDecks })
+            state = Object.assign({}, state, { flashDecks: action.data.flashDecks, flashGangs: action.data.flashGangs })
             return state
         case SESSION_EXPIRED:
             console.log("SESSIONBUG SESSION_EXPIRED", action);

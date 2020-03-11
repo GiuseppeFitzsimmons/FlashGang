@@ -151,7 +151,7 @@ async function synchronise(dispatch) {
             }
         }
         if (dispatch) {
-            dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks } })
+            dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks, flashGangs: postResult.flashGangs } })
         }
         if (decks.length || gangs.length) {
             connectionHandler.sendUpdateMessage(decks.map(deck => deck.id), gangs.map(gang => gang.id));
