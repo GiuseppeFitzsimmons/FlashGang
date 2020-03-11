@@ -22,12 +22,12 @@ const connectionHandler = {
         this.socketConnection = new WebSocket('ws://localhost:9090');
         this.dispatch = dispatch;
         this.socketConnection.dispatch = dispatch;
-        console.log("websocket connect dispatch", this.dispatch)
-        console.log('socketConnection:', this.socketConnection)
+        console.log('websocket connect')
         this.socketConnection.onopen = event => {
-            console.log('CONNECTIONHANDLER.CONNECT CALLED, event:', event)
+            console.log('websocket open, event:', event)
             let token=localStorage.getItem('flashJwt');
             let data = { action: 'websocket', type: 'handshake', token: token }
+            console.log("websocket connect ", data)
             this.socketConnection.send(JSON.stringify(data));
             if (callback) {
                 callback(this.socketConnection);
@@ -151,7 +151,7 @@ async function synchronise(dispatch) {
             }
         }
         if (dispatch) {
-            dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks } })
+            dispatch({ type: ENDSYNCHRONISE, data: { flashDecks: postResult.flashDecks, flashGangs: postResult.flashGangs } })
         }
         if (decks.length || gangs.length) {
             connectionHandler.sendUpdateMessage(decks.map(deck => deck.id), gangs.map(gang => gang.id));
@@ -729,11 +729,11 @@ export function flashGangMiddleware({ dispatch }) {
                     action.errors = postResult.errors
                 }
             } else if (action.type === LOGIN_SOCIAL) {
-                console.log('Middleware LOGIN_SOCIAL')
+                console.log('Middleware LOGIN_SOCIAL', action.data.jwt)
                 dispatch({ type: LOADING, data: { loading: true } })
-                if (action.data.token) {
-                    localStorage.setItem('flashJwt', action.data.token)
-                    localStorage.setItem('flashJwtRefresh', action.data.refreshToken)
+                if (action.data.jwt) {
+                    localStorage.setItem('flashJwt', action.data.jwt)
+                    localStorage.setItem('flashJwtRefresh', action.data.refreshToken);
                     connectionHandler.connect(dispatch)
                     await synchronise(dispatch)
 
