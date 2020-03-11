@@ -6,7 +6,7 @@ import {
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
     SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG,
-    LOG_OUT, LOGIN_SOCIAL
+    SUSPEND_USER, LOG_OUT, LOGIN_SOCIAL
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -25,7 +25,7 @@ const connectionHandler = {
         console.log('websocket connect')
         this.socketConnection.onopen = event => {
             console.log('websocket open, event:', event)
-            let token=localStorage.getItem('flashJwt');
+            let token = localStorage.getItem('flashJwt');
             let data = { action: 'websocket', type: 'handshake', token: token }
             console.log("websocket connect ", data)
             this.socketConnection.send(JSON.stringify(data));
@@ -53,12 +53,12 @@ const connectionHandler = {
         if (this.socketConnection && this.socketConnection.readyState == 1) {
             callback(this.socketConnection);
         } else {
-            let token=localStorage.getItem('flashJwt');
+            let token = localStorage.getItem('flashJwt');
             this.connect(this.dispatch, callback);
         }
     },
     sendMessage: function (data) {
-        data.token=localStorage.getItem('flashJwt');
+        data.token = localStorage.getItem('flashJwt');
         console.log("sending message", data);
         this.getConnection(connection => {
             connection.send(JSON.stringify(data));
@@ -713,20 +713,24 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = Object.assign({}, action.data.user)
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
-                console.log('action.data.user', action.data.user)
                 let postResult = await postToServer(questObject)
-                if (postResult.user) {
-                    localStorage.setItem('currentUser', JSON.stringify(postResult.user))
-                }
-                if (postResult.token) {
-                    console.log('CALLED')
-                    localStorage.setItem('flashJwt', postResult.token)
-                    localStorage.setItem('flashJwtRefresh', postResult.refresh)
-                    connectionHandler.connect(dispatch)
-                    await synchronise(dispatch)
-
+                console.log('postResult', postResult)
+                if (postResult.user && postResult.user.suspended == true) {
+                    action.data.user.suspended = true
                 } else {
-                    action.errors = postResult.errors
+                    if (postResult.user) {
+                        localStorage.setItem('currentUser', JSON.stringify(postResult.user))
+                    }
+                    if (postResult.token) {
+                        console.log('CALLED')
+                        localStorage.setItem('flashJwt', postResult.token)
+                        localStorage.setItem('flashJwtRefresh', postResult.refresh)
+                        connectionHandler.connect(dispatch)
+                        await synchronise(dispatch)
+
+                    } else {
+                        action.errors = postResult.errors
+                    }
                 }
             } else if (action.type === LOGIN_SOCIAL) {
                 console.log('Middleware LOGIN_SOCIAL', action.data.jwt)
@@ -994,6 +998,25 @@ export function flashGangMiddleware({ dispatch }) {
                     //action.user = user
                 }
                 console.log("Error suspending gang", getResult, action)
+            } else if (action.type === SUSPEND_USER) {
+                console.log('Middleware SUSPEND_USER')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'suspendUser'
+                questObject.resource = 'admin'
+                questObject.params.user = action.user
+                questObject.params.user.id = action.user.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error suspending user", getResult, action)
             } else if (action.type === LOG_OUT) {
                 localStorage.removeItem("flashJwt")
                 localStorage.removeItem("flashJwtRefresh");

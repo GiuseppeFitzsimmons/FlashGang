@@ -7,7 +7,8 @@ import {
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
     SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
     SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT,
-    LOGIN_SOCIAL
+    LOGIN_SOCIAL,
+    SUSPEND_USER
 } from '../action';
 
 const initialState = { sessionExpired: false };
@@ -80,7 +81,7 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
             return state
         case LOGIN:
-            state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, suspended: action.data.user.suspended,  jwt: action.data.jwt, refreshToken: action.data.refreshToken, loading: false })
+            state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, suspended: action.data.user.suspended, jwt: action.data.jwt, refreshToken: action.data.refreshToken, loading: false })
             return state
         case LOADING:
             state = Object.assign({}, state, { loading: action.data.loading, id: action.data.id })
@@ -133,6 +134,9 @@ function rootReducer(state = initialState, action) {
             return state
         case SUSPEND_GANG:
             state = Object.assign({}, state, { gang: action.gang })
+            return state
+        case SUSPEND_USER:
+            state = Object.assign({}, state, { user: action.user })
             return state
         case LOG_OUT:
             state = Object.assign({}, state, { sessionExpired: false })

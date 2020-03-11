@@ -150,6 +150,11 @@ exports.handler = async (event, context) => {
                 var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
                 var gang = await dynamodbfordummies.suspendGang(_gang)
                 //console.log('suspending gang', gang)
+            } else if (event.body.type == 'suspendUser') {
+                event.body.user = event.body.user.user
+                var _user = await dynamodbfordummies.getUser(event.body.user.id)
+                var user = await dynamodbfordummies.suspendUser(_user)
+                //console.log('suspending user', user)
             }
 
             /*event.body.user = event.body.user.user

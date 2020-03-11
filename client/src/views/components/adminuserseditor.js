@@ -43,6 +43,17 @@ class AdminUsersEditor extends React.Component {
             >
                 <DialogContent>
                     <div>
+                        <FlashButton
+                            buttonType='system'
+                            onClick={() => {
+                                console.log('suspending user')
+                                this.props.user.suspended = true
+                                this.props.closeModal()
+                                this.props.suspendUser(this.props.user)
+                            }}
+                        >
+                            Suspend
+                </FlashButton>
                         <TextField
                             placeholder={this.props.user.firstName}
                             onChange={(event) => {
@@ -90,7 +101,7 @@ class AdminUsersEditor extends React.Component {
                         //this.setState({ modalShowing: false })
                         this.props.closeModal()
                         this.props.saveUser(this.props.user)
-                        this.setState({imageChanged: false})
+                        this.setState({ imageChanged: false })
                     }}
                 >
                     Save
