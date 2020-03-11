@@ -713,6 +713,7 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = Object.assign({}, action.data.user)
                 questObject.resource = 'login'
                 questObject.params.grant_type = 'password'
+                console.log('action.data.user', action.data.user)
                 let postResult = await postToServer(questObject)
                 if (postResult.user) {
                     localStorage.setItem('currentUser', JSON.stringify(postResult.user))

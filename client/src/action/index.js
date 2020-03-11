@@ -106,7 +106,7 @@ export function createAccount(user) {
 
 }
 export function logIn(user) {
-    console.log("Action LOGIN")
+    console.log("Action LOGIN", user)
     return { type: LOGIN, data: { user } }
 
 }

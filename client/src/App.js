@@ -18,6 +18,7 @@ import { Grid } from '@material-ui/core';
 import FlashAppBar from './views/widgets/flashappbar'
 import SplashScreen from './views/components/splashscreen';
 import ErrorDialog from './views/components/errordialog';
+import SuspendedDialog from './views/components/suspendeddialog';
 import SynchroniseComponent from './views/components/synchronisecomponent';
 import Settings from './views/components/settings';
 import Admin from './views/components/admin';
@@ -247,6 +248,7 @@ export default class App extends React.Component {
             />
             {/*<SplashScreen showing={this.state.splashScreenShowing} />*/}
             <ErrorDialog error={this.state.error} onClose={() => { this.setState({ error: null }) }} />
+            <SuspendedDialog suspended={this.state.suspended} />
             {renderable}
           </Box>
         </ThemeProvider>

@@ -21,6 +21,7 @@ exports.handler = async (event, context) => {
     var reply = {}
     if (typeof event.body === 'string') {
         event.body = JSON.parse(event.body)
+        console.log('account lambda event.body: ', event.body)
     }
     if (event.httpMethod.toLowerCase() === 'post') {
         if (event.body.grant_type) {
