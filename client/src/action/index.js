@@ -110,7 +110,7 @@ export function logIn(user) {
     return { type: LOGIN, data: { user } }
 
 }
-export function loginSocial(jwt, refreshToken, user) {
+export function loginSocial({jwt, refreshToken, user}) {
     console.log("Action LOGIN_SOCIAL")
     return { type: LOGIN_SOCIAL, data: { jwt, refreshToken, user } }
 
