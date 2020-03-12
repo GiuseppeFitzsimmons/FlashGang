@@ -67,7 +67,8 @@ const connectionHandler = {
         let data = { action: 'websocket', type: 'update', decks, gangs }
         this.sendMessage(data);
     },
-    keepAlive: function() {
+    keepAlive: function(dispatch) {
+        if (dispatch) this.dispatch=dispatch;
         this.getConnection(connection => {
             console.log("Keep alive ", connection);
         })
@@ -76,7 +77,7 @@ const connectionHandler = {
 
 async function synchronise(dispatch) {
     console.log('Synchronisation')
-    connectionHandler.keepAlive();
+    connectionHandler.keepAlive(dispatch);
     var questObject = {}
     questObject.params = {}
     var decks = []
