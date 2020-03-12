@@ -94,14 +94,27 @@ exports.handler = async (event, context) => {
                     if (process.env.COOKIE_HOME && process.env.COOKIE_HOME != '' && process.env.COOKIE_HOME != '::') {
                         cookie += '; Domain=' + process.env.COOKIE_HOME
                     }
-                    const reply = {
-                        statusCode: 302,
-                        headers: {
-                            location: process.env.HOME,
-                            'set-cookie': cookie,
-                            'Access-Control-Allow-Origin': "*",
-                            'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                            'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
+                    var reply = {}
+                    if (user.suspended==true){
+                        reply = {
+                            statusCode: 401,
+                            headers: {
+                                location: process.env.HOME,
+                                'Access-Control-Allow-Origin': "*",
+                                'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                                'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
+                            }
+                        }
+                    } else {
+                        reply = {
+                            statusCode: 302,
+                            headers: {
+                                location: process.env.HOME,
+                                'set-cookie': cookie,
+                                'Access-Control-Allow-Origin': "*",
+                                'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                                'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
+                            }
                         }
                     }
                     console.log("Google REPLY", reply);

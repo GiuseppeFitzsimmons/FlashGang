@@ -77,8 +77,8 @@ function rootReducer(state = initialState, action) {
         case CREATE_ACCOUNT:
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
             return state
-        case LOGIN:
-            state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, loading: false })
+        case LOGIN_SOCIAL:
+            state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, suspended: action.data.user.suspended, loading: false })
             return state
         case LOGIN:
             state = Object.assign({}, state, { loggedIn: action.errors ? false : true, errors: action.errors, user: action.data.user, suspended: action.data.user.suspended, jwt: action.data.jwt, refreshToken: action.data.refreshToken, loading: false })

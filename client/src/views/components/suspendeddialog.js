@@ -18,6 +18,9 @@ class SuspendedDialog extends React.Component {
         this.state = { open: false }
         this.handleClose = this.handleClose.bind(this);
     }
+    componentDidUpdate() {
+        console.log('suspenddialog update, this.state', this.state)
+    }
     handleClose() {
         this.setState({ open: false })
     }
@@ -35,21 +38,21 @@ class SuspendedDialog extends React.Component {
                 <DialogTitle id="confirmation-dialog-title">Suspended</DialogTitle>
 
                 <DialogContent dividers>
-                        <Grid container
-                            direction="column"
-                            justify="space-between"
-                            alignItems="flex-start">
+                    <Grid container
+                        direction="column"
+                        justify="space-between"
+                        alignItems="flex-start">
+                        <Grid
+                            container
+                            direction="row"
+                        >
                             <Grid
-                                container
-                                direction="row"
+                                item xs={10} sm={10} md={10}
                             >
-                                <Grid
-                                    item xs={10} sm={10} md={10}
-                                >
-                                    This account has been suspended.
+                                This account has been suspended.
                                 </Grid>
-                            </Grid>
                         </Grid>
+                    </Grid>
                 </DialogContent>
             </Dialog>
         )

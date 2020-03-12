@@ -35,7 +35,10 @@ exports.handler = async (event, context) => {
                     user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
                     console.log('login sequence', user)
                     if (user.suspended = true) {
-                        reply.errors = {error: 'Account suspended'}
+                        reply.token = null
+                        reply.refresh = null
+                        reply.user = null
+                        reply.errors = {fields : [{error: 'Account suspended'}], suspended:true}
                         returnObject.statusCode = 401
                     } else {
                         let _compare = await new Promise((resolve, reject) => {

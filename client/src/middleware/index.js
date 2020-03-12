@@ -716,13 +716,13 @@ export function flashGangMiddleware({ dispatch }) {
                 let postResult = await postToServer(questObject)
                 console.log('postResult', postResult)
                 if (postResult.user && postResult.user.suspended == true) {
+                    console.log('middleware setting user to suspended')
                     action.data.user.suspended = true
                 } else {
                     if (postResult.user) {
                         localStorage.setItem('currentUser', JSON.stringify(postResult.user))
                     }
                     if (postResult.token) {
-                        console.log('CALLED')
                         localStorage.setItem('flashJwt', postResult.token)
                         localStorage.setItem('flashJwtRefresh', postResult.refresh)
                         connectionHandler.connect(dispatch)
@@ -740,7 +740,6 @@ export function flashGangMiddleware({ dispatch }) {
                     localStorage.setItem('flashJwtRefresh', action.data.refreshToken);
                     connectionHandler.connect(dispatch)
                     await synchronise(dispatch)
-
                 } else {
                     action.errors = action.data.errors
                 }
