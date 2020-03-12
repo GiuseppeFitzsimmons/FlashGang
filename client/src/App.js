@@ -171,9 +171,6 @@ export default class App extends React.Component {
     return this.loggedIn
   }
   componentDidMount() {
-    /*setTimeout(() => {
-      this.setState({ splashScreenShowing: false })
-    }, 1000);*/
     window.onpopstate = function (e) {
       navEvent.onBackButtonEvent(e);
     };
