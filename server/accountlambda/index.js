@@ -28,36 +28,45 @@ exports.handler = async (event, context) => {
             if (event.body.grant_type == 'password') {
                 let userId = event.body.id ? event.body.id.toLowerCase() : '';
                 let user;
-                if (!event.body.password || event.body.password=='') {
+                if (!event.body.password || event.body.password == '') {
                     reply.errors = { fields: [{ password: `Password cannot be empty` }] }
                     returnObject.statusCode = 401
                 } else if (userId != '') {
                     user = await dynamodbfordummies.getItem(userId, process.env.USER_TABLE_NAME)
-                    let _compare = await new Promise((resolve, reject) => {
-                        bcrypt.compare(event.body.password, user.password, function (err, res) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve(res);
-                            }
-                        });
-                    }).then(res => {
-                        return res;
-                    }).catch(error => {
-                        return false
-                    });
-                    if (_compare) {
-                        let scope='all';
-                        if (user.subscription && user.subscription==='admin') {
-                            scope='all admin'
-                        }
-                        let tokenPair = tokenUtility.generateNewPair(event.body.id, scope)
-                        reply.token = tokenPair.signedJwt
-                        reply.refresh = tokenPair.signedRefresh
-                        reply.user = await dynamodbfordummies.getUser(event.body.id)
-                    } else {
-                        reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
+                    console.log('login sequence', user)
+                    if (user.suspended == true) {
+                        reply.token = null
+                        reply.refresh = null
+                        reply.user = null
+                        reply.errors = { fields: [{ error: 'Account suspended' }], suspended: true }
                         returnObject.statusCode = 401
+                    } else {
+                        let _compare = await new Promise((resolve, reject) => {
+                            bcrypt.compare(event.body.password, user.password, function (err, res) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(res);
+                                }
+                            });
+                        }).then(res => {
+                            return res;
+                        }).catch(error => {
+                            return false
+                        });
+                        if (_compare) {
+                            let scope = 'all';
+                            if (user.subscription && user.subscription === 'admin') {
+                                scope = 'all admin'
+                            }
+                            let tokenPair = tokenUtility.generateNewPair(event.body.id, scope)
+                            reply.token = tokenPair.signedJwt
+                            reply.refresh = tokenPair.signedRefresh
+                            reply.user = await dynamodbfordummies.getUser(event.body.id)
+                        } else {
+                            reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
+                            returnObject.statusCode = 401
+                        }
                     }
                 } else {
                     reply.errors = { fields: [{ id: `Email and password do not match` }, { password: `Email and password do not match` }] }
@@ -73,7 +82,7 @@ exports.handler = async (event, context) => {
                     event.authorizationToken = event.body.token;
                     console.log("validating expired refresh token", event.authorizationToken);
                     decodedRefreshAccessToken = tokenUtility.validateToken(event, false)
-                } catch (err) { 
+                } catch (err) {
                     console.log("Error validating expired access token", err, event);
                 }
                 if (decodedAccessToken && decodedRefreshAccessToken && decodedAccessToken.uuid == decodedRefreshAccessToken.uuid) {
@@ -175,7 +184,7 @@ exports.handler = async (event, context) => {
                             }
                             console.log("s3result", s3result);
                         } else {
-                            user.picture=event.body.picture;
+                            user.picture = event.body.picture;
                         }
                     }
                     await dynamodbfordummies.putUser(user);
@@ -189,7 +198,7 @@ exports.handler = async (event, context) => {
             let user = await dynamodbfordummies.getItem(event.body.id.toLowerCase(), process.env.USER_TABLE_NAME);
             if (!user) {
                 event.body.password = await hashAPass(event.body.password);
-                event.body.creationDate=(new Date()).getTime();
+                event.body.creationDate = (new Date()).getTime();
                 let dynamoItem = await dynamodbfordummies.putUser(event.body)
                 let tokenPair = tokenUtility.generateNewPair(event.body.id, 'all')
                 reply.token = tokenPair.signedJwt

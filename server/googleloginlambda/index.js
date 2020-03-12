@@ -61,6 +61,11 @@ exports.handler = async (event, context) => {
                             nickname: profileResult.data.name
                         }
                     } else {
+                        if (user.suspended) {
+                            let e = new Error()
+                            e.message = 'User is suspended.'
+                            throw e
+                        }
                         if (!user.firstName || user.firstName === '') {
                             user.firstName = profileResult.data.given_name
                         }
@@ -76,9 +81,9 @@ exports.handler = async (event, context) => {
                     }
                     await dynamodbfordummies.putUser(user);
                     user = await dynamodbfordummies.getUser(user.id);
-                    let scope='all';
-                    if (user.subscription && user.subscription=='admin') {
-                        scope='all admin';
+                    let scope = 'all';
+                    if (user.subscription && user.subscription == 'admin') {
+                        scope = 'all admin';
                     }
                     let tokenPair = tokenUtility.generateNewPair(user.id, scope);
                     let cookieValue = {

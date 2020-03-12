@@ -178,6 +178,9 @@ export default class App extends React.Component {
       navEvent.onBackButtonEvent(e);
     };
   }
+  componentDidUpdate(){
+    console.log('app.js update, this.state', this.state)
+  }
   render() {
     const loggedIn = this.checkIfUserIsInScope()
     let renderable = <Home

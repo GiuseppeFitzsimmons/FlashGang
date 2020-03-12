@@ -1064,6 +1064,13 @@ async function suspendDeck(flashDeck) {
     await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
 }
 
+async function suspendUser(user) {
+    let now = new Date();
+    user.lastModified = now.getTime();
+    user.suspended = true
+    await putItem(user, process.env.USER_TABLE_NAME)
+}
+
 async function suspendGang(flashGang) {
     console.log('suspendGang flashGang', flashGang)
     let now = new Date();
@@ -1260,5 +1267,6 @@ module.exports = {
     getWebsocketConnection,
     getDeckUsers,
     deleteConnection,
-    getGangUsers
+    getGangUsers,
+    suspendUser
 }
