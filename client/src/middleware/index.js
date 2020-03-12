@@ -27,11 +27,8 @@ const connectionHandler = {
             console.log('websocket open, event:', event)
             let token=localStorage.getItem('flashJwt');
             let data = { action: 'websocket', type: 'handshake', token: token }
-            console.log("websocket connect ", data)
-            this.socketConnection.send(JSON.stringify(data));
-            if (callback) {
-                callback(this.socketConnection);
-            }
+            console.log("websocket connect ", this.socketConnection.readyState);
+            this.waitForConnected(data, callback)
         }
         this.socketConnection.onmessage = function (event) {
             console.log('websocket onmessage event', event);
@@ -45,6 +42,21 @@ const connectionHandler = {
         }
         this.socketConnection.onclose = function (event) {
             console.log('Websocket close event', event);
+        }
+    },
+    waitForConnected(data, callback, retries) {
+        if (!retries) retries=0;
+        if (retries>3) {
+            
+        } else {
+            if (this.socketConnection.readyState==1) {
+                this.socketConnection.send(JSON.stringify(data));
+                if (callback) {
+                    callback(this.socketConnection);
+                }
+            } else {
+                setTimeout( ()=>this.waitForConnected(data, callback, retries++), 500)
+            }
         }
     },
     getConnection: function (callback) {
@@ -68,14 +80,20 @@ const connectionHandler = {
     },
     keepAlive: function(dispatch) {
         if (dispatch) this.dispatch=dispatch;
-        this.getConnection(connection => {
-            console.log("Keep alive ", connection);
-        })
+        console.log("websocket bug keepAlive");
+        try {
+            this.getConnection(connection => {
+                console.log("Keep alive ", connection);
+            })
+        } catch (err) {
+            console.log("Error on keep alive", err);
+        }
     }
 }
 
 async function synchronise(dispatch) {
     console.log('Synchronisation')
+    console.log("websocket bug synchronise");
     connectionHandler.keepAlive(dispatch);
     var questObject = {}
     questObject.params = {}

@@ -137,9 +137,9 @@ export default class App extends React.Component {
     this.forceUpdate()
   }
   checkIfUserIsInScope() {
-    if (this.loggedIn) {
+    //if (this.loggedIn) {
       //  return true
-    }
+    //}
     let cookie = Cookies();
     console.log("COOKIES", cookie);
     if (cookie.socialLogin) {
@@ -157,11 +157,13 @@ export default class App extends React.Component {
         //localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
         //this.callSynchronise = true
       }
-      eraseCookie('socialLogin')
+      eraseCookie('socialLogin');
+      this.callSynchronise = false
     }
     var _jwt = localStorage.getItem("flashJwt");
     if (!_jwt) {
       this.loggedIn = false
+      this.callSynchronise = false
     } else {
       this.loggedIn = true
       this.callSynchronise = true
