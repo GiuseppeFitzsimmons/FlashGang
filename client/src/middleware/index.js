@@ -27,16 +27,8 @@ const connectionHandler = {
             console.log('websocket open, event:', event)
             let token = localStorage.getItem('flashJwt');
             let data = { action: 'websocket', type: 'handshake', token: token }
-<<<<<<< HEAD
             console.log("websocket connect ", this.socketConnection.readyState);
             this.waitForConnected(data, callback)
-=======
-            console.log("websocket connect ", data)
-            //this.socketConnection.send(JSON.stringify(data));
-            if (callback) {
-                callback(this.socketConnection);
-            }
->>>>>>> 58403740ac25d07501279e4f4bb845b1655fef39
         }
         this.socketConnection.onmessage = function (event) {
             console.log('websocket onmessage event', event);
