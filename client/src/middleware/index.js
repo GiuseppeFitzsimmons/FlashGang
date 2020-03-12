@@ -51,7 +51,6 @@ const connectionHandler = {
         if (this.socketConnection && this.socketConnection.readyState == 1) {
             callback(this.socketConnection);
         } else {
-            let token=localStorage.getItem('flashJwt');
             this.connect(this.dispatch, callback);
         }
     },
