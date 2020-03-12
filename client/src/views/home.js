@@ -64,7 +64,9 @@ class Home extends React.Component {
           onLogOut={this.props.onLogOut} 
           goSettings={this.props.goSettings}
           user={this.props.user}
-          help='This is your list of FlashDecks. You can create a new deck or select an existing one and test yourself or edit it.'
+          help={<>This is your list of FlashDecks. 
+            You can create a new deck or select an existing one and test yourself or edit it.<br/>
+            If you want to create or edit a gang, click on the menu in the upper left hand corner and choose FlashGangs.</>}
           />
         
           <FlashDeckListButton

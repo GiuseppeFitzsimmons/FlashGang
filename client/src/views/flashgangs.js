@@ -93,7 +93,9 @@ class FlashGangs extends React.Component {
           goHome={this.props.goHome} 
           onLogOut={this.props.onLogOut} 
           goSettings={this.props.goSettings}
-          user={this.props.user} />
+          user={this.props.user}
+          help={<>This is your list of FlashGangs.<br/> 
+            You can create a new gang and invite members by adding their email addresses, and you can add FlashDecks that you created in the FlashDeck screen.</>} />
          <FlashDeckListButton
             onClick={() => {
               if (this.props.user.remainingFlashGangsAllowed > 0) {
