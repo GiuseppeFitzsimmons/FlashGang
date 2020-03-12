@@ -96,7 +96,7 @@ class FlashGangEditorStyled extends React.Component {
                         To invite new members, click on the New Member button in the members tab, and enter an email address.
                         In this tab you can also assign permissions by rank to your gang members<br/>
                         On the Gang Decks tab, you can add your decks to this gang, so that your gang members can test themselves
-                        and, if they have a rank of Lieutenant, they can edit the decks in this gang.</>} />
+                        and, if they have a rank of Lieutenant, they can edit the decks in this gang.</>}
                       />
 
                 <Grid container
