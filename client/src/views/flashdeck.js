@@ -48,6 +48,7 @@ class FlashDeck extends React.Component {
     this.props.loadFlashDeck(id, 'EDIT')
   }
   render() {
+    let helpText=''
     let renderable = <></>
     if (this.props.flashDeck && this.props.flashDeck.mode === 'COMPLETE') {
       renderable = <FlashDeckScore
@@ -57,8 +58,14 @@ class FlashDeck extends React.Component {
       />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} />
+      helpText=<>Enter a question and at least one right answer. If you enter multiple right answers, then you're writing a multiple choice test.<br/>
+      You can provide as many wrong answers as you like. These will be used for multiple choice<br/> If you don't provide enough wrong answers,
+      that's okay - the rest of the choices will be right answers randomly chosen from other questions.<br/>
+      You can also select a picture that will be displayed above the question during the test.</>
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
       renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} onFlashDeckSelected={this.props.onFlashDeckSelected} />
+      helpText=<>You have to choose a name for your deck. You can provide a description too, if you like, and select a picture.<br/>
+        If you select "editable by others" then when this deck is shared by a gang, selected members can also make changes to it.</>
     } else if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex') && this.props.flashDeck.mode == 'TEST') {
       if (this.props.flashDeck.answerType == 'SINGLE') {
         renderable = <FlashTestSingleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
@@ -72,10 +79,18 @@ class FlashDeck extends React.Component {
       }
     } else if (this.props.flashDeck && this.props.flashDeck.mode == 'TEST') {
       renderable = <FlashDeckTest flashDeck={this.props.flashDeck} onEditButtonPress={this.editFlashDeck} />
+      helpText=<>Select a test mode and an answer type. Revision and cram are for studying, and exam is for testing what you've learned.</>
     }
     return (
       <>
-        <FlashAppBar title={this.props.flashDeck ? this.props.flashDeck.name : null} station='DECK' goHome={this.props.goHome} goGangs={this.props.goGangs} onLogOut={this.props.onLogOut} goSettings={this.props.goSettings} />
+        <FlashAppBar
+          title={this.props.flashDeck ? this.props.flashDeck.name : null}
+          station='DECK'
+          goHome={this.props.goHome}
+          goGangs={this.props.goGangs}
+          onLogOut={this.props.onLogOut}
+          goSettings={this.props.goSettings}
+          help={helpText}/>
         {renderable}
       </>
     )

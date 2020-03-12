@@ -14,13 +14,32 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import { Button, Grid, GridList } from '@material-ui/core';
+import HelpIcon from '@material-ui/icons/Help';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const someImages = require('../../utility/smimages')
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default class FlashAppBar extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { openDrawer: false }
+    this.state = { openDrawer: false, helpOpen: false, helpText:'' }
+    this.openHelp=this.openHelp.bind(this);
+    this.closeHelp=this.closeHelp.bind(this);
   }
   toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -55,6 +74,12 @@ export default class FlashAppBar extends React.Component {
       </Grid>
     )
   }
+  openHelp=(text)=>{
+    this.setState({ ...this.state, helpOpen:true, helpText: text})
+  }
+  closeHelp=()=>{
+    this.setState({ ...this.state, helpOpen:false})
+  }
   render() {
     let renderable = <>
       {this.props.goSettings &&
@@ -86,6 +111,11 @@ export default class FlashAppBar extends React.Component {
         )
       }
     </>
+    let helpButton=<>
+      {this.props.help && this.props.help!='' &&
+      <HelpIcon onClick={()=>this.openHelp(this.props.help)}/>
+    }
+    </>
     return (
       <div style={{
         marginBottom: '60px'
@@ -103,6 +133,7 @@ export default class FlashAppBar extends React.Component {
             <Typography variant="h6" noWrap>
               {this.props.title ? this.props.title : 'FlashGang'}
             </Typography>
+            <div style={{marginLeft:'auto'}}>
             <IconButton aria-label="show 17 new notifications" color="inherit">
             </IconButton>
             <IconButton
@@ -111,7 +142,9 @@ export default class FlashAppBar extends React.Component {
               aria-haspopup="true"
               color="inherit"
             >
+            {helpButton}
             </IconButton>
+            </div>
           </Toolbar>
         </AppBar>
         <Drawer open={this.state.openDrawer} onClose={this.toggleDrawer(false)}>
@@ -119,6 +152,21 @@ export default class FlashAppBar extends React.Component {
             {renderable}
             </div>
         </Drawer>
+      <Dialog
+        open={this.state.helpOpen}
+        onClose={this.closeHelp}
+        maxWidth='lg'
+        TransitionComponent={Transition}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+        onClick={this.closeHelp}
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+          {this.state.helpText}
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
       </div>
     );
   }

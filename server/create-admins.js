@@ -25,8 +25,9 @@ async function createAdminAccounts() {
 
 async function createAdminAccount(email) {
     console.log("creating admin account", email, process.env.USER_TABLE_NAME);
-    const {putUser, getUser}=require('./commonlayer/nodejs/dynamofordummies');
-    let admin=await getUser(email);
+    const {putUser, getUser, getItem}=require('./commonlayer/nodejs/dynamofordummies');
+    //let admin=await getUser(email);
+    let admin=await getItem(email, process.env.USER_TABLE_NAME);
     console.log("user", email, admin);
     if (!admin) {
         admin={
@@ -37,6 +38,8 @@ async function createAdminAccount(email) {
         admin.subscription='admin'
         await putUser(admin);
     }
+    admin=await getItem(email, process.env.USER_TABLE_NAME);
+    console.log(email, " is admin ", admin.subscription==='admin')
 }
 process.argv.forEach(function (val, index, array) {
     if (val == '-e' || val == '--environment') {
