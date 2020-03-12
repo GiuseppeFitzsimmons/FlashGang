@@ -58,13 +58,14 @@ class FlashDeck extends React.Component {
       />
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT' && this.props.flashDeck.hasOwnProperty('currentIndex')) {
       renderable = <FlashCardEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} />
-      helpText=<>Enter a question and at least one right answer. If you enter two right answers, then you're writing a multiple choice test.<br/>
+      helpText=<>Enter a question and at least one right answer. If you enter multiple right answers, then you're writing a multiple choice test.<br/>
       You can provide as many wrong answers as you like. These will be used for multiple choice<br/> If you don't provide enough wrong answers,
       that's okay - the rest of the choices will be right answers randomly chosen from other questions.<br/>
-      You can also select a picture that will be displayed above the question during the test</>
+      You can also select a picture that will be displayed above the question during the test.</>
     } else if (this.props.flashDeck && this.props.flashDeck.mode === 'EDIT') {
       renderable = <FlashDeckEditor flashDeck={this.props.flashDeck} goHome={this.props.goHome} onFlashDeckSelected={this.props.onFlashDeckSelected} />
-      helpText=<>You have to choose a name for your deck. You can provide a description too, if you like, and select a picture.</>
+      helpText=<>You have to choose a name for your deck. You can provide a description too, if you like, and select a picture.<br/>
+        If you select "editable by others" then when this deck is shared by a gang, selected members can also make changes to it.</>
     } else if (this.props.flashDeck && this.props.flashDeck.hasOwnProperty('currentIndex') && this.props.flashDeck.mode == 'TEST') {
       if (this.props.flashDeck.answerType == 'SINGLE') {
         renderable = <FlashTestSingleAnswer flashDeck={this.props.flashDeck} onNextCard={this.props.scoreCard} />
