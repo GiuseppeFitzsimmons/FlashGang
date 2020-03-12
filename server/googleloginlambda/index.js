@@ -61,6 +61,11 @@ exports.handler = async (event, context) => {
                             nickname: profileResult.data.name
                         }
                     } else {
+                        if (user.suspended) {
+                            let e = new Error()
+                            e.message = 'User is suspended.'
+                            throw e
+                        }
                         if (!user.firstName || user.firstName === '') {
                             user.firstName = profileResult.data.given_name
                         }
@@ -76,9 +81,9 @@ exports.handler = async (event, context) => {
                     }
                     await dynamodbfordummies.putUser(user);
                     user = await dynamodbfordummies.getUser(user.id);
-                    let scope='all';
-                    if (user.subscription && user.subscription=='admin') {
-                        scope='all admin';
+                    let scope = 'all';
+                    if (user.subscription && user.subscription == 'admin') {
+                        scope = 'all admin';
                     }
                     let tokenPair = tokenUtility.generateNewPair(user.id, scope);
                     let cookieValue = {
@@ -94,27 +99,14 @@ exports.handler = async (event, context) => {
                     if (process.env.COOKIE_HOME && process.env.COOKIE_HOME != '' && process.env.COOKIE_HOME != '::') {
                         cookie += '; Domain=' + process.env.COOKIE_HOME
                     }
-                    var reply = {}
-                    if (user.suspended==true){
-                        reply = {
-                            statusCode: 401,
-                            headers: {
-                                location: process.env.HOME,
-                                'Access-Control-Allow-Origin': "*",
-                                'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                                'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
-                            }
-                        }
-                    } else {
-                        reply = {
-                            statusCode: 302,
-                            headers: {
-                                location: process.env.HOME,
-                                'set-cookie': cookie,
-                                'Access-Control-Allow-Origin': "*",
-                                'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
-                                'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
-                            }
+                    const reply = {
+                        statusCode: 302,
+                        headers: {
+                            location: process.env.HOME,
+                            'set-cookie': cookie,
+                            'Access-Control-Allow-Origin': "*",
+                            'Access-Control-Allow-Headers': "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
+                            'Access-Control-Allow-Methods': "OPTIONS,HEAD,GET,PUT,POST"
                         }
                     }
                     console.log("Google REPLY", reply);

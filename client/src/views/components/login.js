@@ -29,9 +29,9 @@ class Login extends React.Component {
                 this.props.onLoggedIn()
             }
         }
-        if (this.props.errors && this.props.errors.suspended==true){
+        /*if (this.props.errors && this.props.errors.suspended==true){
             console.log('suspended')
-        }
+        }*/
     }
     componentDidMount() {
         const login=this;
