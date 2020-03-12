@@ -149,13 +149,13 @@ export default class App extends React.Component {
         this.setState({ error: parsedCookie.error })
       } else {
         //this.setState({})
-        localStorage.setItem("flashJwt", parsedCookie.jwt)
-        localStorage.setItem("flashJwtRefresh", parsedCookie.refresh)
+        //localStorage.setItem("flashJwt", parsedCookie.jwt)
+        //localStorage.setItem("flashJwtRefresh", parsedCookie.refresh)
         //this.synchroniseComponent.socialLogin(parsedCookie.jwt, parsedCookie.refresh, parsedCookie.user)
         console.log('parsedCookie', parsedCookie)
         this.socialLogin = { jwt: parsedCookie.jwt, refreshToken: parsedCookie.refresh, user: parsedCookie.user }
-        localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
-        this.callSynchronise = true
+        //localStorage.setItem("currentUser", JSON.stringify(parsedCookie.user))
+        //this.callSynchronise = true
       }
       eraseCookie('socialLogin')
     }
@@ -164,6 +164,7 @@ export default class App extends React.Component {
       this.loggedIn = false
     } else {
       this.loggedIn = true
+      this.callSynchronise = true
     }
     return this.loggedIn
   }

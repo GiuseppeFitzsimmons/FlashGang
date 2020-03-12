@@ -46,8 +46,6 @@ const connectionHandler = {
         this.socketConnection.onclose = function (event) {
             console.log('Websocket close event', event);
         }
-        //let data = {action: 'websocket', type: 'handshake', token: token}
-        //ws.send(JSON.stringify(data));
     },
     getConnection: function (callback) {
         if (this.socketConnection && this.socketConnection.readyState == 1) {
@@ -68,13 +66,17 @@ const connectionHandler = {
         console.log("websocket sendUpdateMessage token", this.token, "dispatch", this.dispatch)
         let data = { action: 'websocket', type: 'update', decks, gangs }
         this.sendMessage(data);
+    },
+    keepAlive: function() {
+        this.getConnection(connection => {
+            console.log("Keep alive ", connection);
+        })
     }
-    //this.disconnect = function(){}       
-    //this.sendMessage = function(){}
 }
 
 async function synchronise(dispatch) {
     console.log('Synchronisation')
+    connectionHandler.keepAlive();
     var questObject = {}
     questObject.params = {}
     var decks = []
@@ -733,6 +735,7 @@ export function flashGangMiddleware({ dispatch }) {
                 if (action.data.jwt) {
                     localStorage.setItem('flashJwt', action.data.jwt)
                     localStorage.setItem('flashJwtRefresh', action.data.refreshToken);
+                    localStorage.setItem("currentUser", JSON.stringify(action.data.user))
                     connectionHandler.connect(dispatch)
                     await synchronise(dispatch)
 
