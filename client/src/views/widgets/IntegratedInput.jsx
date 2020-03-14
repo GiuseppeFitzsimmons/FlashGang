@@ -81,14 +81,17 @@ class IntegratedInput extends Component {
                 }
                 style={{ width: '100%' }}
             />
+        let _error=<></>
         if (_invalid || (message && message != '')) {
-            _input =  <Tooltip title={message} placement="top">{_input}</Tooltip>
+            //_input =  <Tooltip title={message} placement="top">{_input}</Tooltip>
+            _error=<><br /><label style={{ color: 'rgba(255,0,0,0.6)', fontSize:'1em' }}>{message}</label></>
         }
         return (
             <span>
                 <div style={{ marginTop: '10px' }}>
                     {_label}
                     {_input}
+                    {_error}
                 </div>
 
             </span>

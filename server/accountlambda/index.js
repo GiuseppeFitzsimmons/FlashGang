@@ -38,7 +38,7 @@ exports.handler = async (event, context) => {
                         reply.token = null
                         reply.refresh = null
                         reply.user = null
-                        reply.errors = { fields: [{ error: 'Account suspended' }], suspended: true }
+                        reply.errors = { fields: [{ id: 'Account suspended', password: 'Account suspended' }], suspended: true }
                         returnObject.statusCode = 401
                     } else {
                         let _compare = await new Promise((resolve, reject) => {
@@ -77,10 +77,8 @@ exports.handler = async (event, context) => {
                 let decodedAccessToken;
                 let decodedRefreshAccessToken;
                 try {
-                    console.log("validating expired access token", event);
                     decodedAccessToken = tokenUtility.validateToken(event, true);
                     event.authorizationToken = event.body.token;
-                    console.log("validating expired refresh token", event.authorizationToken);
                     decodedRefreshAccessToken = tokenUtility.validateToken(event, false)
                 } catch (err) {
                     console.log("Error validating expired access token", err, event);
@@ -217,28 +215,3 @@ exports.handler = async (event, context) => {
     }
     return returnObject
 }
-/*
-function validateToken(event) {
-    let token = event.authorizationToken;
-    if ((!token || token == '') && event.headers) {
-        token = event.headers.Authorization;
-        if (!token || token == '') {
-            token = event.headers.authorization;
-        }
-    }
-    if (!token || token == '') {
-        return;
-    }
-    if (token.toLowerCase().indexOf('bearer') == 0) {
-        token = token.substr(7);
-    }
-    let splitted = token.split(".");
-    if (splitted.length < 2) {
-        return
-    }
-    let buff = new Buffer(splitted[1], 'base64');
-    let decoded = buff.toString('ascii');
-    decoded = JSON.parse(decoded);
-    return decoded;
-}
-*/
