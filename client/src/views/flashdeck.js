@@ -20,7 +20,10 @@ class FlashDeck extends React.Component {
   }
   componentDidMount() {
     if (!this.props.flashDeckId) {
-      this.props.newDeck() }
+      this.props.newDeck()
+    } else {
+      this.props.loadFlashDeck(this.props.flashDeckId, this.props.mode, null, null, this.props.source)
+    }
     if (this.props.navEvent) {
       this.props.navEvent.backButton = () => {
         if (this.props.flashDeck && this.props.flashDeck.mode == "EDIT") {
