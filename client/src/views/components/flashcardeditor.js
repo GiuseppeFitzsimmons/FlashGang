@@ -135,8 +135,10 @@ class FlashCardEditor extends React.Component {
                                 placeholder='Description'
                                 onChange={
                                     (event) => {
-                                        flashCard.description = event.target.value;
-                                        this.props.flashDeck.dirty = true;
+                                        if (event.target.value.length > 0) {
+                                            flashCard.description = event.target.value;
+                                            this.props.flashDeck.dirty = true;
+                                        }
                                     }
                                 }
                                 ref={
@@ -164,7 +166,7 @@ class FlashCardEditor extends React.Component {
                             color='primary'
                             variant='contained'
                             buttonType='system'
-                            style={{width:'100%'}}
+                            style={{ width: '100%' }}
                             startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>done_all</Icon>}
                             onClick={
                                 () => {
@@ -174,7 +176,7 @@ class FlashCardEditor extends React.Component {
                                 }
                             }
                         >
-                        Add answer decription
+                            Add answer decription
                     </FlashButton>
                     </Grid>
                 )
@@ -220,7 +222,13 @@ class FlashCardEditor extends React.Component {
                                 label={label}
                                 placeholder={'Incorrect answer ' + (i + 1)}
                                 onChange={
-                                    (event) => { flashCard.incorrectAnswers[i] = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
+                                    (event) => {
+                                        if (event.target.value.length > 0) {
+                                            flashCard.incorrectAnswers[i] = event.target.value;
+                                            this.props.flashDeck.dirty = true;
+                                        }
+                                        this.forceUpdate()
+                                    }
                                 }
                                 ref={
                                     input => input ? input.reset(answer) : true
@@ -242,12 +250,18 @@ class FlashCardEditor extends React.Component {
                 justify="space-between"
                 alignItems="stretch"
             >
-                
+
                 <IntegratedInput
                     label='Question'
                     placeholder='flash card question'
                     onChange={
-                        (event) => { flashCard.question = event.target.value; this.props.flashDeck.dirty = true; this.forceUpdate() }
+                        (event) => {
+                            if (event.target.value.length > 0) {
+                                flashCard.question = event.target.value;
+                                this.props.flashDeck.dirty = true;
+                            }
+                            this.forceUpdate()
+                        }
                     }
                     ref={
                         input => input ? input.reset(flashCard.question) : true
@@ -278,7 +292,7 @@ class FlashCardEditor extends React.Component {
                         buttonType='system'
                         startIcon={<Icon style={{ fontSize: 20, color: 'green' }}>delete_outline</Icon>}
                         onClick={
-                            ()=>{
+                            () => {
                                 delete flashCard.image;
                                 this.forceUpdate();
                             }

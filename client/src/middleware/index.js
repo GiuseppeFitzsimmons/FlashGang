@@ -990,8 +990,8 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = {}
                 questObject.params.type = 'suspendDeck'
                 questObject.resource = 'admin'
-                questObject.params.deck = action.deck
-                questObject.params.deck.id = action.deck.id
+                questObject.params.deck = action.deck.deck
+                questObject.params.deck.id = action.deck.deck.id
                 console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
@@ -999,6 +999,7 @@ export function flashGangMiddleware({ dispatch }) {
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
+                    console.log("Error suspending deck", getResult, action)
                 } else {
                     //action.user = user
                 }
@@ -1009,8 +1010,8 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = {}
                 questObject.params.type = 'suspendGang'
                 questObject.resource = 'admin'
-                questObject.params.gang = action.gang
-                questObject.params.gang.id = action.gang.id
+                questObject.params.gang = action.gang.gang
+                questObject.params.gang.id = action.gang.gang.id
                 console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
@@ -1018,6 +1019,7 @@ export function flashGangMiddleware({ dispatch }) {
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
+                    console.log("Error suspending gang", getResult, action)
                 } else {
                     //action.user = user
                 }
@@ -1028,8 +1030,8 @@ export function flashGangMiddleware({ dispatch }) {
                 questObject.params = {}
                 questObject.params.type = 'suspendUser'
                 questObject.resource = 'admin'
-                questObject.params.user = action.user
-                questObject.params.user.id = action.user.id
+                questObject.params.user = action.user.user
+                questObject.params.user.id = action.user.user.id
                 console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
                 let getResult = await postToServer(questObject)
                 if (action.errors) {
@@ -1037,67 +1039,11 @@ export function flashGangMiddleware({ dispatch }) {
                     if (getResult.error) {
                         action.errors.push(getResult.error);
                     }
+                    console.log("Error suspending user", getResult, action)
                 } else {
                     //action.user = user
                 }
-                console.log("Error suspending user", getResult, action)
-            } else if (action.type === UNSUSPEND_DECK) {
-                console.log('Middleware UNSUSPEND_DECK')
-                let questObject = {}
-                questObject.params = {}
-                questObject.params.type = 'unsuspendDeck'
-                questObject.resource = 'admin'
-                questObject.params.deck = action.deck
-                questObject.params.deck.id = action.deck.id
-                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
-                let getResult = await postToServer(questObject)
-                if (action.errors) {
-                    action.errors = getResult.errors ? getResult.errors : [];
-                    if (getResult.error) {
-                        action.errors.push(getResult.error);
-                    }
-                } else {
-                    //action.user = user
-                }
-                console.log("Error unsuspending deck", getResult, action)
-            } else if (action.type === UNSUSPEND_GANG) {
-                console.log('Middleware UNSUSPEND_GANG')
-                let questObject = {}
-                questObject.params = {}
-                questObject.params.type = 'unsuspendGang'
-                questObject.resource = 'admin'
-                questObject.params.gang = action.gang
-                questObject.params.gang.id = action.gang.id
-                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
-                let getResult = await postToServer(questObject)
-                if (action.errors) {
-                    action.errors = getResult.errors ? getResult.errors : [];
-                    if (getResult.error) {
-                        action.errors.push(getResult.error);
-                    }
-                } else {
-                    //action.user = user
-                }
-                console.log("Error unsuspending gang", getResult, action)
-            } else if (action.type === UNSUSPEND_USER) {
-                console.log('Middleware UNSUSPEND_USER')
-                let questObject = {}
-                questObject.params = {}
-                questObject.params.type = 'unsuspendUser'
-                questObject.resource = 'admin'
-                questObject.params.user = action.user
-                questObject.params.user.id = action.user.id
-                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
-                let getResult = await postToServer(questObject)
-                if (action.errors) {
-                    action.errors = getResult.errors ? getResult.errors : [];
-                    if (getResult.error) {
-                        action.errors.push(getResult.error);
-                    }
-                } else {
-                    //action.user = user
-                }
-                console.log("Error unsuspending user", getResult, action)
+                
             } else if (action.type === LOG_OUT) {
                 localStorage.removeItem("flashJwt")
                 localStorage.removeItem("flashJwtRefresh");

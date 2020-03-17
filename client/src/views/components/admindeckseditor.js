@@ -48,17 +48,6 @@ class AdminDecksEditor extends React.Component {
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        console.log('unsuspending deck')
-                        this.props.flashDeck.suspended = false
-                        this.props.closeModal()
-                        this.props.unsuspendDeck(this.props.flashDeck)
-                    }}
-                >
-                    Unsuspend
-                </FlashButton>
-                <FlashButton
-                    buttonType='system'
-                    onClick={() => {
                         this.props.closeModal()
 
                     }}

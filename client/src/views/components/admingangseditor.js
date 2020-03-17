@@ -48,17 +48,6 @@ class AdminGangsEditor extends React.Component {
                 <FlashButton
                     buttonType='system'
                     onClick={() => {
-                        console.log('unsuspending deck')
-                        this.props.flashGang.suspended = false
-                        this.props.closeModal()
-                        this.props.unsuspendGang(this.props.flashGang)
-                    }}
-                >
-                    Unsuspend
-                </FlashButton>
-                <FlashButton
-                    buttonType='system'
-                    onClick={() => {
                         this.props.closeModal()
 
                     }}

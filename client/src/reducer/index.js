@@ -7,8 +7,7 @@ import {
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
     SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
     SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT,
-    LOGIN_SOCIAL, SUSPEND_USER, UNSUSPEND_DECK, UNSUSPEND_GANG,
-    UNSUSPEND_USER
+    LOGIN_SOCIAL, SUSPEND_USER
 } from '../action';
 
 const initialState = { sessionExpired: false };
@@ -139,15 +138,6 @@ function rootReducer(state = initialState, action) {
             state = Object.assign({}, state, { gang: action.gang })
             return state
         case SUSPEND_USER:
-            state = Object.assign({}, state, { user: action.user })
-            return state
-        case UNSUSPEND_DECK:
-            state = Object.assign({}, state, { deck: action.deck })
-            return state
-        case UNSUSPEND_GANG:
-            state = Object.assign({}, state, { gang: action.gang })
-            return state
-        case UNSUSPEND_USER:
             state = Object.assign({}, state, { user: action.user })
             return state
         case LOG_OUT:

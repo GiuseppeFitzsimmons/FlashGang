@@ -1056,49 +1056,33 @@ async function getAllGangs(filters) {
     }
     else return null
 }
-//Suspension
-async function suspendDeck(flashDeck) {
-    let now = new Date();
-    flashDeck.lastModified = now.getTime();
-    flashDeck.suspended = true
-    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
-}
 
-async function suspendUser(user) {
-    let now = new Date();
-    user.lastModified = now.getTime();
-    user.suspended = true
-    await putItem(user, process.env.USER_TABLE_NAME)
+async function setUserSuspension(user){
+    _user = await getItem(user.id, process.env.USER_TABLE_NAME)
+    if (_user.suspended == true){
+        _user.suspended = false
+    } else {
+        _user.suspended = true
+    }
+    await putItem(_user, process.env.USER_TABLE_NAME)
 }
-
-async function suspendGang(flashGang) {
-    console.log('suspendGang flashGang', flashGang)
-    let now = new Date();
-    flashGang.lastModified = now.getTime();
-    flashGang.suspended = true
-    await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
+async function setDeckSuspension(deck){
+    _deck = await getItem(deck.id, process.env.FLASHDECK_TABLE_NAME)
+    if (_deck.suspended == true){
+        _deck.suspended = false
+    } else {
+        _deck.suspended = true
+    }
+    await putItem(_deck, process.env.FLASHDECK_TABLE_NAME)
 }
-//Unsuspension
-async function unsuspendDeck(flashDeck) {
-    let now = new Date();
-    flashDeck.lastModified = now.getTime();
-    flashDeck.suspended = false
-    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
-}
-
-async function unsuspendUser(user) {
-    let now = new Date();
-    user.lastModified = now.getTime();
-    user.suspended = false
-    await putItem(user, process.env.USER_TABLE_NAME)
-}
-
-async function unsuspendGang(flashGang) {
-    console.log('suspendGang flashGang', flashGang)
-    let now = new Date();
-    flashGang.lastModified = now.getTime();
-    flashGang.suspended = false
-    await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
+async function setGangSuspension(gang){
+    _gang = await getItem(gang.id, process.env.FLASHGANG_TABLE_NAME)
+    if (_gang.suspended == true){
+        _gang.suspended = false
+    } else {
+        _gang.suspended = true
+    }
+    await putItem(_gang, process.env.FLASHGANG_TABLE_NAME)
 }
 
 async function putWebsocketConnection(connectionId, id) {
@@ -1280,18 +1264,15 @@ module.exports = {
     getProfile,
     getAllUsers,
     getAllDecks,
-    suspendDeck,
-    unsuspendDeck,
     getFlashDeck,
     getFlashGang,
-    suspendGang,
-    unsuspendGang,
     getAllGangs,
     putWebsocketConnection,
     getWebsocketConnection,
     getDeckUsers,
     deleteConnection,
     getGangUsers,
-    suspendUser,
-    unsuspendUser
+    setUserSuspension,
+    setDeckSuspension,
+    setGangSuspension
 }

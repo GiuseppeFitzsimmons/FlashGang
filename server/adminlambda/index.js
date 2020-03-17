@@ -141,29 +141,15 @@ exports.handler = async (event, context) => {
 
         } else if (event.httpMethod.toLowerCase() === 'post') {
             if (event.body.type == 'suspendDeck') {
-                event.body.deck = event.body.deck.deck
                 var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
-                var deck = await dynamodbfordummies.suspendDeck(_deck)
+                var deck = await dynamodbfordummies.setDeckSuspension(_deck)
             } else if (event.body.type == 'suspendGang') {
-                event.body.gang = event.body.gang.gang
                 var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
-                var gang = await dynamodbfordummies.suspendGang(_gang)
+                var gang = await dynamodbfordummies.setGangSuspension(_gang)
             } else if (event.body.type == 'suspendUser') {
-                event.body.user = event.body.user.user
+                console.log('suspendUser adminlambda event', event.body)
                 var _user = await dynamodbfordummies.getUser(event.body.user.id)
-                var user = await dynamodbfordummies.suspendUser(_user)
-            } else if (event.body.type == 'unsuspendDeck') {
-                event.body.deck = event.body.deck.deck
-                var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
-                var deck = await dynamodbfordummies.unsuspendDeck(_deck)
-            } else if (event.body.type == 'unsuspendGang') {
-                event.body.gang = event.body.gang.gang
-                var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
-                var gang = await dynamodbfordummies.unsuspendGang(_gang)
-            } else if (event.body.type == 'unsuspendUser') {
-                event.body.user = event.body.user.user
-                var _user = await dynamodbfordummies.getUser(event.body.user.id)
-                var user = await dynamodbfordummies.unsuspendUser(_user)
+                var user = await dynamodbfordummies.setUserSuspension(_user)
             }
 
             /*event.body.user = event.body.user.user

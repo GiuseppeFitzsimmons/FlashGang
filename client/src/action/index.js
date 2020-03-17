@@ -196,18 +196,6 @@ export function suspendUser(user) {
     console.log("Action SUSPEND_USER")
     return { type: SUSPEND_USER, user: { user } }
 }
-export function unsuspendDeck(deck) {
-    console.log("Action UNSUSPEND_DECK")
-    return { type: UNSUSPEND_DECK, deck: { deck } }
-}
-export function unsuspendGang(gang) {
-    console.log("Action UNSUSPEND_GANG")
-    return { type: UNSUSPEND_GANG, gang: { gang } }
-}
-export function unsuspendUser(user) {
-    console.log("Action UNSUSPEND_USER")
-    return { type: UNSUSPEND_USER, user: { user } }
-}
 export function logout() {
     console.log("Action LOG_OUT")
     return { type: LOG_OUT }
