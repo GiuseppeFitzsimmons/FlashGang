@@ -33,6 +33,9 @@ export const SAVE_USER = 'SAVE_USER';
 export const SUSPEND_DECK = 'SUSPEND_DECK';
 export const SUSPEND_GANG = 'SUSPEND_GANG';
 export const SUSPEND_USER = 'SUSPEND_USER';
+export const UNSUSPEND_DECK = 'UNSUSPEND_DECK';
+export const UNSUSPEND_GANG = 'UNSUSPEND_GANG';
+export const UNSUSPEND_USER = 'UNSUSPEND_USER';
 export const GET_ALL_GANGS = 'GET_ALL_GANGS';
 export const LOG_OUT = 'LOG_OUT';
 export const LOGIN_SOCIAL = 'LOGIN_SOCIAL'
@@ -184,7 +187,6 @@ export function saveUser(user) {
 export function suspendDeck(deck) {
     console.log("Action SUSPEND_DECK")
     return { type: SUSPEND_DECK, deck: { deck } }
-
 }
 export function suspendGang(gang) {
     console.log("Action SUSPEND_GANG")
@@ -193,6 +195,18 @@ export function suspendGang(gang) {
 export function suspendUser(user) {
     console.log("Action SUSPEND_USER")
     return { type: SUSPEND_USER, user: { user } }
+}
+export function unsuspendDeck(deck) {
+    console.log("Action UNSUSPEND_DECK")
+    return { type: UNSUSPEND_DECK, deck: { deck } }
+}
+export function unsuspendGang(gang) {
+    console.log("Action UNSUSPEND_GANG")
+    return { type: UNSUSPEND_GANG, gang: { gang } }
+}
+export function unsuspendUser(user) {
+    console.log("Action UNSUSPEND_USER")
+    return { type: UNSUSPEND_USER, user: { user } }
 }
 export function logout() {
     console.log("Action LOG_OUT")

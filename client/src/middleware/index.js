@@ -6,7 +6,8 @@ import {
     PREV_CARD, LOAD_GANGS, NEW_GANG, SAVE_GANG, LOAD_FLASHGANG,
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
     SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG,
-    SUSPEND_USER, LOG_OUT, LOGIN_SOCIAL
+    SUSPEND_USER, LOG_OUT, LOGIN_SOCIAL, UNSUSPEND_DECK, UNSUSPEND_GANG,
+    UNSUSPEND_USER
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -27,8 +28,11 @@ const connectionHandler = {
             console.log('websocket open, event:', event)
             let token = localStorage.getItem('flashJwt');
             let data = { action: 'websocket', type: 'handshake', token: token }
-            console.log("websocket connect ", this.socketConnection.readyState);
-            this.waitForConnected(data, callback)
+            console.log("websocket connect ", data)
+            //this.socketConnection.send(JSON.stringify(data));
+            if (callback) {
+                callback(this.socketConnection);
+            }
         }
         this.socketConnection.onmessage = function (event) {
             console.log('websocket onmessage event', event);
@@ -1037,6 +1041,63 @@ export function flashGangMiddleware({ dispatch }) {
                     //action.user = user
                 }
                 console.log("Error suspending user", getResult, action)
+            } else if (action.type === UNSUSPEND_DECK) {
+                console.log('Middleware UNSUSPEND_DECK')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'unsuspendDeck'
+                questObject.resource = 'admin'
+                questObject.params.deck = action.deck
+                questObject.params.deck.id = action.deck.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error unsuspending deck", getResult, action)
+            } else if (action.type === UNSUSPEND_GANG) {
+                console.log('Middleware UNSUSPEND_GANG')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'unsuspendGang'
+                questObject.resource = 'admin'
+                questObject.params.gang = action.gang
+                questObject.params.gang.id = action.gang.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error unsuspending gang", getResult, action)
+            } else if (action.type === UNSUSPEND_USER) {
+                console.log('Middleware UNSUSPEND_USER')
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.type = 'unsuspendUser'
+                questObject.resource = 'admin'
+                questObject.params.user = action.user
+                questObject.params.user.id = action.user.id
+                console.log('MIDDLEWARE QUESTOBJECT', questObject.params)
+                let getResult = await postToServer(questObject)
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                } else {
+                    //action.user = user
+                }
+                console.log("Error unsuspending user", getResult, action)
             } else if (action.type === LOG_OUT) {
                 localStorage.removeItem("flashJwt")
                 localStorage.removeItem("flashJwtRefresh");

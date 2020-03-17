@@ -144,17 +144,26 @@ exports.handler = async (event, context) => {
                 event.body.deck = event.body.deck.deck
                 var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
                 var deck = await dynamodbfordummies.suspendDeck(_deck)
-                //console.log('suspending deck', deck)
             } else if (event.body.type == 'suspendGang') {
                 event.body.gang = event.body.gang.gang
                 var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
                 var gang = await dynamodbfordummies.suspendGang(_gang)
-                //console.log('suspending gang', gang)
             } else if (event.body.type == 'suspendUser') {
                 event.body.user = event.body.user.user
                 var _user = await dynamodbfordummies.getUser(event.body.user.id)
                 var user = await dynamodbfordummies.suspendUser(_user)
-                //console.log('suspending user', user)
+            } else if (event.body.type == 'unsuspendDeck') {
+                event.body.deck = event.body.deck.deck
+                var _deck = await dynamodbfordummies.getFlashDeck(event.body.deck.id)
+                var deck = await dynamodbfordummies.unsuspendDeck(_deck)
+            } else if (event.body.type == 'unsuspendGang') {
+                event.body.gang = event.body.gang.gang
+                var _gang = await dynamodbfordummies.getFlashGang(event.body.gang.id)
+                var gang = await dynamodbfordummies.unsuspendGang(_gang)
+            } else if (event.body.type == 'unsuspendUser') {
+                event.body.user = event.body.user.user
+                var _user = await dynamodbfordummies.getUser(event.body.user.id)
+                var user = await dynamodbfordummies.unsuspendUser(_user)
             }
 
             /*event.body.user = event.body.user.user

@@ -53,7 +53,18 @@ class AdminUsersEditor extends React.Component {
                             }}
                         >
                             Suspend
-                </FlashButton>
+                        </FlashButton>
+                        <FlashButton
+                            buttonType='system'
+                            onClick={() => {
+                                console.log('unsuspending user')
+                                this.props.user.suspended = false
+                                this.props.closeModal()
+                                this.props.unsuspendUser(this.props.user)
+                            }}
+                        >
+                            Unsuspend
+                        </FlashButton>
                         <TextField
                             placeholder={this.props.user.firstName}
                             onChange={(event) => {

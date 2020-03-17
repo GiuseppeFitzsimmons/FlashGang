@@ -1056,7 +1056,7 @@ async function getAllGangs(filters) {
     }
     else return null
 }
-
+//Suspension
 async function suspendDeck(flashDeck) {
     let now = new Date();
     flashDeck.lastModified = now.getTime();
@@ -1076,6 +1076,28 @@ async function suspendGang(flashGang) {
     let now = new Date();
     flashGang.lastModified = now.getTime();
     flashGang.suspended = true
+    await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
+}
+//Unsuspension
+async function unsuspendDeck(flashDeck) {
+    let now = new Date();
+    flashDeck.lastModified = now.getTime();
+    flashDeck.suspended = false
+    await putItem(flashDeck, process.env.FLASHDECK_TABLE_NAME)
+}
+
+async function unsuspendUser(user) {
+    let now = new Date();
+    user.lastModified = now.getTime();
+    user.suspended = false
+    await putItem(user, process.env.USER_TABLE_NAME)
+}
+
+async function unsuspendGang(flashGang) {
+    console.log('suspendGang flashGang', flashGang)
+    let now = new Date();
+    flashGang.lastModified = now.getTime();
+    flashGang.suspended = false
     await putItem(flashGang, process.env.FLASHGANG_TABLE_NAME)
 }
 
@@ -1259,14 +1281,17 @@ module.exports = {
     getAllUsers,
     getAllDecks,
     suspendDeck,
+    unsuspendDeck,
     getFlashDeck,
     getFlashGang,
     suspendGang,
+    unsuspendGang,
     getAllGangs,
     putWebsocketConnection,
     getWebsocketConnection,
     getDeckUsers,
     deleteConnection,
     getGangUsers,
-    suspendUser
+    suspendUser,
+    unsuspendUser
 }
