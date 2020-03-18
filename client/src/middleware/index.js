@@ -7,7 +7,8 @@ import {
     CREATE_ACCOUNT, LOGIN, UPLOAD_IMAGE, SESSION_EXPIRED, GET_ALL_USERS,
     SAVE_USER, GET_ALL_DECKS, SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG,
     SUSPEND_USER, LOG_OUT, LOGIN_SOCIAL, UNSUSPEND_DECK, UNSUSPEND_GANG,
-    UNSUSPEND_USER
+    UNSUSPEND_USER,
+    DELETE_ACCOUNT
 } from '../action'
 import { doesNotReject } from 'assert';
 import FuzzySet from 'fuzzyset.js';
@@ -1047,6 +1048,24 @@ export function flashGangMiddleware({ dispatch }) {
             } else if (action.type === LOG_OUT) {
                 localStorage.removeItem("flashJwt")
                 localStorage.removeItem("flashJwtRefresh");
+                localStorage.removeItem("currentUser");
+            } else if (action.type === DELETE_ACCOUNT) {
+                let questObject = {}
+                questObject.params = {}
+                questObject.params.account_function = 'delete_account'
+                questObject.resource = 'account'
+                let getResult = await postToServer(questObject);
+                if (action.errors) {
+                    action.errors = getResult.errors ? getResult.errors : [];
+                    if (getResult.error) {
+                        action.errors.push(getResult.error);
+                    }
+                    console.log("Error deleting user", getResult, action)
+                } else {
+                    localStorage.removeItem("flashJwt")
+                    localStorage.removeItem("flashJwtRefresh");
+                    localStorage.removeItem("currentUser");
+                }
             }
             return next(action);
         }

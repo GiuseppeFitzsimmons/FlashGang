@@ -7,7 +7,7 @@ import {
     LOGIN, RESET_PASSWORD, POLL, GET_IMAGES, ENDSYNCHRONISE,
     SESSION_EXPIRED, GET_ALL_USERS, SAVE_USER, GET_ALL_DECKS,
     SUSPEND_DECK, GET_ALL_GANGS, SUSPEND_GANG, LOG_OUT,
-    LOGIN_SOCIAL, SUSPEND_USER
+    LOGIN_SOCIAL, SUSPEND_USER, DELETE_ACCOUNT
 } from '../action';
 
 const initialState = { sessionExpired: false };
@@ -142,6 +142,9 @@ function rootReducer(state = initialState, action) {
             return state
         case LOG_OUT:
             state = Object.assign({}, state, { sessionExpired: false })
+            return state
+        case DELETE_ACCOUNT:
+            state = Object.assign({}, state, { errors: action.errors })
             return state
         default:
             console.log('state', state)

@@ -12,6 +12,7 @@ import { FlashButton } from '../widgets/FlashBits'
 import Avatar from '@material-ui/core/Avatar';
 import FlashAppBar from '../widgets/flashappbar';
 import { Gallery } from './gallery';
+import Confirmation from '../components/confirmation';
 
 const someImages = require('../../utility/smimages')
 
@@ -19,7 +20,10 @@ class Settings extends React.Component {
     constructor(props) {
         super(props)
         this.state = { user: {} }
-        //this.handleFileChange=this.handleFileChange.bind(this)
+        this.deleteAccount=this.deleteAccount.bind(this)
+    }
+    deleteAccount() {
+        this.confirmation.open('SETTINGS_DELETE');
     }
     componentDidMount() {
         //this.setState({ user: this.state.user })
@@ -27,28 +31,6 @@ class Settings extends React.Component {
             this.props.navEvent.backButton = this.props.goHome;
         }
     }
-    /*handleFileChange(e) {
-        let file = e.target.files; // FileList
-        const settings=this;
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function() {
-                let result = reader.result;
-                console.log("result", result)
-                settings.state.user.picture=result;
-                settings.forceUpdate();
-                //let s = result.split(',');
-            };
-            //TODO parameterise this limitation
-            if (file[0].size>2500000) {
-                //TODO a proper alert dialogue
-                alert("too big")
-            } else {
-                reader.readAsDataURL(file[0]);
-            }
-        }
-        document.getElementById("file-upload").reset();
-    }*/
     render() {
         if (!this.state.user.picture) {
             this.state.user.picture = this.props.user.picture ? this.props.user.picture : someImages.getRandomGangsterImage();
@@ -133,14 +115,35 @@ class Settings extends React.Component {
                             Save
                     </FlashButton>
                     </Grid>
+                    <Grid item item xs={10} sm={11} md={11}
+                        justify="center"
+                        alignItems="stretch">
+                        <FlashButton
+                            onClick={this.deleteAccount}
+                            buttonType='system'
+                            square
+                            style={{ width: '100%' }}
+                        >
+                            Delete my account
+                    </FlashButton>
+                    </Grid>
                 </Grid>
+                <Confirmation
+                    parent={this}
+                    onConfirm={() => {
+                        this.props.deleteAccount()
+                    }}
+                    />
             </>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    console.log('state user settings', state)
+    console.log('state user settings', state, props)
+    if (!state.user || !state.user.id) {
+        props.goHome();
+    }
     return {
         user: state.user
     }

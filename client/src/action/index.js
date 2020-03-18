@@ -39,6 +39,7 @@ export const UNSUSPEND_USER = 'UNSUSPEND_USER';
 export const GET_ALL_GANGS = 'GET_ALL_GANGS';
 export const LOG_OUT = 'LOG_OUT';
 export const LOGIN_SOCIAL = 'LOGIN_SOCIAL'
+export const DELETE_ACCOUNT = 'DELETE_ACCOUNT'
 
 export function newDeck() {
     console.log("Action NEW_DECK")
@@ -199,5 +200,9 @@ export function suspendUser(user) {
 export function logout() {
     console.log("Action LOG_OUT")
     return { type: LOG_OUT }
+
+}
+export function deleteAccount() {
+    return { type: DELETE_ACCOUNT }
 
 }

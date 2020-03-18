@@ -189,6 +189,17 @@ exports.handler = async (event, context) => {
                     reply.user = await dynamodbfordummies.getUser(user.id)
 
                 }
+            } else if (event.body.account_function == 'delete_account') {
+                let token;
+                try {
+                    token = tokenUtility.validateToken(event)
+                } catch (badtoken) {
+                    reply = badtoken;
+                    returnObject.statusCode = badtoken.statusCode;
+                }
+                if (token) {
+                    console.log("DELETING ACCOUNT", token.sub)
+                }
             }
         } else {
             //Account creation sequence

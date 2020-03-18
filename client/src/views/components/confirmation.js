@@ -35,6 +35,8 @@ class Confirmation extends React.Component {
             stationMessage='Are you sure you wish to delete this deck?';
         } else if (this.station==='GANGS') {
             stationMessage='Are you sure you wish to delete this gang?';
+        } else if (this.station==='SETTINGS_DELETE') {
+            stationMessage='Are you sure you wish to delete your account? This cannot be undone.';
         }
         return (
             <Dialog
