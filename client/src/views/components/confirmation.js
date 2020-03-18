@@ -36,7 +36,9 @@ class Confirmation extends React.Component {
         } else if (this.station==='GANGS') {
             stationMessage='Are you sure you wish to delete this gang?';
         } else if (this.station==='SETTINGS_DELETE') {
-            stationMessage='Are you sure you wish to delete your account? This cannot be undone.';
+            stationMessage='Are you sure you wish to delete your account? This cannot be undone. Are you sure you want to proceeed?';
+        } else if (this.station==='DOWNLOAD_DATA') {
+            stationMessage='This will initiate an email with a zip attachment containing your FlashGang data in standard (JSON) format. Would you like to proceed?';
         }
         return (
             <Dialog

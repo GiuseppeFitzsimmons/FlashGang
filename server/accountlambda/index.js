@@ -200,6 +200,17 @@ exports.handler = async (event, context) => {
                 if (token) {
                     console.log("DELETING ACCOUNT", token.sub)
                 }
+            } else if (event.body.account_function == 'download_data') {
+                let token;
+                try {
+                    token = tokenUtility.validateToken(event)
+                } catch (badtoken) {
+                    reply = badtoken;
+                    returnObject.statusCode = badtoken.statusCode;
+                }
+                if (token) {
+                    console.log("DOWNLOADING ACCOUNT", token.sub)
+                }
             }
         } else {
             //Account creation sequence

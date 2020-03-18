@@ -13,17 +13,29 @@ import Avatar from '@material-ui/core/Avatar';
 import FlashAppBar from '../widgets/flashappbar';
 import { Gallery } from './gallery';
 import Confirmation from '../components/confirmation';
+import ErrorDialog from '../components/errordialog';
 
 const someImages = require('../../utility/smimages')
 
 class Settings extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { user: {} }
+        this.state = { user: {}, confirm: function(){} }
         this.deleteAccount=this.deleteAccount.bind(this)
+        this.downloadData=this.downloadData.bind(this)
+        this.confirmDownloadData=this.confirmDownloadData.bind(this)
     }
     deleteAccount() {
+        this.setState({...this.state, confirm: this.props.deleteAccount});
         this.confirmation.open('SETTINGS_DELETE');
+    }
+    downloadData() {
+        this.setState({...this.state, confirm: this.confirmDownloadData});
+        this.confirmation.open('DOWNLOAD_DATA');
+    }
+    confirmDownloadData() {
+        this.props.downloadData()
+        this.setState({...this.state, error: 'You should receive your email shortly'});
     }
     componentDidMount() {
         //this.setState({ user: this.state.user })
@@ -127,13 +139,29 @@ class Settings extends React.Component {
                             Delete my account
                     </FlashButton>
                     </Grid>
+                    <Grid item item xs={10} sm={11} md={11}
+                        justify="center"
+                        alignItems="stretch">
+                        <FlashButton
+                            onClick={this.downloadData}
+                            buttonType='system'
+                            square
+                            style={{ width: '100%' }}
+                        >
+                            Download my data
+                    </FlashButton>
+                    </Grid>
                 </Grid>
                 <Confirmation
                     parent={this}
-                    onConfirm={() => {
-                        this.props.deleteAccount()
-                    }}
+                    onConfirm={this.state.confirm}
                     />
+                <ErrorDialog error={this.state.error} 
+                    onClose={() => {
+                            this.setState({ error: null });
+                        }
+                    }
+                />
             </>
         )
     }
