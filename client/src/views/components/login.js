@@ -118,6 +118,9 @@ class Login extends React.Component {
                     </svg>
                     Log in with Google
                 </FlashButton>
+                <div style={{textAlign: 'right', marginTop:'96%'}}>
+                    <a href='/privacy-statement.html'>FlashGang 2020 privacy statement</a>
+                </div>
                 {this.props.errors && this.props.errors.fields.length > 0 &&
                     <FlashButton
                         color='primary'

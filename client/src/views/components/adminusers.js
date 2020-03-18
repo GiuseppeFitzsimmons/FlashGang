@@ -82,7 +82,8 @@ class AdminUsers extends React.Component {
                             {user.firstName}
                             {user.lastName}
                             {' ID: ' + user.id}
-                            {' Subscription: ' + user.subscription}
+                            {' Subscription: ' + user.subscription}<br/>
+                            Suspended {user.suspended}
                         </FlashButton>
                     </div>
                 )
