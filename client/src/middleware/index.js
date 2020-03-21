@@ -1045,9 +1045,10 @@ export function flashGangMiddleware({ dispatch }) {
                 }
                 
             } else if (action.type === LOG_OUT) {
-                localStorage.removeItem("flashJwt")
-                localStorage.removeItem("flashJwtRefresh");
-                localStorage.removeItem("currentUser");
+                //localStorage.removeItem("flashJwt")
+                //localStorage.removeItem("flashJwtRefresh");
+                //localStorage.removeItem("currentUser");
+                localStorage.clear();
             } else if (action.type === DELETE_ACCOUNT) {
                 let questObject = {}
                 questObject.params = {}
@@ -1061,9 +1062,10 @@ export function flashGangMiddleware({ dispatch }) {
                     }
                     console.log("Error deleting user", getResult, action)
                 } else {
-                    localStorage.removeItem("flashJwt")
-                    localStorage.removeItem("flashJwtRefresh");
-                    localStorage.removeItem("currentUser");
+                    //localStorage.removeItem("flashJwt")
+                    //localStorage.removeItem("flashJwtRefresh");
+                    //localStorage.removeItem("currentUser");
+                    localStorage.clear();
                 }
             } else if (action.type === DOWNLOAD_DATA) {
                 let questObject = {}

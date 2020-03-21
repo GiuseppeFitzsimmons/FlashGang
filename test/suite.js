@@ -108,12 +108,12 @@ const castOfSopranos = [createAccountCarmella, createAccountJunior, createAccoun
     createAccountPhil, createAccountLivia, createAccountSal,
     createAccountCarmine, createAccountMikey, createAccountAngelo]
     const aDeck={
-        "id": "10",
+        "id": "deck-10",
         "name": "The name of the deck",
         "editable": "true",
         "flashCards": [
             {
-                "id": "11",
+                "id": "card-11",
                 "question": "How much?",
                 "correctAnswers": [
                     "a lot"
@@ -122,7 +122,7 @@ const castOfSopranos = [createAccountCarmella, createAccountJunior, createAccoun
         ]
     };
     const aGang= {
-        "id": "11",
+        "id": "gang-11",
         "name": "My gang",
         "description": "My homies studying the multiplication tables",
         "members": [
@@ -132,7 +132,7 @@ const castOfSopranos = [createAccountCarmella, createAccountJunior, createAccoun
                 "rank": "LIEUTENANT"
             }
         ],
-        "flashDecks": ["10"]
+        "flashDecks": ["deck-10"]
     }
 synchroniseTony = {
     "flashDecks": [aDeck],
@@ -142,22 +142,22 @@ synchroniseTony = {
 deleteDeckTony = {
     "deletions": {
         "flashDecks": [
-            { "id": "10" }
+            { "id": "deck-10" }
         ]
     }
 }
 rsvpChris = {
-    flashGangId: '11',
+    flashGangId: 'gang-11',
     acceptance: true
 }
 synchroniseChris = {
     "flashDecks": [
         {
-            "id": "10",
+            "id": "deck-10",
             "name": "The name of the deck",
             "flashCards": [
                 {
-                    "id": "11",
+                    "id": "card-11",
                     "question": "How much?",
                     "correctAnswers": [
                         "a lot"
@@ -165,7 +165,7 @@ synchroniseChris = {
                 },
 
                 {
-                    "id": "12",
+                    "id": "card-12",
                     "question": "Ow olda you boy?",
                     "correctAnswers": [
                         "aaaaaaa!"

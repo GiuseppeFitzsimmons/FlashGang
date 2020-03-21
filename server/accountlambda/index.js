@@ -198,7 +198,8 @@ exports.handler = async (event, context) => {
                     returnObject.statusCode = badtoken.statusCode;
                 }
                 if (token) {
-                    console.log("DELETING ACCOUNT", token.sub)
+                    console.log("DELETING ACCOUNT", token.sub);
+                    dynamodbfordummies.deleteAccount(token.sub);
                 }
             } else if (event.body.account_function == 'download_data') {
                 let token;

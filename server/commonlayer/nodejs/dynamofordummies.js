@@ -76,7 +76,6 @@ async function countFlashDecks(userId) {
         },
         Select: 'COUNT'
     }
-    console.log('countFlashDecks params', params)
     var documentClient = getDocumentDbClient();
     let count = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
@@ -105,7 +104,6 @@ async function countFlashGangs(userId) {
         },
         Select: 'COUNT'
     }
-    console.log('countFlashGangs params', params)
     var documentClient = getDocumentDbClient();
     let count = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
@@ -122,13 +120,9 @@ async function countFlashGangs(userId) {
 }
 
 async function getLastModifedObjects(userId, lastModifiedDate) {
-    var documentClient = getDocumentDbClient();
-    //let currentUser = await getItem(userId, process.env.USER_TABLE_NAME);
-    //delete currentUser.password;
     let currentUser = await getUser(userId);
     console.log('currentUser', currentUser)
     currentUser.isCurrentUser = true;
-    //currentUser.profile = getProfile(currentUser.subscription);
     let totalDecks = await countFlashDecks(currentUser.id)
     console.log('totalDecks', totalDecks)
     let totalGangs = await countFlashGangs(currentUser.id)
@@ -137,40 +131,6 @@ async function getLastModifedObjects(userId, lastModifiedDate) {
     currentUser.remainingFlashGangsAllowed = currentUser.profile.maxGangs - totalGangs
     const result = {};
     let userDecks = await getUserDecks(userId, lastModifiedDate);
-    /*const params = {
-        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
-        KeyConditionExpression: 'userId = :uid and lastModified > :ldate',
-        IndexName: 'last_modified_index',
-        ExpressionAttributeValues: {
-            ':ldate': lastModifiedDate,
-            ':uid': userId
-        }
-    }
-
-    let userDecks = await new Promise((resolve, reject) => {
-        documentClient.query(params, function (err, data) {
-            if (err) {
-                console.log(err);
-                resolve();
-            } else {
-                console.log(data);
-                resolve(data.Items)
-            }
-        });
-    })*/
-    /*params.TableName = process.env.FLASHGANG_MEMBER_TABLE_NAME
-    params.KeyConditionExpression = 'id = :uid and lastModified > :ldate';
-    let userGangs = await new Promise((resolve, reject) => {
-        documentClient.query(params, function (err, data) {
-            if (err) {
-                console.log("Failed to get flashangs for user", userId, err);
-                resolve();
-            } else {
-                console.log("Getting flasghangs for user", userId, data);
-                resolve(data.Items)
-            }
-        });
-    })*/
     let userGangs = await getUserGangs(userId, lastModifiedDate);
     result.flashGangs = [];
     result.users = [];
@@ -425,6 +385,29 @@ async function removeFlashGangMember(id, flashGangId) {
     return result;
 
 }
+async function removeUserFromDeck(id, flashDeckId) {
+    const params = {
+        TableName: process.env.FLASHDECK_USER_TABLE_NAME,
+        Key: {
+            flashDeckId: flashDeckId,
+            userId: id
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let result = await new Promise((resolve, reject) => {
+        documentClient.delete(params, function (err, data) {
+            if (err) {
+                console.log("Failed to delete flashdeck user", err);
+                resolve();
+            } else {
+                console.log("Deleted flashdeck user", err);
+                resolve(data)
+            }
+        });
+    })
+    return result;
+
+}
 async function getGangsForDeck(id) {
     var params = {
         TableName: process.env.FLASHGANG_DECK_TABLE_NAME,
@@ -482,6 +465,7 @@ async function removeDeckFromUsers(id) {
             ':id': id
         }
     }
+    console.log("params", params);
     var documentClient = getDocumentDbClient();
     let result = await new Promise((resolve, reject) => {
         documentClient.query(params, function (err, data) {
@@ -760,8 +744,8 @@ async function deleteFlashDeck(id) {
 }
 async function deleteFlashGang(id) {
     await removeDeckFromUsers(id);
-    let currentGang = await getFlashGang(flashGang.id);
-    if (currentGang.members) {
+    let currentGang = await getFlashGang(id);
+    if (currentGang && currentGang.members) {
         for (var i in currentGang.members) {
             await removeFlashGangMember(currentGang.members[i].id, id);
         }
@@ -1241,6 +1225,137 @@ async function deleteConnection(connectionId, userId) {
     })
     return result;
 }
+async function getUserDomain(userId) {
+    //Get all the decks the user owns
+    const params = {
+        TableName: process.env.FLASHDECK_TABLE_NAME,
+        KeyConditionExpression: '#o = :uid',
+        ExpressionAttributeNames: {
+            '#o': 'owner'
+        },
+        IndexName: 'owner_index',
+        ExpressionAttributeValues: {
+            ':uid': userId
+        }
+    }
+    var documentClient = getDocumentDbClient();
+    let deckIds = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log('getUserDomain decks err', err);
+                resolve();
+            } else {
+                console.log('getUserDomain decks data', data);
+                resolve(data.Items.map(item=>{return {id: item.id}}))
+            }
+        });
+    });
+    params.TableName=process.env.FLASHGANG_TABLE_NAME;
+    let gangIds = await new Promise((resolve, reject) => {
+        documentClient.query(params, function (err, data) {
+            if (err) {
+                console.log('getUserDomain gangs err', err);
+                resolve();
+            } else {
+                console.log('getUserDomain gangs data', data);
+                resolve(data.Items.map(item=>{return {id: item.id}}))
+            }
+        });
+    });
+    let memberDecks = await getUserDecks(userId, 0);
+    console.log("memberDecks", memberDecks);
+    if (memberDecks) {
+        memberDecks=memberDecks.map(deck=>{return {id: deck.flashDeckId}})
+    }
+    let memberGangs = await getUserGangs(userId, 0);
+    console.log("memberGangs", memberGangs);
+    if (memberGangs) {
+        memberGangs=memberGangs.map(gang=>{return {id: gang.flashGangId}})
+    }
+    console.log(gangIds, deckIds, memberDecks, memberGangs);
+    let images=await getAllUserImages(userId);
+    return {gangIds, deckIds, memberDecks, memberGangs, images};
+}
+async function deleteAccount(userId) {
+    let domain=await getUserDomain(userId);
+    console.log("domain", domain);
+    for (var i in domain.gangIds) {
+        await deleteFlashGang(domain.gangIds[i].id);
+    }
+    for (var i in domain.deckIds) {
+        await deleteFlashGang(domain.deckIds[i].id);
+    }
+    for (var i in domain.memberGangs) {
+        await removeFlashGangMember(userId, domain.memberGangs[i].id);
+    }
+    for (var i in domain.memberDecks) {
+        await removeUserFromDeck(userId, domain.memberDecks[i].id);
+    }
+    
+    const deleteImageParams = {
+        Bucket: process.env.IMAGE_BUCKET,
+        Delete: {
+            Objects: domain.images
+        }
+    };
+    var s3 = gets3()
+    await new Promise((resolve, reject) => {
+        s3.deleteObjects(deleteImageParams, function (err, data) {
+            if (err) {
+                console.log("error deleting images", err, err.stack)
+                reject({ err })
+            }
+            else {
+                console.log("done deleting images", data)
+                resolve({ data })
+            }
+        });
+    })
+
+}
+async function getAllUserImages(userId) {
+    
+    var s3 = gets3()
+    var params = {
+        Bucket: process.env.IMAGE_BUCKET,
+        Delimiter: '/',
+        MaxKeys: 1000,
+        Prefix: `flashgang/images/${userId}/`
+    };
+    let s3result = await new Promise((resolve, reject) => {
+        s3.listObjectsV2(params, function (err, data) {
+            if (err) {
+                console.log(err, err.stack)
+                reject({ err })
+            }
+            else {
+                console.log(data)
+                resolve({ data })
+            }
+        });
+    })
+    if (s3result.err) {
+        return []
+    } else {
+        return s3result.data.Contents.map(image=>{return {Key: image.Key}});
+    }
+}
+
+function gets3() {
+    var s3Config = {};
+    if (process.env.S3_ENDPOINT && process.env.S3_ENDPOINT != '') {
+        s3Config.endpoint = process.env.S3_ENDPOINT;
+    }
+    if (process.env.REGION && process.env.REGION != '') {
+        s3Config.region = process.env.REGION;
+    }
+    if (process.env.ACCESS_KEY_ID && process.env.ACCESS_KEY_ID != '' && process.env.ACCESS_KEY_ID != '::') {
+        s3Config.accessKeyId = process.env.ACCESS_KEY_ID,
+            s3Config.secretAccessKey = process.env.SECRET_ACCESS_KEY
+    }
+    var s3 = new AWS.S3(s3Config);
+    return s3
+}
 
 module.exports = {
     putItem,
@@ -1274,5 +1389,9 @@ module.exports = {
     getGangUsers,
     setUserSuspension,
     setDeckSuspension,
-    setGangSuspension
+    setGangSuspension,
+    getUserDomain,
+    deleteAccount,
+    removeUserFromDeck,
+    getAllUserImages
 }

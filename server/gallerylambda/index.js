@@ -46,7 +46,7 @@ exports.handler = async (event, context) => {
                                     console.log("Error uploading IMAGE", err, err.stack);
                                     reject(err);
                                 } else {
-                                    console.log("Success uploading IMAGE", data);
+                                    //console.log("Success uploading IMAGE", data);
                                     resolve(data);
                                 }
                             });
@@ -56,7 +56,7 @@ exports.handler = async (event, context) => {
                             reply.url = `https://${process.env.S3_SERVER_DOMAIN}${subPath}`
                             //await dynamodbfordummies.putImage(token.sub, reply.url)
                         }
-                        console.log("s3result", s3result);
+                        //console.log("s3result", s3result);
                     }
                 } else if (event.body.images) {
                     //This is a workaround - delete wasn't working because we don't support body when method is delete
@@ -106,7 +106,6 @@ exports.handler = async (event, context) => {
             "Access-Control-Allow-Headers": "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token",
             "Access-Control-Allow-Methods": "OPTIONS,HEAD,GET,PUT,POST"
         }
-        console.log("GalleryLambda ", returnObject);
         return returnObject
     }
     async function deleteImages(event) {
@@ -130,7 +129,7 @@ exports.handler = async (event, context) => {
                     reject({ err })
                 }
                 else {
-                    console.log(data)
+                    //console.log(data)
                     resolve({ data })
                 }
             });
